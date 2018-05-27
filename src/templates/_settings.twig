@@ -57,6 +57,16 @@
             </div>
         </div>
 
+        {{ forms.checkboxSelectField({
+            label: 'Available Sources'|t('navigate'),
+            instructions: 'Select the types of links would you like to be available in this navigation'|t('navigate'),
+            id: 'allowedSources',
+            name: 'allowedSources',
+            options: sources,
+            values: navigation.allowedSources,
+            showAllOption: true,
+        }) }}
+
         {{ forms.selectField({
             label: 'Default link type'|t('navigate'),
             instructions: 'Select the default link type.'|t('navigate'),
