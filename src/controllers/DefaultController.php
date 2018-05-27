@@ -78,4 +78,12 @@ class DefaultController extends Controller
             return $this->renderTemplate('navigate/_settings', $data);
         }
     }
+
+    public function actionDelete() {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
+        return Navigate::$plugin->navigate->deleteNavigationById(Craft::$app->request->post('id'));
+
+    }
 }

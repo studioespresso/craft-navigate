@@ -20,7 +20,7 @@
 {% set docsUrl = "https://github.com/studioespresso/navigate/blob/master/README.md" %}
 
 {# The title of this CP section #}
-{% set title = navigation.title %}
+{% set title = navigation.title is defined ? navigation.title : 'New navigation' %}
 
 {% set crumbs = [
     { label: title, url: url('navigate') },
@@ -30,7 +30,7 @@
 
 {# The content of the CP Section#}
 {% block content %}
-    <form method="post" action="https://craft3.local/index.php?p=admin/actions/navigate/default/save">
+    <form method="post" data-saveshortcut data-confirm-unload action="https://craft3.local/index.php?p=admin/actions/navigate/default/save">
         {{ csrfInput() }}
         {{ redirectInput('navigate') }}
         {% if navigation is defined %}

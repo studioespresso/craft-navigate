@@ -36,20 +36,29 @@ class NavigateService extends Component
         return NavigationRecord::find()->all();
     }
 
-    public  function getNavigationById($id) {
+    public function getNavigationById($id) {
         return NavigationRecord::findOne([
             'id' => $id
         ]);
     }
 
+    public function deleteNavigationById($id) {
+        $record = NavigationRecord::findOne([
+            'id' => $id
+        ]);
+        if($record->delete()) {
+            return true;
+        };
+    }
+
     public function saveNavigation($data) {
-        if($data['id']) {
+        $record = false;
+        if(isset($data['id'])) {
             $record = NavigationRecord::findOne( [
                 'id' => $data['id']
             ]);
         }
-
-        if(! $record){
+        if(!$record){
             $record = new NavigationRecord();
         }
 
