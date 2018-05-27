@@ -1,0 +1,36 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Navigate plugin for Craft CMS 3.x
+ *
+ * Navigate index.twig
+ *
+ * @author    Studio Espresso
+ * @copyright Copyright (c) 2018 Studio Espresso
+ * @link      https://studioespresso.co
+ * @package   Navigate
+ * @since     0.0.1
+ */
+#}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{# Link for the ? icon at the bottom of the page #}
+{% set docsUrl = "https://github.com/studioespresso/navigate/blob/master/README.md" %}
+
+{# The title of this CP section #}
+{% set title = "Navigate" %}
+
+{# The content of the CP Section#}
+{% block content %}
+    <form method="post" action="https://craft3.local/index.php?p=admin/actions/navigate/default/save">
+        {{ csrfInput() }}
+        {{ redirectInput('navigate') }}
+        <input type="text" name="title" id="title">
+        <button type="submit" class="btn submit">
+            {{ 'Save'|t }}
+        </button>
+    </form>
+
+{% endblock %}

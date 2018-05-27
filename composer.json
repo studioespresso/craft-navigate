@@ -1,0 +1,43 @@
+{
+    "name": "studioespresso/craft-navigate",
+    "description": "Navigation plugin for Craft 3",
+    "type": "craft-plugin",
+    "version": "0.0.1",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "navigate"
+    ],
+    "support": {
+        "docs": "https://github.com/studioespresso/navigate/blob/master/README.md",
+        "issues": "https://github.com/studioespresso/navigate/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Studio Espresso",
+            "homepage": "https://studioespresso.co"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1"
+    },
+    "autoload": {
+        "psr-4": {
+          "studioespresso\\navigate\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Navigate",
+        "handle": "navigate",
+        "hasCpSettings": true,
+        "hasCpSection": true,
+        "changelogUrl": "https://raw.githubusercontent.com/studioespresso/navigate/master/CHANGELOG.md",
+        "components": {
+            "navigate": "studioespresso\\navigate\\services\\NavigateService"
+        },
+        "class": "studioespresso\\navigate\\Navigate"
+    }
+}

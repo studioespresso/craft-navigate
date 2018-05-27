@@ -1,0 +1,43 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Navigate plugin for Craft CMS 3.x
+ *
+ * Navigate index.twig
+ *
+ * @author    Studio Espresso
+ * @copyright Copyright (c) 2018 Studio Espresso
+ * @link      https://studioespresso.co
+ * @package   Navigate
+ * @since     0.0.1
+ */
+#}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{# Link for the ? icon at the bottom of the page #}
+{% set docsUrl = "https://github.com/studioespresso/navigate/blob/master/README.md" %}
+
+{# The title of this CP section #}
+{% set title = "Navigate" %}
+{% set createUrl = url('navigate/add') %}
+
+{% block actionButton %}
+    <div id="button-container">
+        <div class="btngroup submit">
+            <a class="btn submit add icon" href="{{ createUrl }}">
+                {{ 'New navigation'|t }}
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{# The content of the CP Section#}
+{% block content %}
+    {% if navigations|length %}
+        {{ d(navigations) }}
+    {% else %}
+        {{ 'No navigations found, click "New navigation" in the top right corner to get started'|t }}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,24 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Navigate plugin for Craft CMS
+ *
+ * NavigateUtility Utility Content
+ *
+ * @author    Studio Espresso
+ * @copyright Copyright (c) 2018 Studio Espresso
+ * @link      https://studioespresso.co
+ * @package   Navigate
+ * @since     0.0.1
+ */
+#}
+
+<h1>NavigateUtility</h1>
+
+{% set iconUrl = view.getAssetManager().getPublishedUrl('@studioespresso/navigate/assetbundles/navigateutilityutility/dist', true) ~ '/img/NavigateUtility-icon.svg' %}
+
+<img src="{{ iconUrl }}" height="64" width="64" />
+
+<p>Your Utility content goes here</p>
+
+<p>{{ someVar }}</p>
