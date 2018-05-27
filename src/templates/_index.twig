@@ -36,7 +36,25 @@
 {# The content of the CP Section#}
 {% block content %}
     {% if navigations|length %}
-        {{ d(navigations) }}
+        <table id="sections" class="data fullwidth collapsible">
+            <thead>
+            <tr><th scope="col">Name</th>
+                <th scope="col">Handle</th>
+                <th scope="col">Settings</th>
+                <td class="thin"></td>
+            </tr></thead>
+            <tbody>
+            {% for navigation in navigations %}
+            <tr data-id="{{ navigation.id }}" data-name="{{ navigation.title }}">
+                <th scope="row" data-title="Title"><a href="{{ url('navigate/edit/'~navigation.id) }}">{{ navigation.title }}</a></th>
+                <td data-title="Handle"><code>{{ navigation.handle }}</code></td>
+                <td data-title="Settings"><a href="{{ url('navigate/settings/'~navigation.id) }}"><span data-icon="settings"></span></a></td>
+                <td class="thin"><a class="delete icon" title="Delete" role="button"></a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
     {% else %}
         {{ 'No navigations found, click "New navigation" in the top right corner to get started'|t }}
     {% endif %}

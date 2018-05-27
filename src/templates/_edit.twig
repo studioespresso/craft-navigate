@@ -27,10 +27,28 @@
     <form method="post" action="https://craft3.local/index.php?p=admin/actions/navigate/default/save">
         {{ csrfInput() }}
         {{ redirectInput('navigate') }}
-        <input type="text" name="title" id="title">
-        <button type="submit" class="btn submit">
-            {{ 'Save'|t }}
-        </button>
+        <div class="field" id="name-field">
+            <div class="heading">
+                <label id="name-label" class="required" for="title">Title</label>
+                <div class="instructions"><p>What this field will be called in the CP.</p>
+                </div>
+            </div>
+            <div class="input ltr">
+                <input class="text fullwidth" type="text" id="title" name="title" value="" autofocus="" autocomplete="off">
+            </div>
+        </div>
+        <div class="field" id="handle-field">
+            <div class="heading">
+                <label id="handle-label" class="required" for="handle">Handle</label>
+                <div class="instructions"><p>How you’ll refer to this field in the templates.</p>
+                </div>
+            </div>
+            <div class="input ltr">
+                <input class="text code fullwidth" type="text" id="handle" name="handle" value="" maxlength="64" autocomplete="off">
+            </div>
+        </div>
+        <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+
     </form>
 
 {% endblock %}

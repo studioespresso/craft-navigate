@@ -61,12 +61,7 @@ class DefaultController extends Controller
     }
 
     public function actionSave() {
-
-        try {
-            //Navigate::$plugin->navigate->saveNavigation(Craft::$app->request->getBodyParams());
-        } catch (\Exception $e) {
-
-        }
+        Navigate::$plugin->navigate->saveNavigation(Craft::$app->request->getBodyParams());
         return $this->redirectToPostedUrl();
     }
 }

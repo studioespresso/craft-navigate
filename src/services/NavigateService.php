@@ -33,10 +33,23 @@ class NavigateService extends Component
 {
 
     public function getAllNavigations() {
-        return NavigationRecord::findAll([]);
+        return NavigationRecord::find()->all();
     }
 
     public function saveNavigation($data) {
-        dd($data);
+
+
+
+
+        $record = new NavigationRecord();
+        $record->title = $data['title'];
+        $record->handle = $data['handle'];
+        $record->siteId = 1;
+
+        $save = $record->save();
+        if ( ! $save ) {
+            Craft::getLogger()->log( $record->getErrors(), LOG_ERR, 'navigate' );
+        }
+        return $save;
     }
 }
