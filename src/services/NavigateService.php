@@ -43,7 +43,16 @@ class NavigateService extends Component
     }
 
     public function saveNavigation($data) {
-        $record = new NavigationRecord();
+        if($data['id']) {
+            $record = NavigationRecord::findOne( [
+                'id' => $data['id']
+            ]);
+        }
+
+        if(! $record){
+            $record = new NavigationRecord();
+        }
+
         $record->title = $data['title'];
         $record->handle = $data['handle'];
         $record->siteId = 1;

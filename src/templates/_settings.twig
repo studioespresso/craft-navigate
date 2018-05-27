@@ -33,6 +33,9 @@
     <form method="post" action="https://craft3.local/index.php?p=admin/actions/navigate/default/save">
         {{ csrfInput() }}
         {{ redirectInput('navigate') }}
+        {% if navigation is defined %}
+            <input type="hidden" name="id" value="{{ navigation.id }}">
+        {% endif %}
         <div class="field" id="name-field">
             <div class="heading">
                 <label id="name-label" class="required" for="title">Title</label>
@@ -40,7 +43,7 @@
                 </div>
             </div>
             <div class="input ltr">
-                <input class="text fullwidth" type="text" id="title" name="title" value="" autofocus="" autocomplete="off">
+                <input class="text fullwidth" type="text" id="title" name="title" {% if navigation is defined %}value="{{ navigation.title }}"{% endif %} autofocus="" autocomplete="off">
             </div>
         </div>
         <div class="field" id="handle-field">
@@ -50,7 +53,7 @@
                 </div>
             </div>
             <div class="input ltr">
-                <input class="text code fullwidth" type="text" id="handle" name="handle" value="" maxlength="64" autocomplete="off">
+                <input class="text code fullwidth" type="text" id="handle" name="handle" {% if navigation is defined %}value="{{ navigation.handle }}"{% endif %} maxlength="64" autocomplete="off">
             </div>
         </div>
         <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
