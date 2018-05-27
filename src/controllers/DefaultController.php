@@ -57,7 +57,7 @@ class DefaultController extends Controller
     }
 
     public function actionAdd() {
-        return $this->renderTemplate('navigate/_edit');
+        return $this->renderTemplate('navigate/_settings');
     }
 
     public function actionSave() {
