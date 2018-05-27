@@ -20,7 +20,13 @@
 {% set docsUrl = "https://github.com/studioespresso/navigate/blob/master/README.md" %}
 
 {# The title of this CP section #}
-{% set title = "Navigate" %}
+{% set title = navigation.title %}
+
+{% set crumbs = [
+    { label: title, url: url('navigate') },
+    { label: 'Settings', url: '#' }
+]
+%}
 
 {# The content of the CP Section#}
 {% block content %}

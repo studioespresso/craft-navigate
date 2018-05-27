@@ -71,4 +71,11 @@ class DefaultController extends Controller
             return $this->renderTemplate('navigate/_edit', $data);
         }
     }
+
+    public function actionSettings($navId = null) {
+        if($navId) {
+            $data['navigation'] = Navigate::$plugin->navigate->getNavigationById($navId);
+            return $this->renderTemplate('navigate/_settings', $data);
+        }
+    }
 }
