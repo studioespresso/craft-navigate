@@ -16,74 +16,31 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
+{% do view.registerAssetBundle("studioespresso\\navigate\\assetbundles\\navigate\\NavigateAsset") %}
+
 {# Link for the ? icon at the bottom of the page #}
 {% set docsUrl = "https://github.com/studioespresso/navigate/blob/master/README.md" %}
 
 {# The title of this CP section #}
-{% set title = navigation.title %}
+{% set pluginTitle = 'Navigate' %}
+{% set title = navigation.title is defined ? navigation.title : 'New navigation' %}
 
 {% set crumbs = [
-    { label: title, url: url('navigate') },
+    { label: pluginTitle, url: url('navigate') },
     { label: 'Edit', url: '#' }
-] %}
+]
+%}
 
 {# The content of the CP Section#}
 {% block content %}
-    {% if nodes|length %}
-        <div class="field" id="fields-matrix-field" data-type="craft\fields\Matrix">
-            <div class="heading">
-                <label id="fields-matrix-label" for="fields-matrix">Matrix</label>
-            </div>
-            <div class="input ltr">
-                <input type="hidden" name="fields[matrix]" value="">
-
-                <div class="matrix matrix-field" id="fields-matrix" style="position: relative;">
-                    <div class="blocks">
-                        {% for node in nodes %}
-                        <div class="matrixblock" data-id="new2" data-type="test" style="opacity: 1;"><input
-                                    type="hidden" name="fields[matrix][new2][type]" value="test"><input type="hidden"
-                                                                                                        name="fields[matrix][new2][enabled]"
-                                                                                                        value="1">
-                            <div class="titlebar">
-                                <div class="blocktype">Test</div>
-                                <div class="preview"></div>
-                            </div>
-                            <div class="checkbox" title="Select"></div>
-                            <div class="actions">
-                                <div class="status off" title="Disabled"></div>
-                                <a class="settings icon menubtn" title="Actions" role="combobox" tabindex="0"
-                                   aria-owns="menu.Garnish500622136" aria-haspopup="true" aria-expanded="false"></a> <a
-                                        class="move icon" title="Reorder" role="button"></a></div>
-                            <div class="fields">
-                                <div class="field" >
-                                    <select>
-                                        <option>Entry</option>
-                                        <option>Category</option>
-                                        <option>URL</option>
-                                        <option>Email</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div id="navigate-nodes-input">
+            <div class="buttons">
+                <div class="btngroup">
+                    {% for nodeType in nodeTypes%}
+                        <div class="btn{% if loop.first %} add icon{% endif %}" data-type="{{ nodeType.handle }}">{{ nodeType.title|t('navigate') }}</div>
                     {% endfor %}
-                    <div class="buttons last">
-                        <div class="btngroup">
-                            <div class="btn add icon" data-type="test">Test</div>
-                        </div>
-
-                        <div class="btn add icon menubtn hidden" tabindex="0" role="combobox"
-                             aria-owns="menu.Garnish561960758" aria-haspopup="true" aria-expanded="false">Add a block
-                        </div>
-
-                    </div>
-                    <object tabindex="-1" type="text/html" data="about:blank"
-                            style="display: block; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; border: none; padding: 0px; margin: 0px; opacity: 0; z-index: -1000; pointer-events: none;"></object>
                 </div>
-
             </div>
         </div>
-    {% else %}
-        {{ 'No nodes for in {title}'|t({ title: navigation.title}) }}
-    {% endif %}
+
 {% endblock %}

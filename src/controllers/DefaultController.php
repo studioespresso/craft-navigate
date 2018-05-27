@@ -10,6 +10,7 @@
 
 namespace studioespresso\navigate\controllers;
 
+use craft\helpers\Json;
 use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\Navigate;
 
@@ -68,8 +69,18 @@ class DefaultController extends Controller
     public function actionEdit($navId = null) {
         if($navId) {
             $data['navigation'] = Navigate::$plugin->navigate->getNavigationById($navId);
-            $data['nodes'] = Navigate::$plugin->nodes->getNodesByNavId($navId);
-            return $this->renderTemplate('navigate/_edit', $data);
+
+            $nodeTypes = Navigate::$plugin->nodes->getNodeTypes($data['navigation']);
+
+            Craft::$app->getView()->registerJs('new Craft.NavigateInput('.
+                '"navigate-nodes-input", '.
+                Json::encode($nodeTypes, JSON_UNESCAPED_UNICODE) . ');');
+
+
+            return $this->renderTemplate('navigate/_edit', [
+                'nodes' => Navigate::$plugin->nodes->getNodesByNavId($navId),
+                'nodeTypes' =>$nodeTypes,
+            ]);
         }
     }
 

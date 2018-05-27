@@ -33,9 +33,38 @@ use studioespresso\navigate\records\NodeRecord;
 class NodesService extends Component
 {
 
-    public function getNodesByNavId(int $navId = null) {
+    public $types = [
+      'entry' => 'Entry',
+      'url' => 'Url',
+      'asset' => 'Asset',
+      'category' => 'Category'
+    ];
+
+
+    public function getNodesByNavId(int $navId = null)
+    {
         return NodeRecord::findAll([
             'navId' => $navId
         ]);
+    }
+
+    public function getNodeTypes(NavigationRecord $navigation)
+    {
+        $nodeTypes = [];
+        if($navigation->allowedSources === "*") {
+            foreach($types as $handle => $name) {
+                $nodeTypes[]['handle'] = $handle;
+                $nodeTypes[]['name'] = $name;
+            }
+        } else {
+            foreach (json_decode($navigation->allowedSources) as $type) {
+                $nodeTypes[] = [
+                    'handle' => $type,
+                    'title' => $this->types[$type],
+                ];
+            }
+        }
+
+        return $nodeTypes;
     }
 }

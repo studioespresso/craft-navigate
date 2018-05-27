@@ -20,10 +20,11 @@
 {% set docsUrl = "https://github.com/studioespresso/navigate/blob/master/README.md" %}
 
 {# The title of this CP section #}
+{% set pluginTitle = 'Navigate' %}
 {% set title = navigation.title is defined ? navigation.title : 'New navigation' %}
 
 {% set crumbs = [
-    { label: title, url: url('navigate') },
+    { label: pluginTitle, url: url('navigate') },
     { label: 'Settings', url: '#' }
 ]
 %}
