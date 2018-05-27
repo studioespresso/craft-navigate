@@ -64,4 +64,11 @@ class DefaultController extends Controller
         Navigate::$plugin->navigate->saveNavigation(Craft::$app->request->getBodyParams());
         return $this->redirectToPostedUrl();
     }
+
+    public function actionEdit($navId = null) {
+        if($navId) {
+            $data['navigation'] = Navigate::$plugin->navigate->getNavigationById($navId);
+            return $this->renderTemplate('navigate/_edit', $data);
+        }
+    }
 }
