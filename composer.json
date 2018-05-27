@@ -36,7 +36,8 @@
         "hasCpSection": true,
         "changelogUrl": "https://raw.githubusercontent.com/studioespresso/navigate/master/CHANGELOG.md",
         "components": {
-            "navigate": "studioespresso\\navigate\\services\\NavigateService"
+            "navigate": "studioespresso\\navigate\\services\\NavigateService",
+            "nodes": "studioespresso\\navigate\\services\\NodesService"
         },
         "class": "studioespresso\\navigate\\Navigate"
     }

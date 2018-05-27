@@ -64,6 +64,7 @@ class NavigateService extends Component
 
         $record->title = $data['title'];
         $record->handle = $data['handle'];
+        $record->defaultNodeType = $data['defaultNodeType'];
         $record->siteId = 1;
 
         $save = $record->save();

@@ -16,6 +16,8 @@ use Craft;
 use craft\config\DbConfig;
 use craft\db\Migration;
 use studioespresso\navigate\records\NavigationRecord;
+use studioespresso\navigate\records\NodeRecord;
+use Twig\Node\Node;
 
 /**
  * Navigate Install Migration
@@ -107,12 +109,31 @@ class Install extends Migration
                 [
                     'id' => $this->primaryKey(),
                     'title' => $this->string(255)->notNull()->defaultValue(''),
+                    'allowedSources' => $this->text(),
+                    'defaultNodeType' => $this->text(20),
                     'handle' => $this->string(255)->notNull()->defaultValue(''),
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
                     'uid' => $this->uid(),
                 // Custom columns in the table
                     'siteId' => $this->integer()->notNull(),
+                ]
+            );
+
+            $this->createTable(
+                NodeRecord::tableName(),
+                [
+                    'id' => $this->primaryKey(),
+                    'siteId' => $this->integer()->notNull(),
+                    'navId' => $this->string(255)->notNull()->defaultValue(''),
+                    'url'   => $this->string(255),
+                    'enabled' => $this->boolean()->defaultValue(1),
+                    'elementType' => $this->integer(),
+
+                    'dateCreated' => $this->dateTime()->notNull(),
+                    'dateUpdated' => $this->dateTime()->notNull(),
+                    'uid' => $this->uid(),
+
                 ]
             );
         }
@@ -127,12 +148,23 @@ class Install extends Migration
      */
     protected function addForeignKeys()
     {
+
     // navigate_navigaterecord table
         $this->addForeignKey(
             $this->db->getForeignKeyName(NavigationRecord::tableName(), 'siteId'),
-            '{{%navigate_navigaterecord}}',
+            NavigationRecord::tableName(),
             'siteId',
             '{{%sites}}',
+            'id',
+            'CASCADE',
+            'CASCADE'
+        );
+
+        $this->addForeignKey(
+            $this->db->getForeignKeyName(NodeRecord::tableName(), 'navId'),
+            '{{%navigate_nodes}}',
+            'navId',
+            '{{%navigate_navigations}}',
             'id',
             'CASCADE',
             'CASCADE'
@@ -157,5 +189,6 @@ class Install extends Migration
     {
     // navigate_navigaterecord table
         $this->dropTableIfExists(NavigationRecord::tableName());
+        $this->dropTableIfExists(NodeRecord::tableName());
     }
 }

@@ -38,8 +38,8 @@
         {% endif %}
         <div class="field" id="name-field">
             <div class="heading">
-                <label id="name-label" class="required" for="title">Title</label>
-                <div class="instructions"><p>What this field will be called in the CP.</p>
+                <label id="name-label" class="required" for="title">{{ 'Title'|t('navigate') }}</label>
+                <div class="instructions"><p>{{ 'What this field will be called in the CP.'|t('navigate') }}</p>
                 </div>
             </div>
             <div class="input ltr">
@@ -48,14 +48,24 @@
         </div>
         <div class="field" id="handle-field">
             <div class="heading">
-                <label id="handle-label" class="required" for="handle">Handle</label>
-                <div class="instructions"><p>How you’ll refer to this field in the templates.</p>
+                <label id="handle-label" class="required" for="handle">{{ 'Handle'|t('navigate') }}</label>
+                <div class="instructions"><p>{{ 'How you’ll refer to this field in the templates.'|t('navigate') }}</p>
                 </div>
             </div>
             <div class="input ltr">
                 <input class="text code fullwidth" type="text" id="handle" name="handle" {% if navigation is defined %}value="{{ navigation.handle }}"{% endif %} maxlength="64" autocomplete="off">
             </div>
         </div>
+
+        {{ forms.selectField({
+            label: 'Default link type'|t('navigate'),
+            instructions: 'Select the default link type.'|t('navigate'),
+            id: 'defaultNodeType',
+            name: 'defaultNodeType',
+            options: sources,
+            value: (navigation is defined ? navigation.defaultNodeType : ''),
+        }) }}
+
         <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
 
     </form>

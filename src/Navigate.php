@@ -12,6 +12,7 @@ namespace studioespresso\navigate;
 
 use studioespresso\navigate\services\NavigateService as NavigateServiceService;
 use studioespresso\navigate\services\NavigateService;
+use studioespresso\navigate\services\NodesService;
 use studioespresso\navigate\variables\NavigateVariable;
 use studioespresso\navigate\twigextensions\NavigateTwigExtension;
 use studioespresso\navigate\models\Settings;
@@ -47,9 +48,9 @@ use yii\base\Event;
  * @package   Navigate
  * @since     0.0.1
  *
- * @property  NavigateServiceService $navigateService
  * @property  Settings $settings
  * @property NavigateService $navigate
+ * @property NodesService $nodes
  * @method    Settings getSettings()
  */
 class Navigate extends Plugin
@@ -108,7 +109,7 @@ class Navigate extends Plugin
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['navigate'] = 'navigate/default';
-                $event->rules['navigate/add'] = 'navigate/default/add';
+                $event->rules['navigate/add'] = 'navigate/default/settings';
                 $event->rules['navigate/save'] = 'navigate/default/save';
                 $event->rules['navigate/delete'] = 'navigate/default/delete';
                 $event->rules['navigate/edit/<navId:\d+>'] = 'navigate/default/edit';

@@ -68,15 +68,24 @@ class DefaultController extends Controller
     public function actionEdit($navId = null) {
         if($navId) {
             $data['navigation'] = Navigate::$plugin->navigate->getNavigationById($navId);
+            $data['nodes'] = Navigate::$plugin->nodes->getNodesByNavId($navId);
             return $this->renderTemplate('navigate/_edit', $data);
         }
     }
 
     public function actionSettings($navId = null) {
+        $data = [];
+        $data['sources'] = [
+            'entry' => 'Entry',
+            'url' => 'Url',
+            'asset' => 'Asset',
+            'category' => 'Category',
+            'email' => 'Email',
+        ];
         if($navId) {
             $data['navigation'] = Navigate::$plugin->navigate->getNavigationById($navId);
-            return $this->renderTemplate('navigate/_settings', $data);
         }
+        return $this->renderTemplate('navigate/_settings', $data);
     }
 
     public function actionDelete() {
