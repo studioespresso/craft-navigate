@@ -136,7 +136,7 @@
                     '<div class="checkbox" title="' + Craft.t('app', 'Select') + '"></div>' +
                     '<div class="actions">' +
                     '<div class="status off" title="' + Craft.t('app', 'Disabled') + '"></div>' +
-                    '<a class="settings icon menubtn" title="' + Craft.t('app', 'Actions') + '" role="button"></a> ' +
+                    '<a class="settings icon" title="' + Craft.t('app', 'Actions') + '" role="button"></a> ' +
                     '<div class="menu">' +
                     '<ul class="padded">' +
                     '<li><a data-icon="collapse" data-action="collapse">' + Craft.t('app', 'Collapse') + '</a></li>' +
@@ -147,15 +147,7 @@
                     '<hr class="padded"/>' +
                     '<ul class="padded">' +
                     '<li><a class="error" data-icon="remove" data-action="delete">' + Craft.t('app', 'Delete') + '</a></li>' +
-                    '</ul>' +
-                    '<hr class="padded"/>' +
-                    '<ul class="padded">';
-
-                for (var i = 0; i < this.nodeTypes.length; i++) {
-                    var blockType = this.nodeTypes[i];
-                    html += '<li><a data-icon="plus" data-action="add" data-type="' + blockType.handle + '">' + Craft.t('app', 'Add {type} above', {type: blockType.name}) + '</a></li>';
-                }
-
+                    '</ul>';
                 html +=
                     '</ul>' +
                     '</div>' +
