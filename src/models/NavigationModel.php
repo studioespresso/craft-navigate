@@ -39,6 +39,8 @@ class NavigationModel extends Model
      *
      * @var string
      */
+    public $id;
+
     public $title;
 
     public $handle;

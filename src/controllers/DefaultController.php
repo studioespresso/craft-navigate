@@ -72,7 +72,7 @@ class DefaultController extends Controller
                 'sources' => Navigate::$plugin->nodes->types,
             ]);
         } else {
-            Navigate::$plugin->navigate->saveNavigation(Craft::$app->request->getBodyParams());
+            Navigate::$plugin->navigate->saveNavigation($model);
             return $this->redirectToPostedUrl();
 
         }

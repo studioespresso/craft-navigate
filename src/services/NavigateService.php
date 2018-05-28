@@ -10,6 +10,7 @@
 
 namespace studioespresso\navigate\services;
 
+use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\Navigate;
 
 use Craft;
@@ -51,21 +52,22 @@ class NavigateService extends Component
         };
     }
 
-    public function saveNavigation($data) {
+    public function saveNavigation(NavigationModel $model) {
+
         $record = false;
-        if(isset($data['id'])) {
+        if(isset($model->id)) {
             $record = NavigationRecord::findOne( [
-                'id' => $data['id']
+                'id' => $model->id
             ]);
         }
         if(!$record){
             $record = new NavigationRecord();
         }
 
-        $record->title = $data['title'];
-        $record->handle = $data['handle'];
-        $record->allowedSources= $data['allowedSources'];
-        $record->defaultNodeType = $data['defaultNodeType'];
+        $record->title = $model->title;
+        $record->handle = $model->handle;
+        $record->allowedSources= $model->allowedSources;
+        $record->defaultNodeType = $model->defaultNodeType;
         $record->siteId = 1;
 
         $save = $record->save();
