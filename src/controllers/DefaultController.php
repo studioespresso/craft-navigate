@@ -63,8 +63,13 @@ class DefaultController extends Controller
 
     public function actionSave() {
         $this->requirePostRequest();
-        $model = new NavigationModel(Craft::$app->request->getBodyParams()['data']);
+        if(isset(Craft::$app->request->getBodyParams()['data']['id'])) {
+            $model = Navigate::$plugin->navigate->getNavigationById(Craft::$app->request->getBodyParams()['data']['id']);
+        } else {
+            $model = new NavigationModel();
+        }
 
+        $model->setAttributes(Craft::$app->request->getBodyParams()['data']);
         if(!$model->validate()) {
             return $this->renderTemplate('navigate/_settings', [
                 'navigation' => $model,

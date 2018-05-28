@@ -51,6 +51,14 @@ class NavigationModel extends Model
 
     public $allowedSources = '*';
 
+    public $dateCreated;
+
+    public $dateUpdated;
+
+    public $uid;
+
+    public $siteId;
+
     // Public Methods
     // =========================================================================
 
@@ -77,9 +85,10 @@ class NavigationModel extends Model
 
         $validator = new HandleValidator();
         $validator->validateAttribute($this, 'handle');
-
-        if(Navigate::$plugin->navigate->getNavigationByHandle($this->handle)) {
+        $data = Navigate::$plugin->navigate->getNavigationByHandle($this->handle);
+        if($data && $data->id != $this->id) {
             $this->addError('handle', Craft::t('navigate', 'Handle "{handle}" has already been taken', ['handle' => $this->handle]));
+
         }
 
     }

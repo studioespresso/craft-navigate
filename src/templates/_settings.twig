@@ -34,7 +34,9 @@
     <form method="post" data-saveshortcut data-confirm-unload action="{{ actionUrl('navigate/default/save') }}">
         {{ csrfInput() }}
         {{ redirectInput('navigate') }}
-
+        {% if navigation is defined and navigation.id is defined%}
+            <input type="hidden" name="data[id]" value="{{ navigation.id }}">
+        {% endif %}
 
         <div class="field" id="name-field">
             <div class="heading">

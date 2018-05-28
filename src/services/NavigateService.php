@@ -38,9 +38,10 @@ class NavigateService extends Component
     }
 
     public function getNavigationById($id) {
-        return NavigationRecord::findOne([
+        $record = NavigationRecord::findOne([
             'id' => $id
         ]);
+        return new NavigationModel($record->getAttributes());
     }
 
     public function getNavigationByHandle($handle) {
@@ -66,6 +67,7 @@ class NavigateService extends Component
                 'id' => $model->id
             ]);
         }
+        
         if(!$record){
             $record = new NavigationRecord();
         }
