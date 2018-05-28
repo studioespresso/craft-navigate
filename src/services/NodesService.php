@@ -10,6 +10,7 @@
 
 namespace studioespresso\navigate\services;
 
+use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\models\NodeModel;
 use studioespresso\navigate\Navigate;
 
@@ -44,12 +45,13 @@ class NodesService extends Component
 
     public function getNodesByNavId(int $navId = null)
     {
-        return NodeRecord::findAll([
-            'navId' => $navId
-        ]);
+        $query =  NodeRecord::find();
+        $query->where(['navId' => $navId]);
+        $query->indexBy('id');
+        return $query->all();
     }
 
-    public function getNodeTypes(NavigationRecord $navigation)
+    public function getNodeTypes(NavigationModel $navigation)
     {
         $nodeTypes = [];
         if($navigation->allowedSources === "*") {
@@ -86,7 +88,7 @@ class NodesService extends Component
         $record->navId= $model->navId;
         $record->collapsed = $model->collapsed;
         $record->type = $model->type;
-        $record->enabled = $model->enabled;
+        $record->enabled = $model->enabled ? 1 : 0;
         $record->siteId = 1;
 
         $save = $record->save();
@@ -95,4 +97,24 @@ class NodesService extends Component
         }
         return $save;
     }
+
+    public function cleanupNode($nodes, $navigation) {
+        $oldNodes = Navigate::$plugin->nodes->getNodesByNavId($navigation);
+        array_walk($nodes, function($node) use (&$oldNodes) {
+           if(array_key_exists($node->id, $oldNodes)) {
+               unset($oldNodes[$node->id]);
+           }
+        });
+
+        foreach($oldNodes as $node) {
+            $record = NodeRecord::findOne([
+                'id' => $node->id,
+            ]);
+            $record->delete();
+        }
+
+
+
+    }
+
 }

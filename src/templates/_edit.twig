@@ -57,6 +57,7 @@
         <p>{{ 'Use to buttons below to start adding items to your navigation'|t('navigate') }}</p>
     {% endif %}
     <div class="blocks">
+        <input type="hidden" name="navId" value="{{ navigation.id }}">
         {% set totalNewBlocks = 0 %}
         {% for node in nodes %}
             {% set nodeId = node.id %}
@@ -67,7 +68,8 @@
             {% endif %}
 
             <div class="matrixblock{% if not node.enabled %} disabled{% endif %}" data-id="{{ nodeId }}"{% if node.collapsed %} data-collapsed{% endif %} data-type="{# TODO #}">
-                    <input type="hidden" name="navId" value="{{ navigation.id }}">
+                    <input type="hidden" name="nodes[{{ node.id }}][navId]" value="{{ navigation.id }}">
+                    <input type="hidden" name="nodes[{{ node.id }}][id]" value="{{ node.id }}">
                     <input type="hidden" name="nodes[{{ node.id }}][type]" value="{{ node.type }}">
                     <input type="hidden" name="nodes[{{ node.id }}][enabled]" value="{% if node.enabled %}1{% endif %}">
                     <div class="titlebar">

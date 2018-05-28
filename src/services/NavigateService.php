@@ -67,7 +67,7 @@ class NavigateService extends Component
                 'id' => $model->id
             ]);
         }
-        
+
         if(!$record){
             $record = new NavigationRecord();
         }

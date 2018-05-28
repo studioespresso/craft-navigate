@@ -70,7 +70,7 @@ class NodeModel extends Model
     {
         return [
             [['type', 'navId'], 'required'],
-            [['title', 'navId', 'enabled', 'collapsed'], 'safe'],
+            [[ 'id', 'title', 'navId', 'enabled', 'collapsed'], 'safe'],
         ];
     }
 
