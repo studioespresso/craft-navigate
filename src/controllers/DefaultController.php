@@ -68,9 +68,9 @@ class DefaultController extends Controller
 
     public function actionEdit($navId = null) {
         if($navId) {
-            $data['navigation'] = Navigate::$plugin->navigate->getNavigationById($navId);
+            $navigation = Navigate::$plugin->navigate->getNavigationById($navId);
 
-            $nodeTypes = Navigate::$plugin->nodes->getNodeTypes($data['navigation']);
+            $nodeTypes = Navigate::$plugin->nodes->getNodeTypes($navigation);
 
             Craft::$app->getView()->registerJs('new Craft.NavigateInput('.
                 '"navigate-nodes-input", '.
@@ -80,6 +80,7 @@ class DefaultController extends Controller
             return $this->renderTemplate('navigate/_edit', [
                 'nodes' => Navigate::$plugin->nodes->getNodesByNavId($navId),
                 'nodeTypes' =>$nodeTypes,
+                'navigation' => $navigation
             ]);
         }
     }
