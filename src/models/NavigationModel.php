@@ -10,10 +10,12 @@
 
 namespace studioespresso\navigate\models;
 
+use craft\validators\HandleValidator;
 use studioespresso\navigate\Navigate;
 
 use Craft;
 use craft\base\Model;
+use yii\bootstrap\Nav;
 
 /**
  * Navigate Settings Model
@@ -67,6 +69,18 @@ class NavigationModel extends Model
         return [
             [['title', 'handle', 'defaultNodeType', 'allowedSources'], 'required'],
             [['title', 'handle', 'defaultNodeType', 'allowedSources'], 'safe'],
+            ['handle', 'validateHandle'],
         ];
+    }
+
+    public function validateHandle() {
+
+        $validator = new HandleValidator();
+        $validator->validateAttribute($this, 'handle');
+
+        if(Navigate::$plugin->navigate->getNavigationByHandle($this->handle)) {
+            $this->addError('handle', Craft::t('navigate', 'Handle "{handle}" has already been taken', ['handle' => $this->handle]));
+        }
+
     }
 }

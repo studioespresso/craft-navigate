@@ -43,6 +43,12 @@ class NavigateService extends Component
         ]);
     }
 
+    public function getNavigationByHandle($handle) {
+        return NavigationRecord::findOne([
+            'handle' => $handle
+        ]);
+    }
+
     public function deleteNavigationById($id) {
         $record = NavigationRecord::findOne([
             'id' => $id
