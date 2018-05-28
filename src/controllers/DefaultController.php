@@ -62,8 +62,21 @@ class DefaultController extends Controller
     }
 
     public function actionSave() {
-        Navigate::$plugin->navigate->saveNavigation(Craft::$app->request->getBodyParams());
-        return $this->redirectToPostedUrl();
+        $model = new NavigationModel(Craft::$app->request->getBodyParams()['data']);
+
+        $valid = $model->validate();
+        if(!$valid) {
+            return $this->renderTemplate('navigate/_settings', [
+                'navigation' => $model,
+                'errors' => $model->getErrors(),
+                'sources' => Navigate::$plugin->nodes->types,
+            ]);
+        } else {
+            Navigate::$plugin->navigate->saveNavigation(Craft::$app->request->getBodyParams());
+            return $this->redirectToPostedUrl();
+
+        }
+
     }
 
     public function actionEdit($navId = null) {
@@ -87,13 +100,7 @@ class DefaultController extends Controller
 
     public function actionSettings($navId = null) {
         $data = [];
-        $data['sources'] = [
-            'entry' => 'Entry',
-            'url' => 'Url',
-            'asset' => 'Asset',
-            'category' => 'Category',
-            'email' => 'Email',
-        ];
+        $data['sources'] = Navigate::$plugin->nodes->types;
         if($navId) {
             $data['navigation'] = Navigate::$plugin->navigate->getNavigationById($navId);
         }

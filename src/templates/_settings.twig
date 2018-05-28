@@ -34,18 +34,24 @@
     <form method="post" data-saveshortcut data-confirm-unload action="{{ actionUrl('navigate/default/save') }}">
         {{ csrfInput() }}
         {{ redirectInput('navigate') }}
-        {% if navigation is defined %}
-            <input type="hidden" name="id" value="{{ navigation.id }}">
-        {% endif %}
+
+
         <div class="field" id="name-field">
             <div class="heading">
                 <label id="name-label" class="required" for="title">{{ 'Title'|t('navigate') }}</label>
                 <div class="instructions"><p>{{ 'What this field will be called in the CP.'|t('navigate') }}</p>
                 </div>
             </div>
-            <div class="input ltr">
-                <input class="text fullwidth" type="text" id="title" name="title" {% if navigation is defined %}value="{{ navigation.title }}"{% endif %} autofocus="" autocomplete="off">
+            <div class="input ltr {% if errors is defined and errors.title is defined %}errors{% endif %}">
+                <input class="text fullwidth" type="text" id="title" name="data[title]" {% if navigation is defined %}value="{{ navigation.title }}"{% endif %} autofocus="" autocomplete="off" >
             </div>
+            {% if errors is defined and errors.title is defined %}
+                <ul class="errors">
+                    {% for error in errors.title %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </div>
         <div class="field" id="handle-field">
             <div class="heading">
@@ -53,9 +59,16 @@
                 <div class="instructions"><p>{{ 'How you’ll refer to this field in the templates.'|t('navigate') }}</p>
                 </div>
             </div>
-            <div class="input ltr">
-                <input class="text code fullwidth" type="text" id="handle" name="handle" {% if navigation is defined %}value="{{ navigation.handle }}"{% endif %} maxlength="64" autocomplete="off">
+            <div class="input ltr {% if errors is defined and errors.handle is defined %}errors{% endif %}">
+                <input class="text code fullwidth" type="text" id="handle" name="data[handle]" {% if navigation is defined %}value="{{ navigation.handle }}"{% endif %} maxlength="64" autocomplete="off" >
             </div>
+            {% if errors is defined and errors.handle is defined %}
+                <ul class="errors">
+                    {% for error in errors.handle %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </div>
 
         {% if navigation is not defined or not navigation.handle|length %}
@@ -68,17 +81,25 @@
             label: 'Available Sources'|t('navigate'),
             instructions: 'Select the types of links would you like to be available in this navigation'|t('navigate'),
             id: 'allowedSources',
-            name: 'allowedSources',
+            name: 'data[allowedSources]',
             options: sources,
-            values: (navigation is defined ? navigation.allowedSources : ''),
+            values: (navigation is defined ? navigation.allowedSources : '*'),
             showAllOption: true,
+            class: "mkjmljk"
         }) }}
+        {% if errors is defined and errors.allowedSources is defined %}
+                <ul class="errors">
+                {% for error in errors.allowedSources %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+        {% endif %}
 
         {{ forms.selectField({
             label: 'Default link type'|t('navigate'),
             instructions: 'Select the default link type.'|t('navigate'),
             id: 'defaultNodeType',
-            name: 'defaultNodeType',
+            name: 'data[defaultNodeType]',
             options: sources,
             value: (navigation is defined ? navigation.defaultNodeType : ''),
         }) }}
