@@ -128,6 +128,7 @@ class Install extends Migration
                     'navId' => $this->string(255)->notNull()->defaultValue(''),
                     'type'   => $this->string(255),
                     'enabled' => $this->boolean()->defaultValue(1),
+                    'collapsed' => $this->boolean()->defaultValue(0),
                     'elementType' => $this->integer(),
 
                     'dateCreated' => $this->dateTime()->notNull(),

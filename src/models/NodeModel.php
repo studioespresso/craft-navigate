@@ -43,6 +43,8 @@ class NodeModel extends Model
      */
     public $id;
 
+    public $collapsed = false;
+
     public $navId;
 
     public $type;
@@ -68,7 +70,7 @@ class NodeModel extends Model
     {
         return [
             [['type', 'navId'], 'required'],
-            [['title', 'navId', 'enabled'], 'safe'],
+            [['title', 'navId', 'enabled', 'collapsed'], 'safe'],
         ];
     }
 
