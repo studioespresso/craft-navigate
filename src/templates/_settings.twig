@@ -64,7 +64,7 @@
             id: 'allowedSources',
             name: 'allowedSources',
             options: sources,
-            values: navigation.allowedSources,
+            values: (navigation is defined ? navigation.allowedSources : ''),
             showAllOption: true,
         }) }}
 
