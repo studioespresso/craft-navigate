@@ -38,7 +38,8 @@
         {% if title is defined and title|length %}
             <h1>{{ title }}</h1>
         {% endif %}
-        <input name="action" type="hidden" action="{{ actionUrl('navigate/nodes/save') }}">
+        <input type="hidden" name="action" value="navigate/nodes/save">
+        {{ redirectInput('navigate') }}
     {% endblock %}
     {% block contextMenu %}{% endblock %}
     <div class="flex-grow"></div>
@@ -67,6 +68,7 @@
 
             <div class="matrixblock{% if not node.enabled %} disabled{% endif %}" data-id="{{ nodeId }}"{% if node.collapsed %} data-collapsed{% endif %} data-type="{# TODO #}">
                 {% if not static %}
+                    <input type="hidden" name="navId" value="{{ navigation.id }}">
                     <input type="hidden" name="{{ name }}[{{ blockId }}][type]" value="{{ block.getType().handle }}">
                     <input type="hidden" name="{{ name }}[{{ blockId }}][enabled]" value="{% if block.enabled %}1{% endif %}">
                     <div class="titlebar">
@@ -107,7 +109,7 @@
     </div>
     <div class="buttons">
         <div class="btngroup">
-            {% for nodeType in nodeTypes%}
+            {% for nodeType in nodeTypes %}
                 <div class="btn{% if loop.first %} add icon{% endif %}" data-type="{{ nodeType.handle }}">{{ nodeType.title|t('navigate') }}</div>
             {% endfor %}
         </div>

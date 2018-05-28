@@ -12,6 +12,7 @@ namespace studioespresso\navigate\controllers;
 
 use craft\helpers\Json;
 use studioespresso\navigate\models\NavigationModel;
+use studioespresso\navigate\models\NodeModel;
 use studioespresso\navigate\Navigate;
 
 use Craft;
@@ -42,7 +43,26 @@ class NodesController extends Controller
 {
 
     public function actionSave() {
-        dd("blaaa");
+        $nodes = [];
+        $errors = [];
+        $this->requirePostRequest();
+        $data = Craft::$app->request->post('nodes');
+
+        foreach($data as $id => $node) {
+            $node = new NodeModel($node);
+            if(!$node->validate()) {
+                $errors[$id] = $node->getErrors();
+            } else {
+                $nodes[] = $node;
+            }
+        }
+        if($errors) {
+
+        } else {
+            foreach($nodes as $node) {
+                Navigate::$plugin->nodes->save($node);
+            }
+        }
     }
 
 }

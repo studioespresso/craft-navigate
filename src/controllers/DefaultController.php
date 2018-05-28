@@ -62,10 +62,10 @@ class DefaultController extends Controller
     }
 
     public function actionSave() {
+        $this->requirePostRequest();
         $model = new NavigationModel(Craft::$app->request->getBodyParams()['data']);
 
-        $valid = $model->validate();
-        if(!$valid) {
+        if(!$model->validate()) {
             return $this->renderTemplate('navigate/_settings', [
                 'navigation' => $model,
                 'errors' => $model->getErrors(),
@@ -85,9 +85,8 @@ class DefaultController extends Controller
 
             $nodeTypes = Navigate::$plugin->nodes->getNodeTypes($navigation);
 
-            Craft::$app->getView()->registerJs('new Craft.NavigateInput('.
-                '"navigate-nodes-input", '.
-                Json::encode($nodeTypes, JSON_UNESCAPED_UNICODE) . ');');
+            Craft::$app->getView()->registerJs('new Craft.NavigateInput("navigate-nodes-input", '.
+                Json::encode($nodeTypes, JSON_UNESCAPED_UNICODE) . ',"nodes", "' . $navId .'" );');
 
 
             return $this->renderTemplate('navigate/_edit', [

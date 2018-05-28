@@ -10,6 +10,7 @@
 
 namespace studioespresso\navigate\services;
 
+use studioespresso\navigate\models\NodeModel;
 use studioespresso\navigate\Navigate;
 
 use Craft;
@@ -52,9 +53,11 @@ class NodesService extends Component
     {
         $nodeTypes = [];
         if($navigation->allowedSources === "*") {
-            foreach($types as $handle => $name) {
-                $nodeTypes[]['handle'] = $handle;
-                $nodeTypes[]['name'] = $name;
+            foreach($this->types as $handle => $title) {
+                $nodeTypes[] = [
+                    'handle' => $handle,
+                    'title' => $title,
+                ];
             }
         } else {
             foreach (json_decode($navigation->allowedSources) as $type) {
@@ -66,5 +69,28 @@ class NodesService extends Component
         }
 
         return $nodeTypes;
+    }
+
+    public function save(NodeModel $model) {
+
+        $record = false;
+        if(isset($model->id)) {
+            $record = NodeRecord::findOne( [
+                'id' => $model->id
+            ]);
+        }
+        if(!$record){
+            $record = new NodeRecord();
+        }
+
+        $record->type = $model->type;
+        $record->enabled = $model->enabled;
+        $record->siteId = 1;
+
+        $save = $record->save();
+        if ( ! $save ) {
+            Craft::getLogger()->log( $record->getErrors(), LOG_ERR, 'navigate' );
+        }
+        return $save;
     }
 }

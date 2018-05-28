@@ -1,126 +1,132 @@
 (function ($) {
     Craft.NavigateInput = Garnish.Base.extend({
 
-        id: null,
-        nodeTypes: null,
-        nodeTypesByHandle: null,
+            id: null,
+            nodeTypes: null,
+            nodeTypesByHandle: null,
 
-        init: function (id, nodeTypes) {
+            blockSort: null,
+            blockSelect: null,
+            totalNewBlocks: 0,
 
-            this.id = id;
-            this.nodeTypes = nodeTypes;
+            init: function (id, nodeTypes, inputNamePrefix, navId) {
 
-            this.$container = $('#' + this.id);
-            this.$blockContainer = this.$container.children('.blocks');
-            this.$addBlockBtnContainer = this.$container.children('.buttons');
-            this.$addBlockBtnGroup = this.$addBlockBtnContainer.children('.btngroup');
-            this.$addBlockBtnGroupBtns = this.$addBlockBtnGroup.children('.btn');
-            this.$addBlockMenuBtn = this.$addBlockBtnContainer.children('.menubtn');
+                this.id = id;
+                this.nodeTypes = nodeTypes;
+                this.inputNamePrefix = inputNamePrefix;
+                this.navid = navId;
+                this.inputIdPrefix = Craft.formatInputId(this.inputNamePrefix);
 
-
-            this.nodeTypesByHandle = {};
-
-            var i;
-
-            for (i = 0; i < this.nodeTypes.length; i++) {
-                var nodeType = this.nodeTypes[i];
-                this.nodeTypesByHandle[nodeType.handle] = nodeType;
-            }
-
-            var $blocks = this.$blockContainer.children(),
-                collapsedBlocks = Craft.NavigateInput.getCollapsedBlockIds();
+                this.$container = $('#' + this.id);
+                this.$blockContainer = this.$container.children('.blocks');
+                this.$addBlockBtnContainer = this.$container.children('.buttons');
+                this.$addBlockBtnGroup = this.$addBlockBtnContainer.children('.btngroup');
+                this.$addBlockBtnGroupBtns = this.$addBlockBtnGroup.children('.btn');
+                this.$addBlockMenuBtn = this.$addBlockBtnContainer.children('.menubtn');
 
 
-            this.blockSort = new Garnish.DragSort($blocks, {
-                handle: '> .actions > .move',
-                axis: 'y',
-                filter: $.proxy(function() {
-                    // Only return all the selected items if the target item is selected
-                    if (this.blockSort.$targetItem.hasClass('sel')) {
-                        return this.blockSelect.getSelectedItems();
-                    }
-                    else {
-                        return this.blockSort.$targetItem;
-                    }
-                }, this),
-                collapseDraggees: true,
-                magnetStrength: 4,
-                helperLagBase: 1.5,
-                helperOpacity: 0.9,
-                onSortChange: $.proxy(function() {
-                    this.blockSelect.resetItemOrder();
-                }, this)
-            });
+                this.nodeTypesByHandle = {};
 
-            this.blockSelect = new Garnish.Select(this.$blockContainer, $blocks, {
-                multi: true,
-                vertical: true,
-                handle: '> .checkbox, > .titlebar',
-                checkboxMode: true
-            });
+                var i;
 
-            for (i = 0; i < $blocks.length; i++) {
-                var $block = $($blocks[i]),
-                    blockId = $block.data('id');
-
-                // Is this a new block?
-                var newMatch = (typeof blockId === 'string' && blockId.match(/new(\d+)/));
-
-                if (newMatch && newMatch[1] > this.totalNewBlocks) {
-                    this.totalNewBlocks = parseInt(newMatch[1]);
+                for (i = 0; i < this.nodeTypes.length; i++) {
+                    var nodeType = this.nodeTypes[i];
+                    this.nodeTypesByHandle[nodeType.handle] = nodeType;
                 }
 
-                var block = new NavigateBlock(this, $block);
+                var $blocks = this.$blockContainer.children(),
+                    collapsedBlocks = Craft.NavigateInput.getCollapsedBlockIds();
 
-                if (block.id && $.inArray('' + block.id, collapsedBlocks) !== -1) {
-                    block.collapse();
-                }
-            }
 
-            this.addListener(this.$addBlockBtnGroupBtns, 'click', function(ev) {
-                var type = $(ev.target).data('type');
-                this.addBlock(type);
-            });
-
-            new Garnish.MenuBtn(this.$addBlockMenuBtn,
-                {
-                    onOptionSelect: $.proxy(function(option) {
-                        var type = $(option).data('type');
-                        this.addBlock(type);
+                this.blockSort = new Garnish.DragSort($blocks, {
+                    handle: '> .actions > .move',
+                    axis: 'y',
+                    filter: $.proxy(function () {
+                        // Only return all the selected items if the target item is selected
+                        if (this.blockSort.$targetItem.hasClass('sel')) {
+                            return this.blockSelect.getSelectedItems();
+                        }
+                        else {
+                            return this.blockSort.$targetItem;
+                        }
+                    }, this),
+                    collapseDraggees: true,
+                    magnetStrength: 4,
+                    helperLagBase: 1.5,
+                    helperOpacity: 0.9,
+                    onSortChange: $.proxy(function () {
+                        this.blockSelect.resetItemOrder();
                     }, this)
                 });
 
-            this.updateAddBlockBtn();
+                this.blockSelect = new Garnish.Select(this.$blockContainer, $blocks, {
+                    multi: true,
+                    vertical: true,
+                    handle: '> .checkbox, > .titlebar',
+                    checkboxMode: true
+                });
 
-            this.addListener(this.$container, 'resize', 'setNewBlockBtn');
-            Garnish.$doc.ready($.proxy(this, 'setNewBlockBtn'));
+                for (i = 0; i < $blocks.length; i++) {
+                    var $block = $($blocks[i]),
+                        blockId = $block.data('id');
 
+                    // Is this a new block?
+                    var newMatch = (typeof blockId === 'string' && blockId.match(/new(\d+)/));
 
-        },
+                    if (newMatch && newMatch[1] > this.totalNewBlocks) {
+                        this.totalNewBlocks = parseInt(newMatch[1]);
+                    }
 
+                    var block = new NavigateBlock(this, $block);
 
-
-
-        updateAddBlockBtn: function () {
-            var i, block;
-
-            for (i = 0; i < this.blockSelect.$items.length; i++) {
-                block = this.blockSelect.$items.eq(i).data('block');
-                if (block) {
-                    block.$actionMenu.find('a[data-action=add]').parent().removeClass('disabled');
+                    if (block.id && $.inArray('' + block.id, collapsedBlocks) !== -1) {
+                        block.collapse();
+                    }
                 }
-            }
 
-        },
+                this.addListener(this.$addBlockBtnGroupBtns, 'click', function (ev) {
+                    var type = $(ev.target).data('type');
+                    this.addBlock(type);
+                });
 
-        addBlock: function(type, $insertBefore) {
+                new Garnish.MenuBtn(this.$addBlockMenuBtn,
+                    {
+                        onOptionSelect: $.proxy(function (option) {
+                            var type = $(option).data('type');
+                            this.addBlock(type);
+                        }, this)
+                    });
 
-                 this.totalNewBlocks++;
+                this.updateAddBlockBtn();
+
+                this.addListener(this.$container, 'resize', 'setNewBlockBtn');
+                Garnish.$doc.ready($.proxy(this, 'setNewBlockBtn'));
+
+
+            },
+
+
+            updateAddBlockBtn: function () {
+                var i, block;
+
+                for (i = 0; i < this.blockSelect.$items.length; i++) {
+                    block = this.blockSelect.$items.eq(i).data('block');
+                    if (block) {
+                        block.$actionMenu.find('a[data-action=add]').parent().removeClass('disabled');
+                    }
+                }
+
+            },
+
+            addBlock: function (type, $insertBefore) {
+                console.log(this.totalNewBlocks);
+                this.totalNewBlocks++;
 
                 var id = 'new' + this.totalNewBlocks;
 
                 var html =
                     '<div class="matrixblock navigateblock" data-id="' + id + '" data-type="' + type + '">' +
+                    '<input type="hidden" name="' + this.inputNamePrefix + '[' + id + '][navId]" value="' + this.navid+ '"/>' +
                     '<input type="hidden" name="' + this.inputNamePrefix + '[' + id + '][type]" value="' + type + '"/>' +
                     '<input type="hidden" name="' + this.inputNamePrefix + '[' + id + '][enabled]" value="1"/>' +
                     '<div class="titlebar">' +
@@ -178,7 +184,7 @@
                 $block.css(this.getHiddenBlockCss($block)).velocity({
                     opacity: 1,
                     'margin-bottom': 10
-                }, 'fast', $.proxy(function() {
+                }, 'fast', $.proxy(function () {
                     $block.css('margin-bottom', '');
                     Garnish.$bod.append(footHtml);
                     Craft.initUiElements($fieldsContainer);
@@ -187,14 +193,14 @@
                     this.blockSelect.addItems($block);
                     this.updateAddBlockBtn();
 
-                    Garnish.requestAnimationFrame(function() {
+                    Garnish.requestAnimationFrame(function () {
                         // Scroll to the block
                         Garnish.scrollContainerToElement($block);
                     });
                 }, this));
             },
 
-            getBlockTypeByHandle: function(handle) {
+            getBlockTypeByHandle: function (handle) {
                 for (var i = 0; i < this.nodeTypes.length; i++) {
                     if (this.nodeTypes[i].handle === handle) {
                         return this.nodeTypes[i];
@@ -202,40 +208,40 @@
                 }
             },
 
-            collapseSelectedBlocks: function() {
+            collapseSelectedBlocks: function () {
                 this.callOnSelectedBlocks('collapse');
             },
 
-            expandSelectedBlocks: function() {
+            expandSelectedBlocks: function () {
                 this.callOnSelectedBlocks('expand');
             },
 
-            disableSelectedBlocks: function() {
+            disableSelectedBlocks: function () {
                 this.callOnSelectedBlocks('disable');
             },
 
-            enableSelectedBlocks: function() {
+            enableSelectedBlocks: function () {
                 this.callOnSelectedBlocks('enable');
             },
 
-            deleteSelectedBlocks: function() {
+            deleteSelectedBlocks: function () {
                 this.callOnSelectedBlocks('selfDestruct');
             },
 
-            callOnSelectedBlocks: function(fn) {
+            callOnSelectedBlocks: function (fn) {
                 for (var i = 0; i < this.blockSelect.$selectedItems.length; i++) {
                     this.blockSelect.$selectedItems.eq(i).data('block')[fn]();
                 }
             },
 
-            getHiddenBlockCss: function($block) {
+            getHiddenBlockCss: function ($block) {
                 return {
                     opacity: 0,
                     marginBottom: -($block.outerHeight())
                 };
             },
 
-            getParsedBlockHtml: function(html, id) {
+            getParsedBlockHtml: function (html, id) {
                 if (typeof html === 'string') {
                     return html.replace(/__BLOCK__/g, id);
                 }
@@ -245,45 +251,45 @@
             }
 
         },
-    {
-        collapsedBlockStorageKey: 'Craft-' + Craft.systemUid + '.NavigateInput.collapsedBlocks',
+        {
+            collapsedBlockStorageKey: 'Craft-' + Craft.systemUid + '.NavigateInput.collapsedBlocks',
 
-            getCollapsedBlockIds: function() {
-            if (typeof localStorage[Craft.NavigateInput.collapsedBlockStorageKey] === 'string') {
-                return Craft.filterArray(localStorage[Craft.NavigateInput.collapsedBlockStorageKey].split(','));
-            }
-            else {
-                return [];
-            }
-        },
+            getCollapsedBlockIds: function () {
+                if (typeof localStorage[Craft.NavigateInput.collapsedBlockStorageKey] === 'string') {
+                    return Craft.filterArray(localStorage[Craft.NavigateInput.collapsedBlockStorageKey].split(','));
+                }
+                else {
+                    return [];
+                }
+            },
 
-        setCollapsedBlockIds: function(ids) {
-            localStorage[Craft.NavigateInput.collapsedBlockStorageKey] = ids.join(',');
-        },
+            setCollapsedBlockIds: function (ids) {
+                localStorage[Craft.NavigateInput.collapsedBlockStorageKey] = ids.join(',');
+            },
 
-        rememberCollapsedBlockId: function(id) {
-            if (typeof Storage !== 'undefined') {
-                var collapsedBlocks = Craft.NavigateInput.getCollapsedBlockIds();
+            rememberCollapsedBlockId: function (id) {
+                if (typeof Storage !== 'undefined') {
+                    var collapsedBlocks = Craft.NavigateInput.getCollapsedBlockIds();
 
-                if ($.inArray('' + id, collapsedBlocks) === -1) {
-                    collapsedBlocks.push(id);
-                    Craft.NavigateInput.setCollapsedBlockIds(collapsedBlocks);
+                    if ($.inArray('' + id, collapsedBlocks) === -1) {
+                        collapsedBlocks.push(id);
+                        Craft.NavigateInput.setCollapsedBlockIds(collapsedBlocks);
+                    }
+                }
+            },
+
+            forgetCollapsedBlockId: function (id) {
+                if (typeof Storage !== 'undefined') {
+                    var collapsedBlocks = Craft.NavigateInput.getCollapsedBlockIds(),
+                        collapsedBlocksIndex = $.inArray('' + id, collapsedBlocks);
+
+                    if (collapsedBlocksIndex !== -1) {
+                        collapsedBlocks.splice(collapsedBlocksIndex, 1);
+                        Craft.NavigateInput.setCollapsedBlockIds(collapsedBlocks);
+                    }
                 }
             }
-        },
-
-        forgetCollapsedBlockId: function(id) {
-            if (typeof Storage !== 'undefined') {
-                var collapsedBlocks = Craft.NavigateInput.getCollapsedBlockIds(),
-                    collapsedBlocksIndex = $.inArray('' + id, collapsedBlocks);
-
-                if (collapsedBlocksIndex !== -1) {
-                    collapsedBlocks.splice(collapsedBlocksIndex, 1);
-                    Craft.NavigateInput.setCollapsedBlockIds(collapsedBlocks);
-                }
-            }
-        }
-    });
+        });
 
     var NavigateBlock = Garnish.Base.extend(
         {
@@ -300,7 +306,7 @@
 
             collapsed: false,
 
-            init: function(matrix, $container) {
+            init: function (matrix, $container) {
                 this.matrix = matrix;
                 this.$container = $container;
                 this.$titlebar = $container.children('.titlebar');
@@ -324,7 +330,7 @@
                     this.collapse();
                 }
 
-                this._handleTitleBarClick = function(ev) {
+                this._handleTitleBarClick = function (ev) {
                     ev.preventDefault();
                     this.toggle();
                 };
@@ -332,7 +338,7 @@
                 this.addListener(this.$titlebar, 'doubletap', this._handleTitleBarClick);
             },
 
-            toggle: function() {
+            toggle: function () {
                 if (this.collapsed) {
                     this.expand();
                 }
@@ -341,7 +347,7 @@
                 }
             },
 
-            collapse: function(animate) {
+            collapse: function (animate) {
                 if (this.collapsed) {
                     return;
                 }
@@ -413,7 +419,7 @@
                     this.$container.css({height: 16});
                 }
 
-                setTimeout($.proxy(function() {
+                setTimeout($.proxy(function () {
                     this.$actionMenu.find('a[data-action=collapse]:first').parent().addClass('hidden');
                     this.$actionMenu.find('a[data-action=expand]:first').parent().removeClass('hidden');
                 }, this), 200);
@@ -434,7 +440,7 @@
                 this.collapsed = true;
             },
 
-            expand: function() {
+            expand: function () {
                 if (!this.collapsed) {
                     return;
                 }
@@ -450,12 +456,12 @@
                 var expandedContainerHeight = this.$container.height();
                 this.$container.height(collapsedContainerHeight);
                 this.$fieldsContainer.hide().velocity('fadeIn', {duration: 'fast'});
-                this.$container.velocity({height: expandedContainerHeight}, 'fast', $.proxy(function() {
+                this.$container.velocity({height: expandedContainerHeight}, 'fast', $.proxy(function () {
                     this.$previewContainer.html('');
                     this.$container.height('auto');
                 }, this));
 
-                setTimeout($.proxy(function() {
+                setTimeout($.proxy(function () {
                     this.$actionMenu.find('a[data-action=collapse]:first').parent().removeClass('hidden');
                     this.$actionMenu.find('a[data-action=expand]:first').parent().addClass('hidden');
                 }, this), 200);
@@ -481,11 +487,11 @@
                 this.collapsed = false;
             },
 
-            disable: function() {
+            disable: function () {
                 this.$container.children('input[name$="[enabled]"]:first').val('');
                 this.$container.addClass('disabled');
 
-                setTimeout($.proxy(function() {
+                setTimeout($.proxy(function () {
                     this.$actionMenu.find('a[data-action=disable]:first').parent().addClass('hidden');
                     this.$actionMenu.find('a[data-action=enable]:first').parent().removeClass('hidden');
                 }, this), 200);
@@ -493,17 +499,17 @@
                 this.collapse(true);
             },
 
-            enable: function() {
+            enable: function () {
                 this.$container.children('input[name$="[enabled]"]:first').val('1');
                 this.$container.removeClass('disabled');
 
-                setTimeout($.proxy(function() {
+                setTimeout($.proxy(function () {
                     this.$actionMenu.find('a[data-action=disable]:first').parent().removeClass('hidden');
                     this.$actionMenu.find('a[data-action=enable]:first').parent().addClass('hidden');
                 }, this), 200);
             },
 
-            onMenuOptionSelect: function(option) {
+            onMenuOptionSelect: function (option) {
                 var batchAction = (this.matrix.blockSelect.totalSelected > 1 && this.matrix.blockSelect.isSelected(this.$container)),
                     $option = $(option);
 
@@ -575,8 +581,8 @@
                 }
             },
 
-            selfDestruct: function() {
-                this.$container.velocity(this.matrix.getHiddenBlockCss(this.$container), 'fast', $.proxy(function() {
+            selfDestruct: function () {
+                this.$container.velocity(this.matrix.getHiddenBlockCss(this.$container), 'fast', $.proxy(function () {
                     this.$container.remove();
                     this.matrix.updateAddBlockBtn();
                 }, this));

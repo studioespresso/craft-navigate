@@ -126,7 +126,7 @@ class Install extends Migration
                     'id' => $this->primaryKey(),
                     'siteId' => $this->integer()->notNull(),
                     'navId' => $this->string(255)->notNull()->defaultValue(''),
-                    'url'   => $this->string(255),
+                    'type'   => $this->string(255),
                     'enabled' => $this->boolean()->defaultValue(1),
                     'elementType' => $this->integer(),
 
