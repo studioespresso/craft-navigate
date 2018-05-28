@@ -58,6 +58,12 @@
             </div>
         </div>
 
+        {% if navigation is not defined or not navigation.handle|length %}
+            {% js %}
+                new Craft.HandleGenerator('#title', '#handle');
+            {% endjs %}
+        {% endif %}
+
         {{ forms.checkboxSelectField({
             label: 'Available Sources'|t('navigate'),
             instructions: 'Select the types of links would you like to be available in this navigation'|t('navigate'),
