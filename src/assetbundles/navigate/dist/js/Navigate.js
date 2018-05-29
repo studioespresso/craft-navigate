@@ -44,6 +44,20 @@
                     else {
                         this.entryModal.show();
                     }
+                } else if (this.currentElementType == 'asset') {
+                    if (! this.assetModal) {
+                        this.assetModal = this.createModal('craft\\elements\\Asset', '*');
+                    }
+                    else {
+                        this.assetModal.show();
+                    }
+                } else if (this.currentElementType == 'category') {
+                    if (! this.categoryModal) {
+                        this.categoryModal = this.createModal('craft\\elements\\Category', '*');
+                    }
+                    else {
+                        this.categoryModal.show();
+                    }
                 }
             },
 
