@@ -118,32 +118,6 @@ class Navigate extends Plugin
             }
         );
 
-        // Register our elements
-        Event::on(
-            Elements::class,
-            Elements::EVENT_REGISTER_ELEMENT_TYPES,
-            function (RegisterComponentTypesEvent $event) {
-            }
-        );
-
-        // Register our fields
-        Event::on(
-            Fields::class,
-            Fields::EVENT_REGISTER_FIELD_TYPES,
-            function (RegisterComponentTypesEvent $event) {
-                $event->types[] = NavigateFieldField::class;
-            }
-        );
-
-        // Register our utilities
-        Event::on(
-            Utilities::class,
-            Utilities::EVENT_REGISTER_UTILITY_TYPES,
-            function (RegisterComponentTypesEvent $event) {
-                $event->types[] = NavigateUtilityUtility::class;
-            }
-        );
-
         // Register our variables
         Event::on(
             CraftVariable::class,
