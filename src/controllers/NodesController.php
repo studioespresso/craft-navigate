@@ -42,38 +42,16 @@ use yii\bootstrap\Nav;
 class NodesController extends Controller
 {
 
-    public function actionSave()
-    {
+    public function actionNew() {
         $this->requirePostRequest();
+        $this->requireAcceptsJson();
 
-        $nodes = [];
-        $errors = [];
+        $node = new NodeModel();
+        $node->setAttributes(Craft::$app->request->post());
+        dd($node->validate(), $node->getErrors());
 
-        $data = Craft::$app->request->post('nodes');
-        if ($data) {
-
-            foreach ($data as $id => $node) {
-                $node = new NodeModel($node);
-                if (!$node->validate()) {
-                    $errors[$id] = $node->getErrors();
-                } else {
-                    $nodes[] = $node;
-                }
-            }
-
-            if ($errors) {
-                dd($errors);
-            } else {
-                Navigate::$plugin->nodes->cleanupNode($nodes, Craft::$app->request->post('navId'));
-                foreach ($nodes as $node) {
-                    if($node->id) {
-                    }
-                    Navigate::$plugin->nodes->save($node);
-                }
-            }
-        }
-
-
+        $data = Craft::$app->request->post();
+        var_dump($data); exit;
     }
 
 }

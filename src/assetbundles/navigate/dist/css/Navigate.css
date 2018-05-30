@@ -9,3 +9,141 @@
  * @package   Navigate
  * @since     0.0.1
  */
+
+.visuallyhidden {
+    display: none !important;
+}
+
+.hud .elementeditor .fields {
+    padding: 24px;
+}
+
+..navigate__nav .hidden {
+    display: list-item !important;
+}
+
+.navigate .node__parent {
+    margin: 24px 0;
+}
+
+.navigate .node__blank {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background: url(../img/blank.png);
+}
+
+.navigate select {
+    width: 100%;
+}
+
+.navigate__nav ul li {
+    background: none !important;
+}
+
+.navigate__nav ul li:not(:last-child):not(.last) {
+    border-left: none !important;
+    padding-left: 38px !important;
+}
+
+.navigate__nav > li:first-child > .row {
+    border-top: 1px dotted rgba(115, 127, 140, 0.15);
+}
+
+.navigate__nav .row {
+    border-bottom: 1px dotted rgba(115, 127, 140, 0.15);
+}
+
+.navigate__nav .status {
+    margin-right: 5px !important;
+}
+
+.navigate__nav .icon {
+    margin: 5px 5px 0 0;
+    opacity: 0;
+    -webkit-transition: opacity linear 100ms;
+    -moz-transition: opacity linear 100ms;
+}
+
+.navigate__nav .icon.settings {
+    display: inline-block;
+}
+
+.navigate__nav .icon.settings:before {
+    color: rgba(0, 0, 0, 0.2);
+}
+
+.navigate__nav .icon.settings:hover:before {
+    color: #0d78f2;
+}
+
+.navigate__nav .node__node.element {
+    display: inline-block;
+    padding: 6px 7px;
+}
+
+.navigate__nav .node__node.element.loading {
+    padding-right: 29px;
+}
+
+.navigate__nav .node__type {
+    float: right;
+    width: 80px;
+    font-size: 12px;
+    text-transform: lowercase;
+    padding: 6px 7px;
+    cursor: default;
+}
+
+.navigate__nav .node__type span {
+    padding: 3px 10px;
+    border-left: 2px solid #CCC;
+    color: #999;
+    background: #F5F5F5;
+}
+
+.navigate__nav .node__type .node__type--manual {
+    color: #0d78f2;
+    border-color: #0d78f2;
+}
+
+.navigate__nav .node__type .node__type--category {
+    color: #1BB311;
+    border-color: #1BB311;
+}
+
+.navigate__nav .node__type .node__type--asset {
+    color: #da5a47;
+    border-color: #da5a47;
+}
+
+.navigate__nav .node__url {
+    float: right;
+    padding: 6px 7px;
+    width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.node__listclass,
+.navigate__nav .node__url a {
+    color: #8f98a3;
+}
+
+.navigate__nav .node__url a:hover {
+    color: #0d78f2;
+}
+
+.structure .draghelper .status {
+    margin-right: 5px;
+}
+
+.structure .draghelper .node__url,
+.structure .draghelper .node__type,
+.structure .draghelper .node__listclass,
+.structure .draghelper .icon.settings,
+.structure .draghelper .icon.delete {
+    display: none;
+}
+

@@ -50,15 +50,48 @@
     {% endblock %}
 {% endblock %}
 
+
+{% macro addNodeToStructure(navigation, node) %}
+    <li data-level="{{ node.level }}">
+        {% set indent = 8 + (node.level - 1) * 35 %}
+        {% set nodeUrl = (node.elementId ? node.elementUrl : node.url) %}
+        {% set replaceWith = {
+            '%%id%%':           node.id,
+            '%%label%%':        node.name,
+            '%%type%%':         (node.elementType ? node.elementType : 'manual'),
+            '%%url%%':          nodeUrl|replace({ '{siteUrl}': siteUrl, '__home__': siteUrl }),
+            '%%status%%':       (node.enabled ? 'live' : 'expired'),
+        } %}
+        <div class="row" style="margin-left: -{{ indent }}px; padding-left: {{ indent }}px;">
+            {% include 'amnav/_includes/node' with { replaceWith: replaceWith, level: node.level, settings: navigation.settings } only %}
+        </div>
+        {% if node.children is defined %}
+            <ul>
+                {% for subnode in node.children %}
+                    {{ _self.addNodeToStructure(navigation, subnode) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+
 {# The content of the CP Section#}
 {% block content %}
 <div id="navigate-nodes-input">
     {% if not nodes|length %}
+        <div class="navigate__empty">
         <p>{{ 'Use to buttons below to start adding items to your navigation'|t('navigate') }}</p>
-    {% endif %}
+        </div>
+    {% endif%}
     <div class="blocks">
         <input type="hidden" name="navId" value="{{ navigation.id }}">
+        <ul id="navigate__nav" class="navigate__nav structure">
+            {% for node in nodes %}
+                {{ _self.addNodeToStructure(navigation, node) }}
+            {% endfor %}
+        </ul>
     </div>
+
     <div class="buttons">
         <div class="btngroup" id="navigate-nodeTypes">
             {% for nodeType in nodeTypes %}
@@ -66,9 +99,20 @@
             {% endfor %}
         </div>
     </div>
+    <script id="navigate__node" type="text/template">
+        <div class="node__node element" data-id="{{ '%%id%%'|replace(replaceWith) }}" data-label="{{ '%%label%%'|replace(replaceWith) }}">
+            <div class="label">
+                <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
+                <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
+                <a href="{{ '%%url%%'|replace(replaceWith) }}"  data-icon="world" target="_blank" title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
+            </div>
+        </div>
+    </script>
 </div>
 
 {% endblock %}
+
+
 
 {% block details %}
     <div id="details">
