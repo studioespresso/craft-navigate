@@ -148,7 +148,7 @@
                 var count = $('#navigate__nav').children().length;
                 var nodeHtml = this.$template
                         .replace(/%%elementId%%/ig, data.elementId)
-                        .replace(/%%id%%/ig, count+1)
+                        .replace(/%%count%%/ig, count+1)
                         .replace(/%%status%%/ig, (data.enabled ? "live" : "expired"))
                         .replace(/%%label%%/ig, data.name)
                         .replace(/%%type%%/ig, data.type)

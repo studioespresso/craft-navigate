@@ -52,6 +52,8 @@ class NodesController extends Controller
                 $nodeModel->setAttributes($node);
                 if($nodeModel->validate()) {
                     Navigate::$plugin->nodes->save($nodeModel);
+                } else {
+                    dd($nodeModel->getErrors());
                 }
             }
 

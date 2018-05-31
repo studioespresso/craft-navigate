@@ -129,6 +129,8 @@ class Install extends Migration
                     'name' => $this->string(255)->notNull(),
                     'elementId' => $this->integer(10),
                     'elementType' => $this->string(20),
+                    'type' => $this->string(20),
+                    'enabled' => $this->boolean()->defaultValue(1),
                     'blank' => $this->boolean()->defaultValue(0),
                     'parentId' => $this->integer(10),
                     'order' => $this->integer(10),
