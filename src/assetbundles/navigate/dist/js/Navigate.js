@@ -73,7 +73,7 @@
                         site: this.siteHandle
                     },
                     sources: elementSources,
-                    multiSelect: false,
+                    multiSelect: true,
                     onSelect: $.proxy(this, 'onModalSelect')
                 });
             },
@@ -98,17 +98,18 @@
                     else if (elementType == 'Asset') {
                         this.assetModal.$body.find('.element[data-id="' + element.id + '"]').closest('tr').removeClass('sel');
                     }
-                    console.log(elementType);
+
+
+                    console.log(element);
                     var data = {
                         navId: this.id,
                         name: element.label,
                         enabled: element.status == 'live',
-                        elementId: element.id,
                         url: element.url,
                         type: "element",
                         elementType: elementType,
                         blank: this.$newWindowElement.val() == '1',
-                        locale: this.locale,
+                        elementId: element.id,
                         parentId: parentId === undefined ? 0 : parentId
                     };
                     this.addNode(data, elementType);
@@ -144,9 +145,10 @@
              * @param string nodeType
              */
             addNode: function (data, nodeType) {
-                console.log(data);
+                var count = $('#navigate__nav').children().length;
                 var nodeHtml = this.$template
-                        .replace(/%%id%%/ig, data.elementId)
+                        .replace(/%%elementId%%/ig, data.elementId)
+                        .replace(/%%id%%/ig, count+1)
                         .replace(/%%status%%/ig, (data.enabled ? "live" : "expired"))
                         .replace(/%%label%%/ig, data.name)
                         .replace(/%%type%%/ig, data.type)

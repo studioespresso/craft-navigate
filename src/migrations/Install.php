@@ -127,7 +127,7 @@ class Install extends Migration
                     'siteId' => $this->integer()->notNull(),
                     'navId' => $this->string(255)->notNull()->defaultValue(''),
                     'name' => $this->string(255)->notNull(),
-                    'elementId' => $this->integer(),
+                    'elementId' => $this->integer(10),
                     'elementType' => $this->string(20),
                     'blank' => $this->boolean()->defaultValue(0),
                     'parentId' => $this->integer(10),

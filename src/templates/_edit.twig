@@ -92,7 +92,19 @@
         </div>
     </div>
     <script id="navigate__node" type="text/template">
-        {% include 'navigate/_includes/_node' with { replaceWith: {} } %}
+        {% set replaceWith = {} %}
+        <div class="node__node element" data-id="{{ '%%id%%'|replace(replaceWith) }}" data-label="{{ '%%label%%'|replace(replaceWith) }}">
+            <div class="label">
+                <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
+                <input type="hidden" name="data[nodes][{{ '%%id%%'|replace(replaceWith) }}][navId]" value="{{ navigation.id }}">
+                <input type="hidden" name="data[nodes][{{ '%%id%%'|replace(replaceWith) }}][type]" value="{{ '%%type%%'|replace(replaceWith) }}">
+                <input type="hidden" name="data[nodes][{{ '%%id%%'|replace(replaceWith) }}][elementType]" value="{{ '%%elementType%%'|replace(replaceWith) }}">
+                <input type="hidden" name="data[nodes][{{ '%%id%%'|replace(replaceWith) }}][elementId]" value="{{ '%%elementId%%'|replace(replaceWith) }}">
+                <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
+                <input type="hidden" name="data[nodes][{{ '%%id%%'|replace(replaceWith) }}][name]" value="{{ '%%label%%'|replace(replaceWith) }}">
+                <a href="{{ '%%url%%'|replace(replaceWith) }}"  data-icon="world" target="_blank" title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
+            </div>
+        </div>
 
     </script>
 </div>
