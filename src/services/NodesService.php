@@ -89,7 +89,7 @@ class NodesService extends Component
         $record->navId= $model->navId;
         $record->name = $model->name;
         $record->type = $model->type;
-        $record->elementType = $model->type;
+        $record->elementType = $model->elementType;
         $record->elementId = $model->elementId;
 
         $save = $record->save();

@@ -85,6 +85,7 @@
                         <span class="status {{ node.enabled ? 'on': 'off'}}"></span>
                         <input type="hidden" name="data[nodes][{{ node.id }}][navId]" value="{{ navigation.id }}">
                         <input type="hidden" name="data[nodes][{{ node.id }}][id]" value="{{ node.id }}">
+                        <input type="hidden" name="data[nodes][{{ node.id }}][enabled]" value="{{ node.enabled }}">
                         <input type="hidden" name="data[nodes][{{ node.id }}][type]" value="{{ node.type }}">
                         <input type="hidden" name="data[nodes][{{ node.id }}][elementType]" value="{{ node.elementType }}">
                         <input type="hidden" name="data[nodes][{{ node.id }}][elementId]" value="{{ node.elementId }}">
