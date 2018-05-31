@@ -85,11 +85,11 @@ class NodesService extends Component
             $record = new NodeRecord();
         }
 
-        $record->navId= $model->navId;
-        $record->collapsed = $model->collapsed;
-        $record->type = $model->type;
-        $record->enabled = $model->enabled ? 1 : 0;
         $record->siteId = 1;
+        $record->navId= $model->navId;
+        $record->name = $model->name;
+        $record->elementType = $model->type;
+        $record->elementId = $model->elementId;
 
         $save = $record->save();
         if ( ! $save ) {

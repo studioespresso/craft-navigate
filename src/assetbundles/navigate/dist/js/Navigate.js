@@ -25,7 +25,6 @@
 
             init: function (id, entrySources) {
                 this.id = id;
-                console.log(id);
                 this.entrySources = '*';
                 this.siteHandle = 'default';
                 this.structure = new Craft.NavigateStructure(this.id, '#navigate__nav', '.navigate__nav', settings);
@@ -106,6 +105,7 @@
                         enabled: element.status == 'live',
                         elementId: element.id,
                         url: element.url,
+                        type: "element",
                         elementType: elementType,
                         blank: this.$newWindowElement.val() == '1',
                         locale: this.locale,
@@ -129,6 +129,7 @@
                             url: this.$manualForm.find('#url').val(),
                             blank: this.$newWindowElement.val() == '1',
                             locale: this.locale,
+                            type: 'manuel',
                             parentId: parentId === undefined ? 0 : parentId
                         };
                     this.addNode(data, 'manual');
@@ -143,11 +144,13 @@
              * @param string nodeType
              */
             addNode: function (data, nodeType) {
-                console.log(data.elementType);
+                console.log(data);
                 var nodeHtml = this.$template
-                        .replace(/%%id%%/ig, data.id)
+                        .replace(/%%id%%/ig, data.elementId)
                         .replace(/%%status%%/ig, (data.enabled ? "live" : "expired"))
                         .replace(/%%label%%/ig, data.name)
+                        .replace(/%%type%%/ig, data.type)
+                        .replace(/%%elementType%%/ig, data.elementType)
                         .replace(/%%type%%/ig, data.elementType ? data.elementType.toLowerCase() : "manual")
                         .replace(/%%typeLabel%%/ig, data.elementType ? data.elementType : Craft.t("Manual"))
                         .replace(/%%url%%/ig, data.url.replace('{siteUrl}', this.siteUrl))

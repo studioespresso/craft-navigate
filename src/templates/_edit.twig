@@ -14,6 +14,7 @@
 #}
 
 {% extends "_layouts/cp" %}
+{% import _self as macro %}
 {% import "_includes/forms" as forms %}
 
 {% do view.registerAssetBundle("studioespresso\\navigate\\assetbundles\\navigate\\NavigateAsset") %}
@@ -52,26 +53,17 @@
 
 
 {% macro addNodeToStructure(navigation, node) %}
-    <li data-level="{{ node.level }}">
-        {% set indent = 8 + (node.level - 1) * 35 %}
-        {% set nodeUrl = (node.elementId ? node.elementUrl : node.url) %}
+    <li data-level="">
         {% set replaceWith = {
             '%%id%%':           node.id,
             '%%label%%':        node.name,
             '%%type%%':         (node.elementType ? node.elementType : 'manual'),
-            '%%url%%':          nodeUrl|replace({ '{siteUrl}': siteUrl, '__home__': siteUrl }),
+            '%%url%%':          '',
             '%%status%%':       (node.enabled ? 'live' : 'expired'),
         } %}
-        <div class="row" style="margin-left: -{{ indent }}px; padding-left: {{ indent }}px;">
-            {% include 'amnav/_includes/node' with { replaceWith: replaceWith, level: node.level, settings: navigation.settings } only %}
+        <div class="row">
+            {% include 'navigate/_includes/_node' with { replaceWith: replaceWith, navigation: navigation } only %}
         </div>
-        {% if node.children is defined %}
-            <ul>
-                {% for subnode in node.children %}
-                    {{ _self.addNodeToStructure(navigation, subnode) }}
-                {% endfor %}
-            </ul>
-        {% endif %}
     </li>
 {% endmacro %}
 
@@ -84,10 +76,10 @@
         </div>
     {% endif%}
     <div class="blocks">
-        <input type="hidden" name="navId" value="{{ navigation.id }}">
+        <input type="hidden" name="data[navId]" value="{{ navigation.id }}">
         <ul id="navigate__nav" class="navigate__nav structure">
             {% for node in nodes %}
-                {{ _self.addNodeToStructure(navigation, node) }}
+                {{ macro.addNodeToStructure(navigation, node) }}
             {% endfor %}
         </ul>
     </div>
@@ -100,13 +92,8 @@
         </div>
     </div>
     <script id="navigate__node" type="text/template">
-        <div class="node__node element" data-id="{{ '%%id%%'|replace(replaceWith) }}" data-label="{{ '%%label%%'|replace(replaceWith) }}">
-            <div class="label">
-                <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
-                <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
-                <a href="{{ '%%url%%'|replace(replaceWith) }}"  data-icon="world" target="_blank" title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
-            </div>
-        </div>
+        {% include 'navigate/_includes/_node' with { replaceWith: {} } %}
+
     </script>
 </div>
 
