@@ -61,6 +61,8 @@
                     else {
                         this.categoryModal.show();
                     }
+                } else if (this.currentElementType == 'url') {
+                    this.urlModal = this.createModal('url');
                 }
             },
 
@@ -68,15 +70,26 @@
              * Create ElementSelectorModal.
              */
             createModal: function (elementType, elementSources) {
-                return Craft.createElementSelectorModal(elementType, {
-                    criteria: {
-                        site: this.siteHandle
-                    },
-                    sources: elementSources,
-                    multiSelect: true,
-                    onSelect: $.proxy(this, 'onModalSelect')
-                });
+                if(elementType === 'url') {
+                    $modal = new Craft.NavigateUrlModal();
+                    return $modal;
+                } else {
+                    return Craft.createElementSelectorModal(elementType, {
+                        criteria: {
+                            site: this.siteHandle
+                        },
+                        sources: elementSources,
+                        multiSelect: true,
+                        onSelect: $.proxy(this, 'onModalSelect')
+                    });
+                }
             },
+
+            urlModal: Garnish.Modal.extend( {
+                init: function(message) {
+                    console.log('blaa');
+                }
+            } ),
 
             /**
              * Handle selected elements from the ElementSelectorModal.
@@ -166,6 +179,35 @@
             },
 
         })
+
+    Craft.NavigateUrlModal = Garnish.Modal.extend(
+        {
+
+
+            body: null,
+
+            init: function(value, name) {
+
+                this.body =  $('#node__url').html(),
+
+                this.base(null, {
+                    resizable: true
+                });
+
+                this.loadContainer(this.body);
+
+            },
+
+            loadContainer: function($body) {
+                var $container = $('<form class="modal fitted" accept-charset="UTF-8">' + $body + '</form>').appendTo(Garnish.$bod);
+                this.setContainer($container);
+                this.show();
+            }
+
+
+
+        }
+    )
 
     Craft.NavigateStructure = Craft.Structure.extend(
         {
