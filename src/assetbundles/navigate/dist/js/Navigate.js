@@ -15,7 +15,6 @@
             savingNode: false,
             entrySources: '',
 
-            $template: $('#navigate__node').html(),
             $buildContainer: $('.navigate__builder'),
             $parentContainer: $('.node__parent'),
             $newWindowElement: $('.navigate .field input[name="blank"]'),
@@ -70,8 +69,8 @@
              * Create ElementSelectorModal.
              */
             createModal: function (elementType, elementSources) {
-                if(elementType === 'url') {
-                    $modal = new Craft.NavigateUrlModal();
+                if (elementType === 'url') {
+                    $modal = new Craft.NavigateUrlModal(this.structure);
                     return $modal;
                 } else {
                     return Craft.createElementSelectorModal(elementType, {
@@ -84,12 +83,6 @@
                     });
                 }
             },
-
-            urlModal: Garnish.Modal.extend( {
-                init: function(message) {
-                    console.log('blaa');
-                }
-            } ),
 
             /**
              * Handle selected elements from the ElementSelectorModal.
@@ -112,8 +105,6 @@
                         this.assetModal.$body.find('.element[data-id="' + element.id + '"]').closest('tr').removeClass('sel');
                     }
 
-
-                    console.log(element);
                     var data = {
                         navId: this.id,
                         name: element.label,
@@ -125,59 +116,10 @@
                         elementId: element.id,
                         parentId: parentId === undefined ? 0 : parentId
                     };
-                    this.addNode(data, elementType);
+                    this.structure.addNode(data, elementType);
                 }
             },
-
-            /**
-             * Handle manual node form submission.
-             *
-             * @param object ev
-             */
-            onManualSubmit: function (ev) {
-                if (!this.savingNode) {
-                    var parentId = this.$parentContainer.find('#parent').val(),
-                        data = {
-                            navId: this.id,
-                            name: this.$manualForm.find('#name').val(),
-                            url: this.$manualForm.find('#url').val(),
-                            blank: this.$newWindowElement.val() == '1',
-                            locale: this.locale,
-                            type: 'manuel',
-                            parentId: parentId === undefined ? 0 : parentId
-                        };
-                    this.addNode(data, 'manual');
-                }
-                ev.preventDefault();
-            },
-
-            /**
-             * Save a new node to the database.
-             *
-             * @param array  data
-             * @param string nodeType
-             */
-            addNode: function (data, nodeType) {
-                var count = $('#navigate__nav').children().length;
-                var nodeHtml = this.$template
-                        .replace(/%%elementId%%/ig, data.elementId)
-                        .replace(/%%count%%/ig, count+1)
-                        .replace(/%%status%%/ig, (data.enabled ? "live" : "expired"))
-                        .replace(/%%label%%/ig, data.name)
-                        .replace(/%%type%%/ig, data.type)
-                        .replace(/%%elementType%%/ig, data.elementType)
-                        .replace(/%%type%%/ig, data.elementType ? data.elementType.toLowerCase() : "manual")
-                        .replace(/%%typeLabel%%/ig, data.elementType ? data.elementType : Craft.t("Manual"))
-                        .replace(/%%url%%/ig, data.url.replace('{siteUrl}', this.siteUrl))
-                        .replace(/%%urlless%%/ig, data.url.replace('{siteUrl}', ''))
-
-                    $node = $(nodeHtml);
-
-                // Add it to the structure
-                this.structure.addElement($node, data.parentId);
-
-            },
-
+            
         })
 
     Craft.NavigateUrlModal = Garnish.Modal.extend(
@@ -185,40 +127,91 @@
 
 
             body: null,
+            $subjectInput: null,
+            $bodyInput: null,
+            $spinner: null,
 
-            init: function(value, name) {
+            init: function (structure) {
 
-                this.body =  $('#node__url').html(),
 
-                this.base(null, {
-                    resizable: false
-                });
+                this.structure = structure,
+                    this.body = $('#node__url').html(),
+
+                    this.base(null, {
+                        resizable: false
+                    });
 
                 this.loadContainer(this.body);
 
 
-
             },
 
-            loadContainer: function($body) {
+            loadContainer: function ($body) {
                 var $container = $('<form class="modal fitted" accept-charset="UTF-8">' + $body + '</form>').appendTo(Garnish.$bod);
                 this.setContainer($container);
                 this.show();
 
+                this.$nameInput = $container.find('.node-name:first');
+                this.$urlInput = this.$container.find('.node-url:first');
+
                 this.$cancelBtn = $container.find('.cancel:first');
                 this.addListener(this.$cancelBtn, 'click', 'cancel');
+
+                this.$submitBtn = $container.find('.submit:first');
+                this.addListener(this.$container, 'submit', 'addNode');
+
+                this.$spinner = this.$container.find('.spinner:first');
 
 
             },
 
-            cancel: function() {
+            addNode: function (event) {
+                event.preventDefault();
+
+                if (this.loading) {
+                    return;
+                }
+
+                var data = {
+                    name: this.$nameInput.val(),
+                    url: this.$urlInput.val()
+                };
+
+
+                this.$nameInput.removeClass('error');
+                this.$urlInput.removeClass('error');
+
+
+                if (!data.name || !data.url) {
+                    if (!data.name) {
+                        this.$nameInput.addClass('error');
+                    }
+
+                    if (!data.url) {
+                        this.$urlInput.addClass('error');
+                    }
+
+                    Garnish.shake(this.$container);
+                    return;
+                }
+
+                this.loading = true;
+                this.$submitBtn.addClass('active');
+                this.$spinner.show();
+                this.structure.addNode(data, '0');
+                this.$spinner.hide();
+                this.hide();
+
+            },
+
+
+            cancel: function () {
                 this.hide();
 
                 if (this.message) {
                     this.message.modal = null;
                 }
             }
-
 
 
         }
@@ -229,6 +222,7 @@
             navId: null,
 
             $emptyContainer: $('.navigate__empty'),
+            $template: $('#navigate__node').html(),
 
             /**
              *
@@ -237,15 +231,44 @@
              * @param string container
              * @param array  settings
              */
-            init: function(navId, id, container, settings) {
+            init: function (navId, id, container, settings) {
                 this.navId = navId;
                 this.base(id, container, settings);
 
-                this.$container.find('.delete').on('click', $.proxy(function(ev) {
+                this.$container.find('.delete').on('click', $.proxy(function (ev) {
                     this.removeElement($(ev.currentTarget));
                 }, this));
 
             },
+
+
+            /**
+             * Save a new node to the database.
+             *
+             * @param array  data
+             * @param string nodeType
+             */
+            addNode: function (data, nodeType) {
+                var count = $('#navigate__nav').children().length;
+                var nodeHtml = this.$template
+                    .replace(/%%elementId%%/ig, data.elementId)
+                    .replace(/%%count%%/ig, count + 1)
+                    .replace(/%%status%%/ig, (data.enabled ? "live" : "expired"))
+                    .replace(/%%label%%/ig, data.name)
+                    .replace(/%%type%%/ig, data.type)
+                    .replace(/%%elementType%%/ig, data.elementType)
+                    .replace(/%%type%%/ig, data.elementType ? data.elementType.toLowerCase() : "manual")
+                    .replace(/%%typeLabel%%/ig, data.elementType ? data.elementType : Craft.t("Manual"))
+                    .replace(/%%url%%/ig, data.url.replace('{siteUrl}', this.siteUrl))
+                    .replace(/%%urlless%%/ig, data.url.replace('{siteUrl}', ''))
+
+                $node = $(nodeHtml);
+
+                // Add it to the structure
+                this.addElement($node, data.parentId);
+
+            },
+
             /**
              * Add an element to the structure.
              *
@@ -256,16 +279,16 @@
              *
              * @param object $element
              */
-            addElement: function($element, parentId) {
+            addElement: function ($element, parentId) {
                 var $appendTo = this.$container,
                     level = 1;
 
                 // Add node to the structure
-                var $li = $('<li data-level="'+level+'"/>').appendTo($appendTo),
+                var $li = $('<li data-level="' + level + '"/>').appendTo($appendTo),
                     indent = this.getIndent(level),
-                    $row = $('<div class="node__node element" style="margin-'+Craft.left+': -'+indent+'px; padding-'+Craft.left+': '+indent+'px;">').appendTo($li);
+                    $row = $('<div class="node__node element" style="margin-' + Craft.left + ': -' + indent + 'px; padding-' + Craft.left + ': ' + indent + 'px;">').appendTo($li);
                 $row.append($element);
-                $row.append('<a class="delete" data-icon="remove" title="'+Craft.t('nagivate','Delete')+'"></a>');
+                $row.append('<a class="delete" data-icon="remove" title="' + Craft.t('nagivate', 'Delete') + '"></a>');
 
                 if (this.$container.length) {
                     this.$emptyContainer.addClass('hidden');
@@ -277,17 +300,15 @@
              *
              * @param object $element
              */
-            removeElement: function($element) {
+            removeElement: function ($element) {
                 var $li = $element.closest('li');
-                confirmation = confirm(Craft.t('navigate', 'Are you sure you want to delete “{name}” and its descendants?', { name: $li.find('.node__node').data('label') }));
+                confirmation = confirm(Craft.t('navigate', 'Are you sure you want to delete “{name}” and its descendants?', {name: $li.find('.node__node').data('label')}));
                 if (confirmation) {
-                    if (!$li.siblings().length)
-                    {
+                    if (!$li.siblings().length) {
                         var $parentUl = $li.parent();
                     }
 
-                    $li.css('visibility', 'hidden').velocity({ marginBottom: -$li.height() }, 'fast', $.proxy(function()
-                    {
+                    $li.css('visibility', 'hidden').velocity({marginBottom: -$li.height()}, 'fast', $.proxy(function () {
                         $li.remove();
                     }, this));
                 }
