@@ -36,16 +36,16 @@ class NodesService extends Component
 {
 
     public $types = [
-      'entry' => 'Entry',
-      'url' => 'Url',
-      'asset' => 'Asset',
-      'category' => 'Category'
+        'entry' => 'Entry',
+        'url' => 'Url',
+        'asset' => 'Asset',
+        'category' => 'Category'
     ];
 
 
     public function getNodesByNavId(int $navId = null)
     {
-        $query =  NodeRecord::find();
+        $query = NodeRecord::find();
         $query->where(['navId' => $navId]);
         $query->indexBy('id');
         return $query->all();
@@ -54,8 +54,8 @@ class NodesService extends Component
     public function getNodeTypes(NavigationModel $navigation)
     {
         $nodeTypes = [];
-        if($navigation->allowedSources === "*") {
-            foreach($this->types as $handle => $title) {
+        if ($navigation->allowedSources === "*") {
+            foreach ($this->types as $handle => $title) {
                 $nodeTypes[] = [
                     'handle' => $handle,
                     'title' => $title,
@@ -73,47 +73,52 @@ class NodesService extends Component
         return $nodeTypes;
     }
 
-    public function save(NodeModel $model) {
+    public function save(NodeModel $model)
+    {
 
         $record = false;
-        if(isset($model->id)) {
-            $record = NodeRecord::findOne( [
+        if (isset($model->id)) {
+            $record = NodeRecord::findOne([
                 'id' => $model->id
             ]);
         }
-        if(!$record){
+        if (!$record) {
             $record = new NodeRecord();
         }
 
         $record->siteId = 1;
-        $record->navId= $model->navId;
+        $record->navId = $model->navId;
         $record->name = $model->name;
         $record->type = $model->type;
         $record->elementType = $model->elementType;
         $record->elementId = $model->elementId;
 
         $save = $record->save();
-        if ( ! $save ) {
-            Craft::getLogger()->log( $record->getErrors(), LOG_ERR, 'navigate' );
+        if (!$save) {
+            Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
         }
         return $save;
     }
 
-    public function cleanupNode($nodes, $navigation) {
+    public function cleanupNode($nodes, $navigation)
+    {
+
         $oldNodes = Navigate::$plugin->nodes->getNodesByNavId($navigation);
-        array_walk($nodes, function($node) use (&$oldNodes) {
-           if(array_key_exists($node->id, $oldNodes)) {
-               unset($oldNodes[$node->id]);
-           }
+        array_walk($nodes, function ($node) use (&$oldNodes) {
+            $model = new NodeModel();
+            $model->setAttributes($node);
+            if (array_key_exists($model->id, $oldNodes)) {
+                unset($oldNodes[$model->id]);
+            }
         });
 
-        foreach($oldNodes as $node) {
+
+        foreach ($oldNodes as $node) {
             $record = NodeRecord::findOne([
                 'id' => $node->id,
             ]);
             $record->delete();
         }
-
 
 
     }
