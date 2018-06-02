@@ -109,15 +109,24 @@
 
     </script>
     <script id="node__url" type="text/template">
-        <header class="header">
-            <h2 class="left">{{ "Add url"|t('app') }}</h2>
-        </header>
         <div class="body">
-            <label for="name">{{ 'Name' }}</label>
-            <input type="text" id="name" name="name" required>
+            <div class="field" id="node__url-name">
+                <div class="heading">
+                    <label class="required" for="name">{{ 'Name' }}</label>
+                </div>
+                <div class="input ltr">
+                    <input class="text name fullwidth" type="text" id="name" autocomplete="off">
+                </div>
+            </div>
 
-            <label for="url">{{ 'URL' }}</label>
-            <input type="text" id="url" name="url" required>
+            <div class="field" id="node__url-url">
+                <div class="heading">
+                    <label class="required" for="url">{{ 'URL' }}</label>
+                </div>
+                <div class="input ltr">
+                    <input class="text name fullwidth" type="text" id="url" name="url" autocomplete="off">
+                </div>
+            </div>
 
         </div>
         <footer class="footer">

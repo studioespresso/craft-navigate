@@ -191,10 +191,12 @@
                 this.body =  $('#node__url').html(),
 
                 this.base(null, {
-                    resizable: true
+                    resizable: false
                 });
 
                 this.loadContainer(this.body);
+
+
 
             },
 
@@ -202,6 +204,19 @@
                 var $container = $('<form class="modal fitted" accept-charset="UTF-8">' + $body + '</form>').appendTo(Garnish.$bod);
                 this.setContainer($container);
                 this.show();
+
+                this.$cancelBtn = $container.find('.cancel:first');
+                this.addListener(this.$cancelBtn, 'click', 'cancel');
+
+
+            },
+
+            cancel: function() {
+                this.hide();
+
+                if (this.message) {
+                    this.message.modal = null;
+                }
             }
 
 
