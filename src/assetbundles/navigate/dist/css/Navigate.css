@@ -46,11 +46,11 @@
     padding-left: 38px !important;
 }
 
-.navigate__nav > li:first-child > .row {
+.navigate__nav > li:first-child > .label {
     border-top: 1px dotted rgba(115, 127, 140, 0.15);
 }
 
-.navigate__nav .row {
+.navigate__nav .label {
     border-bottom: 1px dotted rgba(115, 127, 140, 0.15);
 }
 
@@ -97,7 +97,6 @@
 
 .navigate__nav .node__type span {
     padding: 3px 10px;
-    border-left: 2px solid #CCC;
     color: #999;
     background: #F5F5F5;
 }

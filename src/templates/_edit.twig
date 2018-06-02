@@ -78,6 +78,9 @@
                         </div>
                         <a href="{{ actionUrl('navigate/nodes/url', { id: node.id}) }}" data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
                         <a data-icon="remove" class="delete" role="button"></a>
+                        <div class="node__type">
+                            <span class="node__type--entry">{{ node.type }}</span>
+                        </div>
                     </div>
                 </li>
             {% endfor %}
