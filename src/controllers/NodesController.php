@@ -66,4 +66,12 @@ class NodesController extends Controller
 
     }
 
+    public function actionUrl($id) {
+        $node = Navigate::$plugin->nodes->getNodeById($id);
+        $url = Navigate::$plugin->nodes->getNodeUrl($node);
+        header('Location: ' . $url, true, 200);
+        exit;
+
+    }
+
 }

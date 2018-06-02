@@ -105,8 +105,10 @@
                         this.assetModal.$body.find('.element[data-id="' + element.id + '"]').closest('tr').removeClass('sel');
                     }
 
+                    console.log(element);
                     var data = {
                         navId: this.id,
+                        status: element.status,
                         name: element.label,
                         enabled: element.status == 'live',
                         url: element.url,
@@ -252,6 +254,7 @@
                 console.log(nodeType);
                 var count = $('#navigate__nav').children().length;
                 var nodeHtml = this.$template
+                    .replace(/%%status%%/ig, data.status ? data.status : "")
                     .replace(/%%elementId%%/ig, data.elementId ? data.elementId : "")
                     .replace(/%%count%%/ig, count + 1)
                     .replace(/%%status%%/ig, (data.enabled ? "live" : "expired"))

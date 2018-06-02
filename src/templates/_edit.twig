@@ -76,7 +76,7 @@
                             <span class="title">{{ node.name }}</span>
                             <input type="hidden" name="data[nodes][{{ node.id }}][name]" value="{{ node.name }}">
                         </div>
-                        <a href="" data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
+                        <a href="{{ actionUrl('navigate/nodes/url', { id: node.id}) }}" data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
                         <a data-icon="remove" class="delete" role="button"></a>
                     </div>
                 </li>

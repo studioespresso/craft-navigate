@@ -18,6 +18,7 @@ use Craft;
 use craft\base\Component;
 use studioespresso\navigate\records\NavigationRecord;
 use studioespresso\navigate\records\NodeRecord;
+use Twig\Node\Node;
 
 /**
  * NodesService Service
@@ -49,6 +50,26 @@ class NodesService extends Component
         $query->where(['navId' => $navId]);
         $query->indexBy('id');
         return $query->all();
+    }
+
+    public function getNodeById(int $navId = null) {
+        $query = NodeRecord::findOne([
+            'id' => $navId
+        ]);
+        if($query) {
+            $model = new NodeModel();
+            $model->setAttributes($query->getAttributes());
+            return $model;
+        }
+    }
+
+    public function getNodeUrl(NodeModel $node) {
+        if($node->type === "url") {
+            return $node->url;
+        } else {
+            $element = Craft::$app->elements->getElementById($node->elementId);
+            return $element->getUrl();
+        }
     }
 
     public function getNodeTypes(NavigationModel $navigation)
