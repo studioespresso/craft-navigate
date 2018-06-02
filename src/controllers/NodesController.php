@@ -62,7 +62,7 @@ class NodesController extends Controller
             }
 
         } else {
-            Navigate::$plugin->nodes->cleanupNode([], $nav);
+            Navigate::$plugin->nodes->cleanupNode([], $nav, $site);
         }
 
     }
