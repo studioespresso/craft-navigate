@@ -51,22 +51,6 @@
     {% endblock %}
 {% endblock %}
 
-
-{% macro addNodeToStructure(navigation, node) %}
-    <li data-level="">
-        {% set replaceWith = {
-            '%%id%%':           node.id,
-            '%%label%%':        node.name,
-            '%%type%%':         (node.elementType ? node.elementType : 'manual'),
-            '%%url%%':          '',
-            '%%status%%':       (node.enabled ? 'live' : 'expired'),
-        } %}
-        <div class="row">
-            {% include 'navigate/_includes/_node' with { replaceWith: replaceWith, navigation: navigation } only %}
-        </div>
-    </li>
-{% endmacro %}
-
 {# The content of the CP Section#}
 {% block content %}
 <div id="navigate-nodes-input">
@@ -91,8 +75,9 @@
                         <input type="hidden" name="data[nodes][{{ node.id }}][elementId]" value="{{ node.elementId }}">
                         <span class="title">{{ node.name }}</span>
                         <input type="hidden" name="data[nodes][{{ node.id }}][name]" value="{{ node.name }}">
-                        <a href=""  data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
                     </div>
+                    <a href="" data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
+                    <a data-icon="remove" class="delete" role="button"></a>
                 </div>
                 </li>
             {% endfor %}

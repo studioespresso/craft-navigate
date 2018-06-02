@@ -174,7 +174,6 @@
             $emptyContainer: $('.navigate__empty'),
 
             /**
-             * Initiate AmNavStructure.
              *
              * @param int    navId
              * @param string id
@@ -184,6 +183,10 @@
             init: function(navId, id, container, settings) {
                 this.navId = navId;
                 this.base(id, container, settings);
+
+                this.$container.find('.delete').on('click', $.proxy(function(ev) {
+                    this.removeElement($(ev.currentTarget));
+                }, this));
 
             },
             /**
@@ -203,12 +206,32 @@
                 // Add node to the structure
                 var $li = $('<li data-level="'+level+'"/>').appendTo($appendTo),
                     indent = this.getIndent(level),
-                    $row = $('<div class="row" style="margin-'+Craft.left+': -'+indent+'px; padding-'+Craft.left+': '+indent+'px;">').appendTo($li);
-
+                    $row = $('<div class="node__node element" style="margin-'+Craft.left+': -'+indent+'px; padding-'+Craft.left+': '+indent+'px;">').appendTo($li);
                 $row.append($element);
 
                 if (this.$container.length) {
                     this.$emptyContainer.addClass('hidden');
+                }
+            },
+
+            /**
+             * Remove an element from the structure.
+             *
+             * @param object $element
+             */
+            removeElement: function($element) {
+                var $li = $element.closest('li');
+                confirmation = confirm(Craft.t('navigate', 'Are you sure you want to delete “{name}” and its descendants?', { name: $li.find('.node__node').data('label') }));
+                if (confirmation) {
+                    if (!$li.siblings().length)
+                    {
+                        var $parentUl = $li.parent();
+                    }
+
+                    $li.css('visibility', 'hidden').velocity({ marginBottom: -$li.height() }, 'fast', $.proxy(function()
+                    {
+                        $li.remove();
+                    }, this));
                 }
             },
         });
