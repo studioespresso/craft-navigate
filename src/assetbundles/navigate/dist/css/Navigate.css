@@ -77,7 +77,7 @@
     color: #0d78f2;
 }
 
-.navigate__nav .node__node.element {
+.navigate__nav .node__node {
     display: inline-block;
     padding: 6px 7px;
 }
