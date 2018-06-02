@@ -3,6 +3,7 @@
     Craft.Navigate = Garnish.Base.extend(
         {
             id: null,
+            site: null,
             entryModal: null,
             categoryModal: null,
             assetModal: null,
@@ -22,12 +23,12 @@
 
             $addElementLoader: $('.navigate .buttons .spinner'),
 
-            init: function (id, entrySources) {
+            init: function (id, entrySources, nav, site) {
                 this.id = id;
+                this.site = site;
                 this.entrySources = '*';
                 this.siteHandle = 'default';
                 this.structure = new Craft.NavigateStructure(this.id, '#navigate__nav', '.navigate__nav', settings);
-
 
                 this.addListener(this.$addElementButton, 'activate', 'showModal');
                 this.addListener(this.$manualForm, 'submit', 'onManualSubmit');
@@ -108,6 +109,7 @@
                     console.log(element);
                     var data = {
                         navId: this.id,
+                        siteId: this.site,
                         status: element.status,
                         name: element.label,
                         enabled: element.status == 'live',
@@ -255,6 +257,7 @@
                 var count = $('#navigate__nav').children().length;
                 var nodeHtml = this.$template
                     .replace(/%%status%%/ig, data.status ? data.status : "")
+                    .replace(/%%siteId%%/ig, data.siteId ? data.siteId : "")
                     .replace(/%%elementId%%/ig, data.elementId ? data.elementId : "")
                     .replace(/%%count%%/ig, count + 1)
                     .replace(/%%status%%/ig, (data.enabled ? "live" : "expired"))

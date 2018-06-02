@@ -53,6 +53,7 @@ class DefaultController extends Controller
     public function actionIndex()
     {
         $data = [];
+        $data['defaultSite'] = Craft::$app->sites->primarySite;
         $data['navigations'] = Navigate::$plugin->navigate->getAllNavigations();
         return $this->renderTemplate('navigate/_index', $data);
     }
@@ -84,20 +85,22 @@ class DefaultController extends Controller
 
     }
 
-    public function actionEdit($navId = null) {
-        if($navId) {
+    public function actionEdit($navId = null, $siteHandle) {
+        if($navId && $siteHandle) {
             $navigation = Navigate::$plugin->navigate->getNavigationById($navId);
+            $site = Craft::$app->sites->getSiteByHandle($siteHandle);
 
             $nodeTypes = Navigate::$plugin->nodes->getNodeTypes($navigation);
 
             Craft::$app->getView()->registerJs('new Craft.Navigate("navigate-nodes-input", '.
-                Json::encode($nodeTypes, JSON_UNESCAPED_UNICODE) . ',"nodes", "' . $navId .'" );');
+                Json::encode($nodeTypes, JSON_UNESCAPED_UNICODE) . ',' . $navId .',' . $site->id .' );');
 
 
             return $this->renderTemplate('navigate/_edit', [
-                'nodes' => Navigate::$plugin->nodes->getNodesByNavId($navId),
+                'nodes' => Navigate::$plugin->nodes->getNodesByNavIdAndSite($navId, $site->id),
                 'nodeTypes' =>$nodeTypes,
-                'navigation' => $navigation
+                'navigation' => $navigation,
+                'site' => $site,
             ]);
         }
     }

@@ -42,7 +42,9 @@
         <input type="hidden" name="action" value="navigate/nodes/save">
         {{ redirectInput('navigate') }}
     {% endblock %}
-    {% block contextMenu %}{% endblock %}
+    {% block contextMenu %}
+        {% include 'navigate/_includes/_sites' %}
+    {% endblock %}
     <div class="flex-grow"></div>
     {% block actionButton %}
         {% if fullPageForm %}
@@ -50,6 +52,7 @@
         {% endif %}
     {% endblock %}
 {% endblock %}
+
 
 {# The content of the CP Section#}
 {% block content %}
@@ -61,12 +64,14 @@
     {% endif%}
     <div class="blocks">
         <input type="hidden" name="data[navId]" value="{{ navigation.id }}">
+        <input type="hidden" name="data[siteId]" value="{{ site.id }}">
         <ul id="navigate__nav" class="navigate__nav structure">
             {% for node in nodes %}
                 <li>
                     <div class="node__node" data-id="{{ node.id }}" data-label="{{ node.name }}">
                         <span class="status {{ node.enabled ? 'on': 'off'}}"></span>
                         <input type="hidden" name="data[nodes][{{ node.id }}][navId]" value="{{ navigation.id }}">
+                        <input type="hidden" name="data[nodes][{{ node.id }}][siteId]" value="{{ site.id}}">
                         <input type="hidden" name="data[nodes][{{ node.id }}][id]" value="{{ node.id }}">
                         <input type="hidden" name="data[nodes][{{ node.id }}][enabled]" value="{{ node.enabled }}">
                         <input type="hidden" name="data[nodes][{{ node.id }}][type]" value="{{ node.type }}">
@@ -98,6 +103,7 @@
             <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
             <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][enabled]" value="1">
             <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][navId]" value="{{ navigation.id }}">
+            <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][siteId]" value="{{ '%%siteId%%'|replace(replaceWith) }}">
             <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][type]" value="{{ '%%type%%'|replace(replaceWith) }}">
             <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][elementType]" value="{{ '%%elementType%%'|replace(replaceWith) }}">
             <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][elementId]" value="{{ '%%elementId%%'|replace(replaceWith) }}">

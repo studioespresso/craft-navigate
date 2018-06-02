@@ -1,0 +1,19 @@
+{% set thisSite = site %}
+
+<div id="revision-btn" class="btn menubtn" data-icon="world">{{ thisSite.name }}</div>
+<div class="menu">
+    <ul class="padded">
+        <li>
+            <a class="sel">
+                {{ thisSite.name }}
+            </a>
+        </li>
+        {% for site in craft.app.sites.getAllSites() if site.handle != thisSite.handle %}
+            <li>
+                <a href="/admin/navigate/edit/{{ navigation.id }}/{{ site.handle }}">
+                    {{ site.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

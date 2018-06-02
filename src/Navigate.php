@@ -108,11 +108,13 @@ class Navigate extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
+
                 $event->rules['navigate'] = 'navigate/default';
                 $event->rules['navigate/add'] = 'navigate/default/settings';
                 $event->rules['navigate/save'] = 'navigate/default/save';
                 $event->rules['navigate/delete'] = 'navigate/default/delete';
                 $event->rules['navigate/edit/<navId:\d+>'] = 'navigate/default/edit';
+                $event->rules['navigate/edit/<navId:\d+>/<siteHandle:{handle}>'] = 'navigate/default/edit';
                 $event->rules['navigate/settings/<navId:\d+>'] = 'navigate/default/settings';
                 $event->rules['navigate/nodes/new'] = 'navigate/nodes/new';
             }

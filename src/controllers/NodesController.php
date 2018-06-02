@@ -47,9 +47,10 @@ class NodesController extends Controller
 
         $data = Craft::$app->request->post('data');
         $nav = $data['navId'];
+        $site = $data['siteId'];
 
         if(isset($data['nodes'])) {
-            Navigate::$plugin->nodes->cleanupNode($data['nodes'], $nav);
+            Navigate::$plugin->nodes->cleanupNode($data['nodes'], $nav, $site);
             foreach($data['nodes'] as $node) {
                 $nodeModel = new NodeModel();
                 $nodeModel->setAttributes($node);

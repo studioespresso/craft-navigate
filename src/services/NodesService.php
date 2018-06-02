@@ -52,6 +52,13 @@ class NodesService extends Component
         return $query->all();
     }
 
+    public function getNodesByNavIdAndSite(int $navId = null, $siteId) {
+        $query = NodeRecord::find();
+        $query->where(['navId' => $navId, 'siteId' => $siteId]);
+        $query->indexBy('id');
+        return $query->all();
+    }
+
     public function getNodeById(int $navId = null) {
         $query = NodeRecord::findOne([
             'id' => $navId
@@ -107,13 +114,16 @@ class NodesService extends Component
             $record = new NodeRecord();
         }
 
-        $record->siteId = 1;
+
+
+        $record->siteId = $model->siteId;
         $record->navId = $model->navId;
         $record->name = $model->name;
         $record->type = $model->type;
         $record->elementType = $model->elementType;
         $record->elementId = $model->elementId;
         $record->url = $model->url;
+
 
         $save = $record->save();
         if (!$save) {
@@ -122,10 +132,10 @@ class NodesService extends Component
         return $save;
     }
 
-    public function cleanupNode($nodes, $navigation)
+    public function cleanupNode($nodes, $navigation, $site)
     {
 
-        $oldNodes = Navigate::$plugin->nodes->getNodesByNavId($navigation);
+        $oldNodes = Navigate::$plugin->nodes->getNodesByNavIdAndSite($navigation, $site);
         array_walk($nodes, function ($node) use (&$oldNodes) {
             $model = new NodeModel();
             $model->setAttributes($node);
@@ -133,7 +143,6 @@ class NodesService extends Component
                 unset($oldNodes[$model->id]);
             }
         });
-
 
         foreach ($oldNodes as $node) {
             $record = NodeRecord::findOne([

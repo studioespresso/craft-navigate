@@ -47,6 +47,8 @@ class NodeModel extends Model
 
     public $navId;
 
+    public $siteId;
+
     public $type;
 
     public $url;
@@ -79,8 +81,8 @@ class NodeModel extends Model
     public function rules()
     {
         return [
-            [['type', 'navId', 'name'], 'required'],
-            [[ 'id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type', 'url'], 'safe'],
+            [['type', 'navId', 'siteId', 'name'], 'required'],
+            [[ 'id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type', 'url', 'siteId'], 'safe'],
         ];
     }
 
