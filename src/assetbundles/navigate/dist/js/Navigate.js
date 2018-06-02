@@ -116,10 +116,10 @@
                         elementId: element.id,
                         parentId: parentId === undefined ? 0 : parentId
                     };
-                    this.structure.addNode(data, elementType);
+                    this.structure.addNode(data, 'element');
                 }
             },
-            
+
         })
 
     Craft.NavigateUrlModal = Garnish.Modal.extend(
@@ -198,7 +198,7 @@
                 this.loading = true;
                 this.$submitBtn.addClass('active');
                 this.$spinner.show();
-                this.structure.addNode(data, '0');
+                this.structure.addNode(data, 'url');
                 this.$spinner.hide();
                 this.hide();
 
@@ -249,16 +249,18 @@
              * @param string nodeType
              */
             addNode: function (data, nodeType) {
+                console.log(nodeType);
                 var count = $('#navigate__nav').children().length;
                 var nodeHtml = this.$template
-                    .replace(/%%elementId%%/ig, data.elementId)
+                    .replace(/%%elementId%%/ig, data.elementId ? data.elementId : "")
                     .replace(/%%count%%/ig, count + 1)
                     .replace(/%%status%%/ig, (data.enabled ? "live" : "expired"))
                     .replace(/%%label%%/ig, data.name)
-                    .replace(/%%type%%/ig, data.type)
-                    .replace(/%%elementType%%/ig, data.elementType)
-                    .replace(/%%type%%/ig, data.elementType ? data.elementType.toLowerCase() : "manual")
-                    .replace(/%%typeLabel%%/ig, data.elementType ? data.elementType : Craft.t("Manual"))
+                    .replace(/%%type%%/ig, nodeType)
+                    .replace(/%%url%%/ig, data.url)
+                    .replace(/%%elementType%%/ig, data.elementType ? data.elementType : "" )
+                    .replace(/%%type%%/ig, data.elementType ? data.elementType.toLowerCase() : "url")
+                    .replace(/%%typeLabel%%/ig, data.elementType ? data.elementType : "")
                     .replace(/%%url%%/ig, data.url.replace('{siteUrl}', this.siteUrl))
                     .replace(/%%urlless%%/ig, data.url.replace('{siteUrl}', ''))
 

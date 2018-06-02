@@ -92,6 +92,7 @@ class NodesService extends Component
         $record->type = $model->type;
         $record->elementType = $model->elementType;
         $record->elementId = $model->elementId;
+        $record->url = $model->url;
 
         $save = $record->save();
         if (!$save) {

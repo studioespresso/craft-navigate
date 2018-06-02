@@ -49,6 +49,8 @@ class NodeModel extends Model
 
     public $type;
 
+    public $url;
+
     public $enabled = true;
 
     public $elementId;
@@ -78,7 +80,7 @@ class NodeModel extends Model
     {
         return [
             [['type', 'navId', 'name'], 'required'],
-            [[ 'id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type'], 'safe'],
+            [[ 'id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type', 'url'], 'safe'],
         ];
     }
 
