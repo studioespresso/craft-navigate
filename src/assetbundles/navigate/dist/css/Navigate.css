@@ -50,7 +50,10 @@
     border-top: 1px dotted rgba(115, 127, 140, 0.15);
 }
 
-.navigate__nav .label {
+.navigate__nav .node__node {
+    width: 100%;
+    margin-top: 0px;
+    margin-bottom: 5px;
     border-bottom: 1px dotted rgba(115, 127, 140, 0.15);
 }
 
@@ -87,7 +90,7 @@
 }
 
 .navigate__nav .node__type {
-    float: right;
+    display: inline;
     width: 80px;
     font-size: 12px;
     text-transform: lowercase;
