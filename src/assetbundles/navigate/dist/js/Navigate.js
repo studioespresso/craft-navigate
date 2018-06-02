@@ -208,6 +208,7 @@
                     indent = this.getIndent(level),
                     $row = $('<div class="node__node element" style="margin-'+Craft.left+': -'+indent+'px; padding-'+Craft.left+': '+indent+'px;">').appendTo($li);
                 $row.append($element);
+                $row.append('<a class="delete" data-icon="remove" title="'+Craft.t('nagivate','Delete')+'"></a>');
 
                 if (this.$container.length) {
                     this.$emptyContainer.addClass('hidden');
