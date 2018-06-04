@@ -18,7 +18,7 @@
     padding: 24px;
 }
 
-..navigate__nav .hidden {
+.navigate__nav .hidden {
     display: list-item !important;
 }
 
@@ -26,16 +26,6 @@
     margin: 24px 0;
 }
 
-.navigate .node__blank {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    background: url(../img/blank.png);
-}
-
-.navigate select {
-    width: 100%;
-}
 
 .navigate__nav ul li {
     background: none !important;
