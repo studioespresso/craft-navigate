@@ -42,6 +42,8 @@
 
 .navigate__nav .node__node {
     width: 100%;
+    margin-left: -8px;
+    padding-left: 8px;
     margin-top: 0px;
     margin-bottom: 5px;
     border-bottom: 1px dotted rgba(115, 127, 140, 0.15);
