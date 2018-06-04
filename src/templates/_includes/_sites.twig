@@ -1,3 +1,4 @@
+{% if craft.app.sites.getAllSites()|length > 1 %}
 {% set thisSite = site %}
 
 <div id="revision-btn" class="btn menubtn" data-icon="world">{{ thisSite.name }}</div>
@@ -17,3 +18,4 @@
         {% endfor %}
     </ul>
 </div>
+{% endif %}
