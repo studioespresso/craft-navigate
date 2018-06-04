@@ -636,6 +636,14 @@
 
                         var animateCss;
 
+
+                         $(this.structure.$container).find("li").each(function(index, li) {
+                            $li = $(li);
+                            $li.find('#order').val(index);
+                            $li.find('#order').val();
+                         })
+
+
                         if (newLevel != this.$draggee.data('level')) {
                             // Correct the helper's padding if moving to/from level 1
                             if (this.$draggee.data('level') == 1) {
