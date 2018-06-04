@@ -77,6 +77,7 @@
                         <input type="hidden" name="data[nodes][{{ node.id }}][type]" value="{{ node.type }}">
                         <input type="hidden" name="data[nodes][{{ node.id }}][elementType]" value="{{ node.elementType }}">
                         <input type="hidden" name="data[nodes][{{ node.id }}][elementId]" value="{{ node.elementId }}">
+                        <input type="hidden" name="data[nodes][{{ node.id }}][order]" id="order" value="{{ node.order|length ? node.order : loop.index }}">
                         <span class="title">{{ node.name }}</span>
                         <input type="hidden" name="data[nodes][{{ node.id }}][name]" value="{{ node.name }}">
                         <a href="{{ actionUrl('navigate/nodes/url', { id: node.id}) }}" data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
