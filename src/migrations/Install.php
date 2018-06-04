@@ -115,8 +115,6 @@ class Install extends Migration
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
                     'uid' => $this->uid(),
-                // Custom columns in the table
-                    'siteId' => $this->integer()->notNull(),
                 ]
             );
 
@@ -156,26 +154,7 @@ class Install extends Migration
     protected function addForeignKeys()
     {
 
-    // navigate_navigaterecord table
-        $this->addForeignKey(
-            $this->db->getForeignKeyName(NavigationRecord::tableName(), 'siteId'),
-            NavigationRecord::tableName(),
-            'siteId',
-            '{{%sites}}',
-            'id',
-            'CASCADE',
-            'CASCADE'
-        );
 
-        $this->addForeignKey(
-            $this->db->getForeignKeyName(NodeRecord::tableName(), 'navId'),
-            '{{%navigate_nodes}}',
-            'navId',
-            '{{%navigate_navigations}}',
-            'id',
-            'CASCADE',
-            'CASCADE'
-        );
     }
 
     /**
