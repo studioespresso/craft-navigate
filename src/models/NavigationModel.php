@@ -57,8 +57,6 @@ class NavigationModel extends Model
 
     public $uid;
 
-    public $siteId;
-
     // Public Methods
     // =========================================================================
 

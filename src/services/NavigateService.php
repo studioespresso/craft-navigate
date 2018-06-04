@@ -76,7 +76,6 @@ class NavigateService extends Component
         $record->handle = $model->handle;
         $record->allowedSources= $model->allowedSources;
         $record->defaultNodeType = $model->defaultNodeType;
-        $record->siteId = 1;
 
         $save = $record->save();
         if ( ! $save ) {
