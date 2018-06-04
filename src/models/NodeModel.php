@@ -53,6 +53,8 @@ class NodeModel extends Model
 
     public $url;
 
+    public $order;
+
     public $enabled = true;
 
     public $elementId;
@@ -62,8 +64,6 @@ class NodeModel extends Model
     public $blank = false;
 
     public $parentId;
-
-    public $order;
 
     // Public Methods
     // =========================================================================
@@ -82,7 +82,7 @@ class NodeModel extends Model
     {
         return [
             [['type', 'navId', 'siteId', 'name'], 'required'],
-            [[ 'id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type', 'url', 'siteId'], 'safe'],
+            [[ 'id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type', 'url', 'siteId', 'order'], 'safe'],
         ];
     }
 
