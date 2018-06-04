@@ -54,9 +54,13 @@ class NavigateService extends Component
         $record = NavigationRecord::findOne([
             'id' => $id
         ]);
-        if($record->delete()) {
-            return true;
-        };
+        if($record) {
+
+            Navigate::$plugin->nodes->deleteNodesByNavId($record);
+            if($record->delete()) {
+                return true;
+           };
+        }
     }
 
     public function saveNavigation(NavigationModel $model) {

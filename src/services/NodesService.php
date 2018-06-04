@@ -154,4 +154,15 @@ class NodesService extends Component
 
     }
 
+    public function deleteNodesByNavId($record) {
+        $records = NodeRecord::findAll([
+            'navId' => $record->id,
+        ]);
+
+        foreach($records as $record) {
+            $record->delete();
+        }
+        return;
+    }
+
 }
