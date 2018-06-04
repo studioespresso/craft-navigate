@@ -60,7 +60,6 @@ class Install extends Migration
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
         if ($this->createTables()) {
-            $this->createIndexes();
             $this->addForeignKeys();
             // Refresh the db schema caches
             Craft::$app->db->schema->refresh();
@@ -146,6 +145,7 @@ class Install extends Migration
         return $tablesCreated;
     }
 
+
     /**
      * Creates the foreign keys needed for the Records used by the plugin
      *
@@ -154,7 +154,16 @@ class Install extends Migration
     protected function addForeignKeys()
     {
 
-
+        // $name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
+        $this->addForeignKey(
+            $this->db->getForeignKeyName('{{%navigate_nodes}}', 'siteId'),
+            '{{%navigate_nodes}}',
+            'siteId',
+            '{{%sites}}',
+            'id',
+            'CASCADE'
+        );
+        
     }
 
     /**
