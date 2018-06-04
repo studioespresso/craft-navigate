@@ -48,14 +48,14 @@ class NodesService extends Component
     {
         $query = NodeRecord::find();
         $query->where(['navId' => $navId]);
-        $query->indexBy('id');
+        $query->orderBy('order');
         return $query->all();
     }
 
     public function getNodesByNavIdAndSite(int $navId = null, $siteId) {
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId]);
-        $query->indexBy('id');
+        $query->orderBy('order');
         return $query->all();
     }
 
@@ -120,6 +120,7 @@ class NodesService extends Component
         $record->navId = $model->navId;
         $record->name = $model->name;
         $record->type = $model->type;
+        $record->order = $model->order;
         $record->elementType = $model->elementType;
         $record->elementId = $model->elementId;
         $record->url = $model->url;
