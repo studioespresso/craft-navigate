@@ -67,7 +67,7 @@
         <input type="hidden" name="data[siteId]" value="{{ site.id }}">
         <ul id="navigate__nav" class="navigate__nav structure">
             {% for node in nodes %}
-                <li data-id="{{ loop.index }}">
+                <li data-id="{{ loop.index }}" data-level="1">
                     <div class="node__node row" data-id="{{ node.id }}" data-label="{{ node.name }}">
                         <span class="status {{ node.enabled ? 'on': 'off'}}"></span>
                         <input type="hidden" name="data[nodes][{{ node.id }}][navId]" value="{{ navigation.id }}">
