@@ -78,6 +78,7 @@ class NavigateService extends Component
 
         $record->title = $model->title;
         $record->handle = $model->handle;
+        $record->levels = $model->levels;
         $record->allowedSources= $model->allowedSources;
         $record->defaultNodeType = $model->defaultNodeType;
 

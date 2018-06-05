@@ -45,7 +45,7 @@
                 </div>
             </div>
             <div class="input ltr {% if errors is defined and errors.title is defined %}errors{% endif %}">
-                <input class="text fullwidth" type="text" id="title" name="data[title]" {% if navigation is defined %}value="{{ navigation.title }}"{% endif %} autofocus="" autocomplete="off" >
+                <input class="text fullwidth" type="text" id="title" name="data[title]" {% if navigation is defined %}value="{{ navigation.title }}"{% endif %} autofocus="" autocomplete="off" required="required">
             </div>
             {% if errors is defined and errors.title is defined %}
                 <ul class="errors">
@@ -62,7 +62,7 @@
                 </div>
             </div>
             <div class="input ltr {% if errors is defined and errors.handle is defined %}errors{% endif %}">
-                <input class="text code fullwidth" type="text" id="handle" name="data[handle]" {% if navigation is defined %}value="{{ navigation.handle }}"{% endif %} maxlength="64" autocomplete="off" >
+                <input class="text code fullwidth" type="text" id="handle" name="data[handle]" {% if navigation is defined %}value="{{ navigation.handle }}"{% endif %} maxlength="64" autocomplete="off" required="required" >
             </div>
             {% if errors is defined and errors.handle is defined %}
                 <ul class="errors">
@@ -87,7 +87,6 @@
             options: sources,
             values: (navigation is defined ? navigation.allowedSources : '*'),
             showAllOption: true,
-            class: "mkjmljk"
         }) }}
         {% if errors is defined and errors.allowedSources is defined %}
                 <ul class="errors">
@@ -105,6 +104,25 @@
             options: sources,
             value: (navigation is defined ? navigation.defaultNodeType : ''),
         }) }}
+
+        <div class="field" id="handle-field">
+            <div class="heading">
+                <label id="handle-label" class="required" for="levels">{{ 'Maximum levels'|t('navigate') }}</label>
+                <div class="instructions"><p>{{ 'Maximum levels of sub navigations, defaults to 1 if empty'|t('navigate') }}</p>
+                </div>
+            </div>
+            <div class="input ltr {% if errors is defined and errors.handle is defined %}errors{% endif %}">
+                <input class="text code" type="number" id="levels" name="data[levels]" value="{% if navigation is defined %}{{ navigation.levels }}{% else %}1{% endif %}" maxlength="64" autocomplete="off" required="required">
+            </div>
+            {% if errors is defined and errors.levels is defined %}
+                <ul class="errors">
+                    {% for error in errors.levels %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
 
         <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
 

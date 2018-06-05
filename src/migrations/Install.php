@@ -110,6 +110,7 @@ class Install extends Migration
                     'title' => $this->string(255)->notNull()->defaultValue(''),
                     'allowedSources' => $this->text(),
                     'defaultNodeType' => $this->text(20),
+                    'levels' => $this->integer(1)->defaultValue(1),
                     'handle' => $this->string(255)->notNull()->defaultValue(''),
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),

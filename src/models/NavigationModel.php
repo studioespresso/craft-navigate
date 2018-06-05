@@ -47,9 +47,11 @@ class NavigationModel extends Model
 
     public $handle;
 
+    public $allowedSources = '*';
+
     public $defaultNodeType = 'entry';
 
-    public $allowedSources = '*';
+    public $levels = 1;
 
     public $dateCreated;
 
@@ -74,7 +76,7 @@ class NavigationModel extends Model
     {
         return [
             [['title', 'handle', 'defaultNodeType', 'allowedSources'], 'required'],
-            [['title', 'handle', 'defaultNodeType', 'allowedSources'], 'safe'],
+            [['title', 'handle', 'defaultNodeType', 'allowedSources', 'levels'], 'safe'],
             ['handle', 'validateHandle'],
         ];
     }
