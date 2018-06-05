@@ -131,7 +131,7 @@ class Install extends Migration
                     'type' => $this->string(20),
                     'enabled' => $this->boolean()->defaultValue(1),
                     'blank' => $this->boolean()->defaultValue(0),
-                    'parentId' => $this->integer(10),
+                    'parent' => $this->integer(10),
                     'order' => $this->integer(10),
                     'enabled' => $this->boolean()->defaultValue(1),
 

@@ -55,6 +55,8 @@ class NodeModel extends Model
 
     public $order;
 
+    public $parent;
+
     public $enabled = true;
 
     public $elementId;
@@ -82,8 +84,12 @@ class NodeModel extends Model
     {
         return [
             [['type', 'navId', 'siteId', 'name'], 'required'],
-            [[ 'id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type', 'url', 'siteId', 'order'], 'safe'],
+            [[ 'id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type', 'url', 'siteId', 'order', 'parent'], 'safe'],
         ];
     }
 
+
+    public function getChildren() {
+        return Navigate::$plugin->nodes->getChildrenByNodeId($this);
+    }
 }

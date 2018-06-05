@@ -72,7 +72,8 @@
                         <span class="status {{ node.enabled ? 'on': 'off'}}"></span>
                         <input type="hidden" name="data[nodes][{{ node.id }}][navId]" value="{{ navigation.id }}">
                         <input type="hidden" name="data[nodes][{{ node.id }}][siteId]" value="{{ site.id}}">
-                        <input type="hidden" name="data[nodes][{{ node.id }}][id]" value="{{ node.id }}">
+                        <input type="hidden" name="data[nodes][{{ node.id }}][id]" id="id" value="{{ node.id }}">
+                        <input type="hidden" name="data[nodes][{{ node.id }}][parent]" id="parent" value="{{ node.parent }}">
                         <input type="hidden" name="data[nodes][{{ node.id }}][enabled]" value="{{ node.enabled }}">
                         <input type="hidden" name="data[nodes][{{ node.id }}][type]" value="{{ node.type }}">
                         <input type="hidden" name="data[nodes][{{ node.id }}][elementType]" value="{{ node.elementType }}">
@@ -88,6 +89,36 @@
                             <span class="node__type--entry">{{ node.type }}</span>
                         </div>
                     </div>
+                    {% if node.getChildren() %}
+                        <ul>
+                        {% for node  in node.getChildren() %}
+                            <li data-id="{{ loop.index }}" data-level="2">
+
+                            <div class="node__node row" data-id="{{ node.id }}" data-label="{{ node.name }}">
+                                <span class="status {{ node.enabled ? 'on': 'off'}}"></span>
+                                <input type="hidden" name="data[nodes][{{ node.id }}][navId]" value="{{ navigation.id }}">
+                                <input type="hidden" name="data[nodes][{{ node.id }}][siteId]" value="{{ site.id}}">
+                                <input type="hidden" name="data[nodes][{{ node.id }}][id]" id="id" value="{{ node.id }}">
+                                <input type="hidden" name="data[nodes][{{ node.id }}][parent]" id="parent" value="{{ node.parent }}">
+                                <input type="hidden" name="data[nodes][{{ node.id }}][enabled]" value="{{ node.enabled }}">
+                                <input type="hidden" name="data[nodes][{{ node.id }}][type]" value="{{ node.type }}">
+                                <input type="hidden" name="data[nodes][{{ node.id }}][elementType]" value="{{ node.elementType }}">
+                                <input type="hidden" name="data[nodes][{{ node.id }}][elementId]" value="{{ node.elementId }}">
+                                <input type="hidden" name="data[nodes][{{ node.id }}][order]" id="order" value="{{ node.order|length ? node.order : loop.index }}">
+                                <span class="title">{{ node.name }}</span>
+                                <input type="hidden" name="data[nodes][{{ node.id }}][name]" value="{{ node.name }}">
+                                <a href="{{ actionUrl('navigate/nodes/url', { id: node.id}) }}" data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
+                                <a data-icon="remove" class="delete" role="button"></a>
+                                <a class="move icon" title="Move"></a>
+
+                                <div class="node__type">
+                                    <span class="node__type--entry">{{ node.type }}</span>
+                                </div>
+                            </div>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>

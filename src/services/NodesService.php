@@ -53,10 +53,33 @@ class NodesService extends Component
     }
 
     public function getNodesByNavIdAndSite(int $navId = null, $siteId) {
+        $data = [];
         $query = NodeRecord::find();
-        $query->where(['navId' => $navId, 'siteId' => $siteId]);
+        $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => null]);
         $query->orderBy('order');
-        return $query->all();
+        foreach($query->all() as $record) {
+
+            $model = new NodeModel();
+            $model->setAttributes($record->getAttributes());
+
+            $data[$model->order] = $model;
+        }
+        return $data;
+    }
+
+    public function getChildrenByNodeId(NodeModel $node) {
+        $data = [];
+        $query = NodeRecord::find();
+        $query->where(['navId' => $node->navId, 'siteId' => $node->siteId, 'parent' => $node->id]);
+        $query->orderBy('order');
+        foreach($query->all() as $record) {
+
+            $model = new NodeModel();
+            $model->setAttributes($record->getAttributes());
+
+            $data[$model->order] = $model;
+        }
+        return $data;
     }
 
 

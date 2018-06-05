@@ -9,6 +9,7 @@
             assetModal: null,
             currentElementType: null,
             structure: null,
+            levels: null,
 
             locale: null,
             siteHandle: null,
@@ -23,12 +24,13 @@
 
             $addElementLoader: $('.navigate .buttons .spinner'),
 
-            init: function (id, entrySources, nav, site) {
+            init: function (id, entrySources, nav, site, levels) {
                 this.id = id;
                 this.site = site;
                 this.entrySources = '*';
                 this.siteHandle = 'default';
-                this.structure = new Craft.NavigateStructure(this.id, '#navigate__nav', '.navigate__nav', settings);
+                this.levels = levels;
+                this.structure = new Craft.NavigateStructure(this.id, '#navigate__nav', '.navigate__nav', settings, this.levels);
 
                 this.addListener(this.$addElementButton, 'activate', 'showModal');
                 this.addListener(this.$manualForm, 'submit', 'onManualSubmit');
@@ -106,7 +108,6 @@
                         this.assetModal.$body.find('.element[data-id="' + element.id + '"]').closest('tr').removeClass('sel');
                     }
 
-                    console.log(element);
                     var data = {
                         navId: this.id,
                         siteId: this.site,
@@ -235,11 +236,12 @@
              * @param string container
              * @param array  settings
              */
-            init: function (navId, id, container, settings) {
+            init: function (navId, id, container, settings, levels) {
+                this.levels = levels;
                 this.navId = navId;
                 this.base(id, container, settings);
 
-                this.dragdrop = new Craft.NavigateDragDrop(this, null);
+                this.dragdrop = new Craft.NavigateDragDrop(this, this.levels);
 
 
                 this.$container.find('.delete').on('click', $.proxy(function (ev) {
@@ -256,7 +258,6 @@
              * @param string nodeType
              */
             addNode: function (data, nodeType) {
-                console.log(nodeType);
                 var count = $('#navigate__nav').children().length;
                 var nodeHtml = this.$template
                     .replace(/%%status%%/ig, data.status ? data.status : "")
@@ -467,7 +468,6 @@
                      *     ----------------------
                      *     * Row 2
                      */
-
                     if (this._.$nextTargetLi && this._.nextTargetLevel == this._.closestTargetLevel) {
                         if (this._.hoveringBetweenRows) {
                             if (!this.maxLevels || this.maxLevels >= (this._.closestTargetLevel + this.draggeeLevel - 1)) {
@@ -633,11 +633,6 @@
                         var animateCss;
 
 
-                         $(this.structure.$container).find("li").each(function(index, li) {
-                            $li = $(li);
-                            $li.find('#order').val(index);
-                            $li.find('#order').val();
-                         })
 
 
                         if (newLevel != this.$draggee.data('level')) {
@@ -656,23 +651,20 @@
                             this.setLevel(this.$draggee, newLevel);
                         }
 
-                        // Make it real
-                        // var $element = this.$draggee.children('.row').children('.element');
+                         $(this.structure.$container).find("li").each(function(index, li) {
 
-                        // var data = {
-                        //     structureId: this.structure.id,
-                        //     elementId: $element.data('id'),
-                        //     siteId: $element.data('site-id'),
-                        //     prevId: this.$draggee.prev().children('.row').children('.element').data('id'),
-                        //     parentId: this.$draggee.parent('ul').parent('li').children('.row').children('.element').data('id')
-                        // };
+                            $li = $(li);
+                            $li.find('#order').val(index);
+                            var $parent = $li.find("#id").val();
+                            if($li.children("ul").length) {
 
-                        // Craft.postActionRequest('structures/move-element', data, function(response, textStatus) {
-                        //     if (textStatus === 'success') {
-                        //         Craft.cp.displayNotice(Craft.t('app', 'New order saved.'));
-                        //     }
-                        //
-                        // });
+                               $li.children("ul").children('li').each(function(index, child) {
+                                   $child = $(child);
+                                   $child.find("#order").val(index);
+                                   $child.find("#parent").val($parent);
+                               })
+                            }
+                         })
                     }
                 }
 
