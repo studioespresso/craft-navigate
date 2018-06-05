@@ -537,7 +537,7 @@
 
                                 this._.parentLiXDiff = Math.abs(this._.parentLiX - this._.draggeeX);
                                 this._.parentLevel = this._.$parentLi.data('level');
-                                console.log(this._.$parentLi);
+
                                 if ((!this.maxLevels || this.maxLevels >= (this._.parentLevel + this.draggeeLevel - 1)) && (
                                     !this._.$closestParentLi || (
                                         this._.parentLiXDiff < this._.closestParentLiXDiff &&
@@ -554,7 +554,6 @@
                             }
                         }
                         else {
-                            console.log('hier');
                             if (!this.maxLevels || this.maxLevels >= (this._.closestTargetLevel + this.draggeeLevel)) {
                                 this._.$closestTarget.addClass('draghover');
                             }
@@ -575,8 +574,6 @@
 
             onDragStop: function() {
                 // Are we repositioning the draggee?
-                console.log(this._.$closestTarget);
-                console.log((this.$insertion.parent().length || this._.$closestTarget.hasClass('draghover')));
                 if (this._.$closestTarget && (this.$insertion.parent().length || this._.$closestTarget.hasClass('draghover'))) {
                     var $draggeeParent,
                         moved;
@@ -624,7 +621,6 @@
 
                     // Remove the class either way
                     this._.$closestTarget.removeClass('draghover');
-                    console.log(moved);
                     if (moved) {
                         // Now deal with the now-childless parent
                         if ($draggeeParent) {
