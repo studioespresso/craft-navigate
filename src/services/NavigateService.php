@@ -58,7 +58,7 @@ class NavigateService extends Component
 
             Navigate::$plugin->nodes->deleteNodesByNavId($record);
             if($record->delete()) {
-                return true;
+                return 1;
            };
         }
     }

@@ -73,7 +73,7 @@
              */
             createModal: function (elementType, elementSources) {
                 if (elementType === 'url') {
-                    $modal = new Craft.NavigateUrlModal(this.structure);
+                    $modal = new Craft.NavigateUrlModal(this.structure, this.site);
                     return $modal;
                 } else {
                     return Craft.createElementSelectorModal(elementType, {
@@ -135,9 +135,10 @@
             $subjectInput: null,
             $bodyInput: null,
             $spinner: null,
+            site : null,
 
-            init: function (structure) {
-
+            init: function (structure, currentSite) {
+                this.site = currentSite;
 
                 this.structure = structure,
                     this.body = $('#node__url').html(),
@@ -178,6 +179,8 @@
                 }
 
                 var data = {
+                    siteId: this.site,
+                    enabled: 'on',
                     name: this.$nameInput.val(),
                     url: this.$urlInput.val()
                 };
@@ -298,7 +301,7 @@
                 // Add node to the structure
                 var $li = $('<li data-level="' + level + '"/>').appendTo($appendTo),
                     indent = this.getIndent(level),
-                    $row = $('<div class="node__node element" style="margin-' + Craft.left + ': -' + indent + 'px; padding-' + Craft.left + ': ' + indent + 'px;">').appendTo($li);
+                    $row = $('<div class="node__node row" style="margin-' + Craft.left + ': -' + indent + 'px; padding-' + Craft.left + ': ' + indent + 'px;">').appendTo($li);
 
                 $row.append($element);
 
@@ -655,15 +658,6 @@
 
                             $li = $(li);
                             $li.find('#order').val(index);
-                            var $parent = $li.find("#id").val();
-                            if($li.children("ul").length) {
-
-                               $li.children("ul").children('li').each(function(index, child) {
-                                   $child = $(child);
-                                   $child.find("#order").val(index);
-                                   $child.find("#parent").val($parent);
-                               })
-                            }
                          })
                     }
                 }
