@@ -180,7 +180,7 @@
 
                 var data = {
                     siteId: this.site,
-                    enabled: 'on',
+                    enabled: 'live',
                     name: this.$nameInput.val(),
                     url: this.$urlInput.val()
                 };
@@ -263,11 +263,10 @@
             addNode: function (data, nodeType) {
                 var count = $('#navigate__nav').children().length;
                 var nodeHtml = this.$template
-                    .replace(/%%status%%/ig, data.status ? data.status : "")
                     .replace(/%%siteId%%/ig, data.siteId ? data.siteId : "")
                     .replace(/%%elementId%%/ig, data.elementId ? data.elementId : "")
                     .replace(/%%count%%/ig, count + 1)
-                    .replace(/%%status%%/ig, (data.enabled ? "live" : "expired"))
+                    .replace(/%%status%%/ig, data.enabled ? "live" : "expired")
                     .replace(/%%label%%/ig, data.name)
                     .replace(/%%type%%/ig, nodeType)
                     .replace(/%%url%%/ig, nodeType == 'url' ? data.url : '')
