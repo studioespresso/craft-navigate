@@ -26,7 +26,6 @@
 {% set pluginTitle = 'Navigate' %}
 {% set title = navigation.title is defined ? navigation.title : 'New navigation' %}
 
-{% set fullPageForm = true %}
 
 {% set crumbs = [
     { label: pluginTitle, url: url('navigate') },
@@ -39,18 +38,11 @@
         {% if title is defined and title|length %}
             <h1>{{ title }}</h1>
         {% endif %}
-        <input type="hidden" name="action" value="navigate/nodes/save">
-        {{ redirectInput('navigate') }}
     {% endblock %}
     {% block contextMenu %}
         {% include 'navigate/_includes/_sites' %}
     {% endblock %}
     <div class="flex-grow"></div>
-    {% block actionButton %}
-        {% if fullPageForm %}
-            <input type="submit" class="btn submit" value="{{ 'Save navigation'|t('navigate') }}">
-        {% endif %}
-    {% endblock %}
 {% endblock %}
 
 
