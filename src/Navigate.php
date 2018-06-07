@@ -116,7 +116,7 @@ class Navigate extends Plugin
                 $event->rules['navigate/edit/<navId:\d+>'] = 'navigate/default/edit';
                 $event->rules['navigate/edit/<navId:\d+>/<siteHandle:{handle}>'] = 'navigate/default/edit';
                 $event->rules['navigate/settings/<navId:\d+>'] = 'navigate/default/settings';
-                $event->rules['navigate/nodes/new'] = 'navigate/nodes/new';
+                $event->rules['navigate/nodes/add'] = 'navigate/nodes/add';
             }
         );
 

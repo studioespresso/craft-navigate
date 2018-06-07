@@ -161,7 +161,10 @@ class NodesService extends Component
         if (!$save) {
             Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
         }
-        return $save;
+
+        $model = new NodeModel();
+        $model->setAttributes($record->getAttributes());
+        return $model;
     }
 
     public function cleanupNode($nodes, $navigation, $site)

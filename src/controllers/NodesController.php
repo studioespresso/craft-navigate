@@ -17,7 +17,9 @@ use studioespresso\navigate\Navigate;
 
 use Craft;
 use craft\web\Controller;
+use Twig\Node\Node;
 use yii\bootstrap\Nav;
+use yii\web\NotFoundHttpException;
 
 /**
  * Default Controller
@@ -42,32 +44,66 @@ use yii\bootstrap\Nav;
 class NodesController extends Controller
 {
 
-    public function actionSave() {
+    public function actionAdd()
+    {
         $this->requirePostRequest();
+        $this->requireAcceptsJson();
 
-        $data = Craft::$app->request->post('data');
-        $nav = $data['navId'];
-        $site = $data['siteId'];
 
-        if(isset($data['nodes'])) {
-            Navigate::$plugin->nodes->cleanupNode($data['nodes'], $nav, $site);
-            foreach($data['nodes'] as $node) {
-                $nodeModel = new NodeModel();
-                $nodeModel->setAttributes($node);
-                if($nodeModel->validate()) {
-                    Navigate::$plugin->nodes->save($nodeModel);
-                } else {
-                    dd($nodeModel->getErrors());
-                }
-            }
-
-        } else {
-            Navigate::$plugin->nodes->cleanupNode([], $nav, $site);
+        if (!Craft::$app->request->getRequiredBodyParam('navId')) {
+            throw new NotFoundHttpException('Navigation not foud', 404);
         }
+
+        $attributes = Craft::$app->request->getBodyParams();
+
+        $model = new NodeModel();
+
+        if ($attributes['type'] === 'element') {
+            $model->setAttributes([
+                'type' => $attributes['type'],
+                'elementType' => $attributes['elementType'],
+                'elementId' => $attributes['elementId']
+            ]);
+        }
+
+        if ($attributes['type'] === 'url') {
+            $model->setAttributes([
+                'type' => $attributes['type'],
+                'url' => $attributes['url'],
+                'elementId' => $attributes['elementId']
+            ]);
+        }
+
+        $model->setAttributes([
+            'siteId'   => $attributes['siteId'],
+            'navId'    => $attributes['navId'],
+            'parentId' => (int)$attributes['parentId'],
+            'name'     => $attributes['name'],
+            'blank'    => isset($attributes['blank']) ? $attributes['blank'] == 'true' : false,
+            'enabled'  => true,
+        ]);
+
+        if(!$model->validate()) {
+            $returnData['success']  = false;
+            $returnData['message']  = Craft::t('navigate', 'Oops, something went wrong here');
+            return $this->asJson($returnData);
+        }
+
+        $node = Navigate::$plugin->nodes->save($model);
+        if($node !== false) {
+            // Return data
+            $returnData['success']  = true;
+            $returnData['message']  = Craft::t('navigate','Node added.');
+            $returnData['nodeData'] = $node;
+
+            return $this->asJson($returnData);
+        }
+
 
     }
 
-    public function actionUrl($id) {
+    public function actionUrl($id)
+    {
         $node = Navigate::$plugin->nodes->getNodeById($id);
         $url = Navigate::$plugin->nodes->getNodeUrl($node);
         header('Location: ' . $url, true, 200);

@@ -121,8 +121,57 @@
                         elementId: element.id,
                         parentId: parentId === undefined ? 0 : parentId
                     };
-                    this.structure.addNode(data, 'element');
+                    this.saveNewNode(data, 'element');
                 }
+            },
+
+            /**
+             * Save a new node to the database.
+             *
+             * @param array  data
+             * @param string nodeType
+             */
+            saveNewNode: function(data, nodeType) {
+                // Make sure we can only save one node at a time
+                this.savingNode = true;
+                if (nodeType == 'manual') {
+                    this.$manualLoader.removeClass('hidden');
+                }
+                else {
+                    this.$addElementLoader.removeClass('hidden');
+                }
+
+                var url = Craft.getActionUrl('navigate/nodes/add');
+                Craft.postActionRequest(url, data, $.proxy(function(response, textStatus) {
+                    if (textStatus == 'success') {
+                        this.savingNode = false;
+                        if (nodeType == 'manual') {
+                            this.$manualLoader.addClass('hidden');
+                        }
+                        else {
+                            this.$addElementLoader.addClass('hidden');
+                        }
+
+                        if (response.success) {
+                            if (nodeType == 'manual') {
+                                // Reset fields
+                                this.$manualForm.find('#name').val('');
+                                this.$manualForm.find('#url').val('');
+                            }
+
+                            // Add node to structure!
+                            this.structure.addNode(data, 'element');
+
+                            // Display parent options
+                            this.$parentContainer.html(response.parentOptions);
+
+                            Craft.cp.displayNotice(response.message);
+                        }
+                        else {
+                            Craft.cp.displayError(response.message);
+                        }
+                    }
+                }, this));
             },
 
         })
