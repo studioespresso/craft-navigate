@@ -92,7 +92,7 @@ class DefaultController extends Controller
 
             $nodeTypes = Navigate::$plugin->nodes->getNodeTypes($navigation);
 
-            Craft::$app->getView()->registerJs('new Craft.Navigate("navigate-nodes-input", '.
+            Craft::$app->getView()->registerJs('new Craft.Navigate('. $navId . ', '.
                 Json::encode($nodeTypes, JSON_UNESCAPED_UNICODE) . ',' . $navId .',' . $site->id .',' . $navigation->levels .' );');
 
 
