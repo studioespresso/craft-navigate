@@ -59,28 +59,22 @@
         <input type="hidden" name="data[siteId]" value="{{ site.id }}">
         <ul id="navigate__nav" class="navigate__nav structure">
             {% for node in nodes %}
-                <li data-id="{{ loop.index }}" data-level="1">
-                    <div class="node__node row" data-id="{{ node.id }}" data-label="{{ node.name }}">
-                        <span class="status {{ node.enabled ? 'on': 'off'}}"></span>
-                        <input type="hidden" name="data[nodes][{{ node.id }}][navId]" value="{{ navigation.id }}">
-                        <input type="hidden" name="data[nodes][{{ node.id }}][siteId]" value="{{ site.id}}">
-                        <input type="hidden" name="data[nodes][{{ node.id }}][id]" id="id" value="{{ node.id }}">
-                        <input type="hidden" name="data[nodes][{{ node.id }}][parent]" id="parent" value="{{ node.parent }}">
-                        <input type="hidden" name="data[nodes][{{ node.id }}][enabled]" value="{{ node.enabled }}">
-                        <input type="hidden" name="data[nodes][{{ node.id }}][type]" value="{{ node.type }}">
-                        <input type="hidden" name="data[nodes][{{ node.id }}][elementType]" value="{{ node.elementType }}">
-                        <input type="hidden" name="data[nodes][{{ node.id }}][elementId]" value="{{ node.elementId }}">
-                        <input type="hidden" name="data[nodes][{{ node.id }}][order]" id="order" value="{{ node.order|length ? node.order : loop.index }}">
-                        <span class="title">{{ node.name }}</span>
-                        <input type="hidden" name="data[nodes][{{ node.id }}][name]" value="{{ node.name }}">
-                        <a href="{{ actionUrl('navigate/nodes/url', { id: node.id}) }}" data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
-                        <a data-icon="remove" class="delete" role="button"></a>
-                        <a class="move icon" title="Move"></a>
-
-                        <div class="node__type">
-                            <span class="node__type--entry">{{ node.type }}</span>
+                <li data-level="1">
+                    <div class="row" style="margin-left: -0px; padding-left: 0px;">
+                        <div class="node__node row element" data-id="{{ node.id }}" data-label="{{ node.name }}">
+                            <span class="status {{ node.enabled ? 'on': 'off'}}"></span>
+                            <span class="title">{{ node.name }}</span>
+                            <input type="hidden" name="data[nodes][{{ node.id }}][name]" value="{{ node.name }}">
+                            <a href="{{ actionUrl('navigate/nodes/url', { id: node.id}) }}" data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
+                            <a data-icon="remove" class="delete" role="button"></a>
+                            <a class="move icon" title="Move"></a>
+                            <div class="node__type">
+                                <span class="node__type--entry">{{ node.type }}</span>
+                            </div>
                         </div>
+
                     </div>
+
                 </li>
             {% endfor %}
         </ul>
@@ -96,13 +90,6 @@
     <script id="navigate__node" type="text/template">
         {% set replaceWith = {} %}
             <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
-            <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][enabled]" value="1">
-            <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][navId]" value="{{ navigation.id }}">
-            <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][siteId]" value="{{ '%%siteId%%'|replace(replaceWith) }}">
-            <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][type]" value="{{ '%%type%%'|replace(replaceWith) }}">
-            <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][elementType]" value="{{ '%%elementType%%'|replace(replaceWith) }}">
-            <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][elementId]" value="{{ '%%elementId%%'|replace(replaceWith) }}">
-            <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][url]" value="{{ '%%url%%'|replace(replaceWith) }}">
             <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
             <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][name]" value="{{ '%%label%%'|replace(replaceWith) }}">
             <a href="{{ '%%url%%'|replace(replaceWith) }}"  data-icon="world" target="_blank" title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
