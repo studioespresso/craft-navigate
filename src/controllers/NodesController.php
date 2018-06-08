@@ -99,6 +99,33 @@ class NodesController extends Controller
             return $this->asJson($returnData);
         }
 
+    }
+
+    public function actionMove() {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
+        $nodeId = Craft::$app->request->getRequiredBodyParam('nodeId');
+
+        // Get node
+        $node = Navigate::$plugin->nodes->getNodeById($nodeId);
+        if (! $node) {
+            throw new NotFoundHttpException('Node not found', 404 );
+        }
+
+        $prevId   = Craft::$app->request->getBodyParam('prevId', false);
+        $parentId = Craft::$app->request->getBodyParam('parentId', NULL);
+
+        // Move it move it!
+        $moved = Navigate::$plugin->nodes->move($node, $parentId, $prevId);
+        if($moved) {
+            // Return data
+            $returnData['success']  = true;
+            $returnData['message']  = Craft::t('navigate','Order updated');
+            $returnData['nodeData'] = $node;
+
+            return $this->asJson($returnData);
+        }
 
     }
 

@@ -672,41 +672,53 @@
 
                     // Remove the class either way
                     this._.$closestTarget.removeClass('draghover');
-                    if (moved) {
+                    if (moved)
+                    {
                         // Now deal with the now-childless parent
-                        if ($draggeeParent) {
+                        if ($draggeeParent)
+                        {
                             this.structure._removeUl($draggeeParent);
                         }
 
                         // Has the level changed?
                         var newLevel = this.$draggee.parentsUntil(this.structure.$container, 'li').length + 1;
 
-                        var animateCss;
-
-
-
-
-                        if (newLevel != this.$draggee.data('level')) {
+                        if (newLevel != this.$draggee.data('level'))
+                        {
                             // Correct the helper's padding if moving to/from level 1
-                            if (this.$draggee.data('level') == 1) {
-                                animateCss = {};
-                                animateCss['padding-' + Craft.left] = 38;
+                            if (this.$draggee.data('level') == 1)
+                            {
+                                var animateCss = {};
+                                animateCss['padding-'+Craft.left] = 38;
                                 this.$helperLi.velocity(animateCss, 'fast');
                             }
-                            else if (newLevel == 1) {
-                                animateCss = {};
-                                animateCss['padding-' + Craft.left] = Craft.Structure.baseIndent;
+                            else if (newLevel == 1)
+                            {
+                                var animateCss = {};
+                                animateCss['padding-'+Craft.left] = Craft.Structure.baseIndent;
                                 this.$helperLi.velocity(animateCss, 'fast');
                             }
 
                             this.setLevel(this.$draggee, newLevel);
                         }
 
-                         $(this.structure.$container).find("li").each(function(index, li) {
-
-                            $li = $(li);
-                            $li.find('#order').val(index);
-                         })
+                        // Make it real
+                        var $element = this.$draggee.children('.row').children('.element');
+                        console.log($element);
+                        var data = {
+                            navId:    this.structure.navId,
+                            nodeId:   $element.data('id'),
+                            prevId:   $element.closest('li').prev().children('.row').children('.element').data('id'),
+                            parentId: this.$draggee.parent('ul').parent('li').children('.row').children('.element').data('id')
+                        };
+                        var url = Craft.getActionUrl('navigate/nodes/move');
+                        Craft.postActionRequest(url, data, function(response, textStatus)
+                        {
+                            if (textStatus == 'success')
+                            {
+                                Craft.cp.displayNotice(response.message);
+                            }
+                        });
                     }
                 }
 

@@ -55,10 +55,9 @@ class NodesService extends Component
     public function getNodesByNavIdAndSite(int $navId = null, $siteId) {
         $data = [];
         $query = NodeRecord::find();
-        $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => null]);
+        $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => NULL]);
         $query->orderBy('order');
         foreach($query->all() as $record) {
-
             $model = new NodeModel();
             $model->setAttributes($record->getAttributes());
 
@@ -82,12 +81,19 @@ class NodesService extends Component
         return $data;
     }
 
-
     public function getNodesByNavIdAndSiteById(int $navId = null, $siteId) {
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId]);
         $query->indexBy('id');
-        return $query->all();
+
+        foreach($query->all() as $record) {
+            $model = new NodeModel();
+            $model->setAttributes($record->getAttributes());
+
+            $data[$model->order] = $model;
+        }
+        return $data;
+
     }
 
     public function getNodeById(int $navId = null) {
@@ -170,6 +176,31 @@ class NodesService extends Component
         return $model;
     }
 
+    public function move(NodeModel $node, $parent, $previousId) {
+        $record = NodeRecord::findOne(['id' => $node->id]);
+
+        $record->parent = $parent;
+
+        $currentOrder = 0;
+        $nodes = $this->getNodesByNavIdAndSite($record->navId, $record->siteId);
+        if(!$previousId) {
+            $record->order = $currentOrder;
+            $currentOrder++;
+        }
+
+        foreach($nodes as $node){
+            if($parent === $node->parent) {
+                $this->updateNode($node, $currentOrder);
+            }
+            $currentOrder++;
+        }
+
+        $record->save();
+
+        return true;
+    }
+
+
     public function cleanupNode($nodes, $navigation, $site)
     {
 
@@ -189,7 +220,9 @@ class NodesService extends Component
             $record->delete();
         }
 
+        $this->_updateOrderForNavigationId($nodeRecord->navId, $nodeRecord->locale);
 
+        return $result;
     }
 
     public function deleteNodesByNavId($record) {
@@ -214,12 +247,19 @@ class NodesService extends Component
         $query->orderBy('order DESC');
         $query->limit(1);
         $result = $query->one();
-        
+
         if($result) {
             return (int)$result->order +1;
         }
 
         return 0;
+
+    }
+
+    private function updateNode(NodeModel $node, $order) {
+        $record = NodeRecord::findOne(['id' => $node->id]);
+        $record->setAttribute('order', $order);
+        return $record->save();
 
     }
 
