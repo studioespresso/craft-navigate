@@ -110,7 +110,7 @@
 
                     var data = {
                         navId: this.id,
-                        siteId: this.site,
+                        siteId: parseInt(this.site),
                         status: element.status,
                         name: element.label,
                         enabled: element.status == 'live',

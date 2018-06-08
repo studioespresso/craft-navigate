@@ -135,15 +135,19 @@ class NodesService extends Component
     public function save(NodeModel $model)
     {
 
+        $isNew = !$model->id;
+
         $record = false;
         if (isset($model->id)) {
             $record = NodeRecord::findOne([
                 'id' => $model->id
             ]);
+        } else {
+            $record = new NodeRecord();
         }
 
-        if (!$record) {
-            $record = new NodeRecord();
+        if($isNew) {
+            $model->order = $this->getOrderForNewNode($model->navId, $model->siteId, $model->parent);
         }
 
         $record->siteId = $model->siteId;
@@ -156,14 +160,13 @@ class NodesService extends Component
         $record->elementId = $model->elementId;
         $record->url = $model->url;
 
-
         $save = $record->save();
+
         if (!$save) {
             Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
         }
 
-        $model = new NodeModel();
-        $model->setAttributes($record->getAttributes());
+
         return $model;
     }
 
@@ -198,6 +201,26 @@ class NodesService extends Component
             $record->delete();
         }
         return;
+    }
+
+    public function getOrderForNewNode($nav, $site, $parent) {
+        $query = NodeRecord::find();
+        $query->where(
+            [
+            'navId' => $nav,
+            'siteId' => $site,
+            'parent' => $parent
+        ]);
+        $query->orderBy('order DESC');
+        $query->limit(1);
+        $result = $query->one();
+        
+        if($result) {
+            return (int)$result->order +1;
+        }
+
+        return 0;
+
     }
 
 }
