@@ -190,7 +190,15 @@ class NodesService extends Component
 
         foreach($nodes as $node){
             if($parent === $node->parent) {
-                $this->updateNode($node, $currentOrder);
+                if($previousId && $previousId == $node->id) {
+                    $this->updateNode($node, $currentOrder);
+                    $currentOrder++;
+
+                    $record->order = $currentOrder;
+
+                } else {
+                    $this->updateNode($node, $currentOrder);
+                }
             }
             $currentOrder++;
         }
