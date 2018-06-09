@@ -90,6 +90,6 @@ class NodeModel extends Model
 
 
     public function getChildren() {
-        return Navigate::$plugin->nodes->getChildrenByNodeId($this);
+        return Navigate::$plugin->nodes->getChildrenByNode($this);
     }
 }

@@ -61,18 +61,12 @@
             {% for node in nodes %}
                 <li data-level="1">
                     <div class="row" style="margin-left: -0px; padding-left: 0px;">
-                        <div class="node__node row element" data-id="{{ node.id }}" data-label="{{ node.name }}">
-                            <span class="status {{ node.enabled ? 'on': 'off'}}"></span>
-                            <span class="title">{{ node.name }}</span>
-                            <input type="hidden" name="data[nodes][{{ node.id }}][name]" value="{{ node.name }}">
-                            <a href="{{ actionUrl('navigate/nodes/url', { id: node.id}) }}" data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
-                            <a data-icon="remove" class="delete" role="button"></a>
-                            <a class="move icon" title="Move"></a>
-                            <div class="node__type">
-                                <span class="node__type--entry">{{ node.type }}</span>
-                            </div>
-                        </div>
-
+                        {% include 'navigate/_includes/_node' %}
+                        {% if node.getChildren|length %}
+                            {% for child in node.getChildren()  %}
+                                {% include 'navigate/_includes/_node' with { node: child } %}
+                            {% endfor %}
+                        {% endif %}
                     </div>
 
                 </li>

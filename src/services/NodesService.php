@@ -52,12 +52,13 @@ class NodesService extends Component
         return $query->all();
     }
 
-    public function getNodesByNavIdAndSite(int $navId = null, $siteId) {
+    public function getNodesByNavIdAndSite(int $navId = null, $siteId)
+    {
         $data = [];
         $query = NodeRecord::find();
-        $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => NULL]);
-        $query->orderBy('order');
-        foreach($query->all() as $record) {
+        $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => null]);
+        $query->orderBy('parent ASC, order ASC');
+        foreach ($query->all() as $record) {
             $model = new NodeModel();
             $model->setAttributes($record->getAttributes());
 
@@ -66,49 +67,52 @@ class NodesService extends Component
         return $data;
     }
 
-    public function getChildrenByNodeId(NodeModel $node) {
+    public function getChildrenByNode(NodeModel $node)
+    {
         $data = [];
         $query = NodeRecord::find();
         $query->where(['navId' => $node->navId, 'siteId' => $node->siteId, 'parent' => $node->id]);
         $query->orderBy('order');
-        foreach($query->all() as $record) {
-
+        foreach ($query->all() as $record) {
             $model = new NodeModel();
             $model->setAttributes($record->getAttributes());
-
             $data[$model->order] = $model;
         }
         return $data;
     }
 
-    public function getNodesByNavIdAndSiteById(int $navId = null, $siteId) {
+    public function getNodesByNavIdAndSiteById(int $navId = null, $siteId)
+    {
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId]);
         $query->indexBy('id');
 
-        foreach($query->all() as $record) {
+        foreach ($query->all() as $record) {
             $model = new NodeModel();
             $model->setAttributes($record->getAttributes());
 
             $data[$model->order] = $model;
+
         }
         return $data;
 
     }
 
-    public function getNodeById(int $navId = null) {
+    public function getNodeById(int $navId = null)
+    {
         $query = NodeRecord::findOne([
             'id' => $navId
         ]);
-        if($query) {
+        if ($query) {
             $model = new NodeModel();
             $model->setAttributes($query->getAttributes());
             return $model;
         }
     }
 
-    public function getNodeUrl(NodeModel $node) {
-        if($node->type === "url") {
+    public function getNodeUrl(NodeModel $node)
+    {
+        if ($node->type === "url") {
             return $node->url;
         } else {
             $element = Craft::$app->elements->getElementById($node->elementId);
@@ -152,7 +156,7 @@ class NodesService extends Component
             $record = new NodeRecord();
         }
 
-        if($isNew) {
+        if ($isNew) {
             $model->order = $this->getOrderForNewNode($model->navId, $model->siteId, $model->parent);
         }
 
@@ -176,21 +180,22 @@ class NodesService extends Component
         return $model;
     }
 
-    public function move(NodeModel $node, $parent, $previousId) {
+    public function move(NodeModel $node, $parent, $previousId)
+    {
         $record = NodeRecord::findOne(['id' => $node->id]);
 
         $record->parent = $parent;
 
         $currentOrder = 0;
         $nodes = $this->getNodesByNavIdAndSite($record->navId, $record->siteId);
-        if(!$previousId) {
+        if (!$previousId) {
             $record->order = $currentOrder;
             $currentOrder++;
         }
 
-        foreach($nodes as $node){
-            if($parent === $node->parent) {
-                if($previousId && $previousId == $node->id) {
+        foreach ($nodes as $node) {
+            if ($parent === $node->parent) {
+                if ($previousId && $previousId == $node->id) {
                     $this->updateNode($node, $currentOrder);
                     $currentOrder++;
 
@@ -233,38 +238,41 @@ class NodesService extends Component
         return $result;
     }
 
-    public function deleteNodesByNavId($record) {
+    public function deleteNodesByNavId($record)
+    {
         $records = NodeRecord::findAll([
             'navId' => $record->id,
         ]);
 
-        foreach($records as $record) {
+        foreach ($records as $record) {
             $record->delete();
         }
         return;
     }
 
-    public function getOrderForNewNode($nav, $site, $parent) {
+    private function getOrderForNewNode($nav, $site, $parent)
+    {
         $query = NodeRecord::find();
         $query->where(
             [
-            'navId' => $nav,
-            'siteId' => $site,
-            'parent' => $parent
-        ]);
+                'navId' => $nav,
+                'siteId' => $site,
+                'parent' => $parent
+            ]);
         $query->orderBy('order DESC');
         $query->limit(1);
         $result = $query->one();
 
-        if($result) {
-            return (int)$result->order +1;
+        if ($result) {
+            return (int)$result->order + 1;
         }
 
         return 0;
 
     }
 
-    private function updateNode(NodeModel $node, $order) {
+    private function updateNode(NodeModel $node, $order)
+    {
         $record = NodeRecord::findOne(['id' => $node->id]);
         $record->setAttribute('order', $order);
         return $record->save();
