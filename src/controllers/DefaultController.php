@@ -53,7 +53,10 @@ class DefaultController extends Controller
     public function actionIndex()
     {
         $data = [];
-        $data['defaultSite'] = Craft::$app->sites->primarySite;
+
+        $sites = Craft::$app->sites->getEditableSites();
+
+        $data['defaultSite'] = reset($sites);
         $data['navigations'] = Navigate::$plugin->navigate->getAllNavigations();
         return $this->renderTemplate('navigate/_index', $data);
     }
@@ -88,7 +91,8 @@ class DefaultController extends Controller
     public function actionEdit($navId = null, $siteHandle) {
         if($navId && $siteHandle) {
             $navigation = Navigate::$plugin->navigate->getNavigationById($navId);
-            $site = Craft::$app->sites->getSiteByHandle($siteHandle);
+            $sites = Craft::$app->sites->getEditableSites();
+            $site = reset($sites);
 
             $nodeTypes = Navigate::$plugin->nodes->getNodeTypes($navigation);
 
