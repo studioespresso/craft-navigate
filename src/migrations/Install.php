@@ -122,8 +122,8 @@ class Install extends Migration
                 NodeRecord::tableName(),
                 [
                     'id' => $this->primaryKey(),
-                    'siteId' => $this->integer()->notNull(),
-                    'navId' => $this->string(255)->notNull()->defaultValue(''),
+                    'siteId' => $this->integer(11)->notNull(),
+                    'navId' => $this->integer(11)->notNull()->notNull()->defaultValue(''),
                     'name' => $this->string(255)->notNull(),
                     'url' => $this->string(255),
                     'elementId' => $this->integer(10),
