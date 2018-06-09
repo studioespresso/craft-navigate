@@ -14,7 +14,7 @@
 #}
 
 {% extends "_layouts/cp" %}
-{% import _self as macro %}
+{% import _self as macros %}
 {% import "_includes/forms" as forms %}
 
 {% do view.registerAssetBundle("studioespresso\\navigate\\assetbundles\\navigate\\NavigateAsset") %}
@@ -30,8 +30,7 @@
 {% set crumbs = [
     { label: pluginTitle, url: url('navigate') },
     { label: 'Edit', url: '#' }
-]
-%}
+] %}
 
 {% block header %}
     {% block pageTitle %}
@@ -46,83 +45,100 @@
 {% endblock %}
 
 
+{% macro renderNode(navigation, node) %}
+    {% import _self as macros %}
+    <li data-level="1">
+        <div class="row" style="margin-left: -0px; padding-left: 0px;">
+            <div class="node__node row element" data-id="{{ node.id }}" data-label="{{ node.name }}">
+                <span class="status {{ node.enabled ? 'on': 'off' }}"></span>
+                <span class="title">{{ node.name }}</span>
+                <input type="hidden" name="data[nodes][{{ node.id }}][name]" value="{{ node.name }}">
+                <a href="{{ actionUrl('navigate/nodes/url', { id: node.id}) }}" data-icon="world" target="_blank"
+                   title="{{ node.name }}" rel="nofollow"></a>
+                <a data-icon="remove" class="delete" role="button"></a>
+                <a class="move icon" title="Move"></a>
+                <div class="node__type">
+                    <span class="node__type--entry">{{ node.type }}</span>
+                </div>
+                {% if node.getChildren|length %}
+                    {% for child in node.getChildren() %}
+                        {{ macros.renderNode(navigation, child) }}
+                    {% endfor %}
+                {% endif %}
+            </div>
+    </li>
+{% endmacro renderNode %}
+
 {# The content of the CP Section#}
 {% block content %}
-<div id="navigate-nodes-input">
-    {% if not nodes|length %}
-        <div class="navigate__empty">
-        <p>{{ 'Use to buttons below to start adding items to your navigation'|t('navigate') }}</p>
+    <div id="navigate-nodes-input">
+        {% if not nodes|length %}
+            <div class="navigate__empty">
+                <p>{{ 'Use to buttons below to start adding items to your navigation'|t('navigate') }}</p>
+            </div>
+        {% endif %}
+        <div class="blocks">
+            <input type="hidden" name="data[navId]" value="{{ navigation.id }}">
+            <input type="hidden" name="data[siteId]" value="{{ site.id }}">
+            <ul id="navigate__nav" class="navigate__nav structure">
+                {% for node in nodes %}
+                    {{ macros.renderNode(navigation, node) }}
+                {% endfor %}
+            </ul>
         </div>
-    {% endif%}
-    <div class="blocks">
-        <input type="hidden" name="data[navId]" value="{{ navigation.id }}">
-        <input type="hidden" name="data[siteId]" value="{{ site.id }}">
-        <ul id="navigate__nav" class="navigate__nav structure">
-            {% for node in nodes %}
-                <li data-level="1">
-                    <div class="row" style="margin-left: -0px; padding-left: 0px;">
-                        {% include 'navigate/_includes/_node' %}
-                        {% if node.getChildren|length %}
-                            {% for child in node.getChildren()  %}
-                                {% include 'navigate/_includes/_node' with { node: child } %}
-                            {% endfor %}
-                        {% endif %}
-                    </div>
 
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    <div class="buttons">
-        <div class="btngroup" id="navigate-nodeTypes">
-            {% for nodeType in nodeTypes %}
-                <div class="btn{% if loop.first %} add icon{% endif %}" data-type="{{ nodeType.handle }}">{{ nodeType.title|t('navigate') }}</div>
-            {% endfor %}
+        <div class="buttons">
+            <div class="btngroup" id="navigate-nodeTypes">
+                {% for nodeType in nodeTypes %}
+                    <div class="btn{% if loop.first %} add icon{% endif %}"
+                         data-type="{{ nodeType.handle }}">{{ nodeType.title|t('navigate') }}</div>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-    <script id="navigate__node" type="text/template">
-        {% set replaceWith = {} %}
+        <script id="navigate__node" type="text/template">
+            {% set replaceWith = {} %}
             <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
             <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
-            <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][name]" value="{{ '%%label%%'|replace(replaceWith) }}">
-            <a href="{{ '%%url%%'|replace(replaceWith) }}"  data-icon="world" target="_blank" title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
+            <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][name]"
+                   value="{{ '%%label%%'|replace(replaceWith) }}">
+            <a href="{{ '%%url%%'|replace(replaceWith) }}" data-icon="world" target="_blank"
+               title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
             <a data-icon="remove" class="delete" role="button"></a>
             <div class="node__type">
                 <span class="node__type--entry">{{ '%%type%%'|replace(replaceWith) }}</span>
             </div>
-    </script>
-    <script id="node__url" type="text/template">
-        <div class="body">
-            <div class="field" id="node__url-name">
-                <div class="heading">
-                    <label class="required" for="name">{{ 'Name' }}</label>
+        </script>
+        <script id="node__url" type="text/template">
+            <div class="body">
+                <div class="field" id="node__url-name">
+                    <div class="heading">
+                        <label class="required" for="name">{{ 'Name' }}</label>
+                    </div>
+                    <div class="input ltr">
+                        <input class="text node-name fullwidth" type="text" id="name" autocomplete="off">
+                    </div>
                 </div>
-                <div class="input ltr">
-                    <input class="text node-name fullwidth" type="text" id="name" autocomplete="off">
-                </div>
-            </div>
 
-            <div class="field" id="node__url-url">
-                <div class="heading">
-                    <label class="required" for="url">{{ 'URL' }}</label>
+                <div class="field" id="node__url-url">
+                    <div class="heading">
+                        <label class="required" for="url">{{ 'URL' }}</label>
+                    </div>
+                    <div class="input ltr">
+                        <input class="text node-url fullwidth" type="text" id="url" name="url" autocomplete="off">
+                    </div>
                 </div>
-                <div class="input ltr">
-                    <input class="text node-url fullwidth" type="text" id="url" name="url" autocomplete="off">
+
+            </div>
+            <footer class="footer">
+                <div class="buttons right">
+                    <input type="button" class="btn cancel" value="{{ 'Cancel'|t('app') }}">
+                    <input type="submit" class="btn submit" value="{{ 'Add'|t('app') }}">
                 </div>
-            </div>
+            </footer>
+            <div class="spinner" style="display: none;"></div>
+        </script>
 
-        </div>
-        <footer class="footer">
-            <div class="buttons right">
-                <input type="button" class="btn cancel" value="{{ 'Cancel'|t('app') }}">
-                <input type="submit" class="btn submit" value="{{ 'Add'|t('app') }}">
-            </div>
-        </footer>
-        <div class="spinner" style="display: none;"></div>
-    </script>
-
-</div>
+    </div>
 
 {% endblock %}
 
@@ -137,7 +153,8 @@
                     <label id="handle-label" for="handle">Handle</label>
                 </div>
                 <div class="input ltr">
-                    <input class="text fullwidth" disabled="disabled" type="text" id="handle" name="handle" value="{{ navigation.handle }}" autocomplete="off">
+                    <input class="text fullwidth" disabled="disabled" type="text" id="handle" name="handle"
+                           value="{{ navigation.handle }}" autocomplete="off">
                 </div>
             </div>
 

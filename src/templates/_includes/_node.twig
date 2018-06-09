@@ -1,13 +1,11 @@
-<div class="node__node element" data-id="{{ '%%id%%'|replace(replaceWith) }}" data-label="{{ '%%label%%'|replace(replaceWith) }}">
-    <div class="label">
-        <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
-        <input type="hidden" name="data[nodes][{{ '%%id%%'|replace(replaceWith) }}][navId]" value="{{ navigation.id }}">
-        <input type="hidden" name="data[nodes][{{ '%%id%%'|replace(replaceWith) }}][type]" value="{{ '%%type%%'|replace(replaceWith) }}">
-        <input type="hidden" name="data[nodes][{{ '%%id%%'|replace(replaceWith) }}][elementType]" value="{{ '%%elementType%%'|replace(replaceWith) }}">
-        <input type="hidden" name="data[nodes][{{ '%%id%%'|replace(replaceWith) }}][elementId]" value="{{ '%%elementId%%'|replace(replaceWith) }}">
-        <input type="hidden" name="data[nodes][{{ '%%id%%'|replace(replaceWith) }}][id]" value="{{ '%%id%%'|replace(replaceWith) }}">
-        <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
-        <input type="hidden" name="data[nodes][{{ '%%id%%'|replace(replaceWith) }}][name]" value="{{ '%%label%%'|replace(replaceWith) }}">
-        <a href="{{ '%%url%%'|replace(replaceWith) }}"  data-icon="world" target="_blank" title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
+<div class="node__node row element" data-id="{{ node.id }}" data-label="{{ node.name }}">
+    <span class="status {{ node.enabled ? 'on': 'off'}}"></span>
+    <span class="title">{{ node.name }}</span>
+    <input type="hidden" name="data[nodes][{{ node.id }}][name]" value="{{ node.name }}">
+    <a href="{{ actionUrl('navigate/nodes/url', { id: node.id}) }}" data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
+    <a data-icon="remove" class="delete" role="button"></a>
+    <a class="move icon" title="Move"></a>
+    <div class="node__type">
+        <span class="node__type--entry">{{ node.type }}</span>
     </div>
 </div>
