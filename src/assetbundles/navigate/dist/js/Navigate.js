@@ -73,7 +73,7 @@
              */
             createModal: function (elementType, elementSources) {
                 if (elementType === 'url') {
-                    $modal = new Craft.NavigateUrlModal(this.structure, this.site);
+                    $modal = new Craft.NavigateUrlModal(this.structure, this.id, this.site);
                     return $modal;
                 } else {
                     return Craft.createElementSelectorModal(elementType, {
@@ -185,9 +185,11 @@
             $bodyInput: null,
             $spinner: null,
             site : null,
+            nav: null,
 
-            init: function (structure, currentSite) {
+            init: function (structure, navId, currentSite) {
                 this.site = currentSite;
+                this.nav = navId;
 
                 this.structure = structure,
                     this.body = $('#node__url').html(),
@@ -228,8 +230,11 @@
                 }
 
                 var data = {
+                    navId: this.nav,
                     siteId: this.site,
+                    type: 'url',
                     enabled: 'live',
+                    parentId: 0,
                     name: this.$nameInput.val(),
                     url: this.$urlInput.val()
                 };
@@ -252,13 +257,30 @@
                     return;
                 }
 
-                this.loading = true;
-                this.$submitBtn.addClass('active');
-                this.$spinner.show();
-                this.structure.addNode(data, 'url');
-                this.$spinner.hide();
-                this.hide();
 
+                var url = Craft.getActionUrl('navigate/nodes/add');
+                Craft.postActionRequest(url, data, $.proxy(function(response, textStatus) {
+                    if (textStatus == 'success') {
+                        this.savingNode = false;
+
+                        if (response.success) {
+                            // Add node to structure!
+                            this.loading =  true;
+
+                            this.$spinner.show();
+                            this.structure.addNode(data, 'url');
+                            this.$spinner.hide();
+                            this.hide();
+
+                            // Display parent options
+                            Craft.cp.displayNotice(response.message);
+                        }
+                        else {
+                            Craft.cp.displayError(response.message);
+                        }
+                    }
+                }, this));
+                
             },
 
 

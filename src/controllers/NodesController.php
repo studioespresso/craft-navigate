@@ -70,7 +70,6 @@ class NodesController extends Controller
             $model->setAttributes([
                 'type' => $attributes['type'],
                 'url' => $attributes['url'],
-                'elementId' => $attributes['elementId']
             ]);
         }
 
