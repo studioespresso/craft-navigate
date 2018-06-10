@@ -74,25 +74,25 @@ class NodesController extends Controller
         }
 
         $model->setAttributes([
-            'siteId'   => $attributes['siteId'],
-            'navId'    => $attributes['navId'],
+            'siteId' => $attributes['siteId'],
+            'navId' => $attributes['navId'],
             'parentId' => (int)$attributes['parentId'],
-            'name'     => $attributes['name'],
-            'blank'    => isset($attributes['blank']) ? $attributes['blank'] == 'true' : false,
-            'enabled'  => true,
+            'name' => $attributes['name'],
+            'blank' => isset($attributes['blank']) ? $attributes['blank'] == 'true' : false,
+            'enabled' => true,
         ]);
 
-        if(!$model->validate()) {
-            $returnData['success']  = false;
-            $returnData['message']  = Craft::t('navigate', 'Oops, something went wrong here');
+        if (!$model->validate()) {
+            $returnData['success'] = false;
+            $returnData['message'] = Craft::t('navigate', 'Oops, something went wrong here');
             return $this->asJson($returnData);
         }
 
         $node = Navigate::$plugin->nodes->save($model);
-        if($node !== false) {
+        if ($node !== false) {
             // Return data
-            $returnData['success']  = true;
-            $returnData['message']  = Craft::t('navigate','Node added.');
+            $returnData['success'] = true;
+            $returnData['message'] = Craft::t('navigate', 'Node added.');
             $returnData['nodeData'] = $node;
 
             return $this->asJson($returnData);
@@ -100,7 +100,8 @@ class NodesController extends Controller
 
     }
 
-    public function actionMove() {
+    public function actionMove()
+    {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
@@ -108,24 +109,42 @@ class NodesController extends Controller
 
         // Get node
         $node = Navigate::$plugin->nodes->getNodeById($nodeId);
-        if (! $node) {
-            throw new NotFoundHttpException('Node not found', 404 );
+        if (!$node) {
+            throw new NotFoundHttpException('Node not found', 404);
         }
 
-        $prevId   = Craft::$app->request->getBodyParam('prevId', false);
-        $parentId = Craft::$app->request->getBodyParam('parentId', NULL);
+        $prevId = Craft::$app->request->getBodyParam('prevId', false);
+        $parentId = Craft::$app->request->getBodyParam('parentId', null);
 
         // Move it move it!
         $moved = Navigate::$plugin->nodes->move($node, $parentId, $prevId);
-        if($moved) {
+        if ($moved) {
             // Return data
-            $returnData['success']  = true;
-            $returnData['message']  = Craft::t('navigate','Order updated');
+            $returnData['success'] = true;
+            $returnData['message'] = Craft::t('navigate', 'Order updated');
             $returnData['nodeData'] = $node;
 
             return $this->asJson($returnData);
         }
 
+    }
+
+    public function actionEditor()
+    {
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
+        $nodeId = Craft::$app->request->getRequiredBodyParam('nodeId');
+
+        // Get node
+        $node = Navigate::$plugin->nodes->getNodeById($nodeId);
+        if (!$node) {
+            throw new NotFoundHttpException('Node not foud', 404);
+        }
+
+        $payload['html'] = Craft::$app->view->renderTemplate('navigate/_includes/_editor', [$node]);
+
+        return $this->asJson($payload);
     }
 
     public function actionUrl($id)
