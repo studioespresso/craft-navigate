@@ -317,11 +317,18 @@
 
                 this.dragdrop = new Craft.NavigateDragDrop(this, this.levels);
 
+                this.$container.find('.settings').on('click', $.proxy(function(ev) {
+                    this.getNodeEditor($(ev.currentTarget));
+                }, this));
 
                 this.$container.find('.delete').on('click', $.proxy(function (ev) {
                     this.removeElement($(ev.currentTarget));
                 }, this));
 
+            },
+
+            getNodeEditor: function($element) {
+                new Craft.NavigateEditor($element);
             },
 
 
@@ -402,6 +409,78 @@
                 }
             },
         });
+
+    Craft.NavigateEditor = Garnish.Base.extend(
+        {
+            $node: null,
+            nodeId: null,
+
+            $form: null,
+            $fieldsContainer: null,
+            $cancelBtn: null,
+            $saveBtn: null,
+            $spinner: null,
+
+            hud: null,
+
+            init: function($node) {
+                this.$node = $node;
+                this.nodeId = $node.data('id');
+
+                this.$node.addClass('loading');
+
+                var data = {
+                    nodeId: this.nodeId
+                };
+
+                Craft.postActionRequest('navigate/nodes/editor', data, $.proxy(this, 'showEditor'));
+            },
+
+            showEditor: function(response, textStatus) {
+                this.$node.removeClass('loading');
+
+                if (textStatus == 'success') {
+                    var $hudContents = $();
+
+                    this.$form = $('<form/>');
+                    $('<input type="hidden" name="nodeId" value="'+this.nodeId+'">').appendTo(this.$form);
+                    this.$fieldsContainer = $('<div class="fields"/>').appendTo(this.$form);
+
+                    this.$fieldsContainer.html(response.html)
+                    Craft.initUiElements(this.$fieldsContainer);
+
+                    var $buttonsOuterContainer = $('<div class="footer"/>').appendTo(this.$form);
+
+                    this.$spinner = $('<div class="spinner left hidden"/>').appendTo($buttonsOuterContainer);
+
+                    var $buttonsContainer = $('<div class="buttons right"/>').appendTo($buttonsOuterContainer);
+                    this.$cancelBtn = $('<div class="btn">'+Craft.t('Cancel')+'</div>').appendTo($buttonsContainer);
+                    this.$saveBtn = $('<input class="btn submit" type="submit" value="'+Craft.t('Save')+'"/>').appendTo($buttonsContainer);
+
+                    $hudContents = $hudContents.add(this.$form);
+
+                    this.hud = new Garnish.HUD(this.$node, $hudContents, {
+                        bodyClass: 'body elementeditor',
+                        closeOtherHUDs: false
+                    });
+
+                    this.hud.on('hide', $.proxy(function() {
+                        delete this.hud;
+                    }, this));
+
+                    this.addListener(this.$saveBtn, 'click', 'saveNode');
+                    this.addListener(this.$cancelBtn, 'click', function() {
+                        this.hud.hide()
+                    });
+                }
+            },
+            
+            closeHud: function() {
+                this.hud.hide();
+                delete this.hud;
+            }
+        });
+
 
     Craft.NavigateDragDrop = Garnish.Drag.extend(
         {

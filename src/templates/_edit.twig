@@ -55,8 +55,9 @@
                 <span class="status {{ node.enabled ? 'on': 'off' }}"></span>
                 <span class="title">{{ node.name }}</span>
                 <a href="{{ actionUrl('navigate/nodes/url', { id: node.id}) }}" data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
-                <a data-icon="remove" class="delete" role="button"></a>
+                <a class="settings icon" data-id="{{ node.id }}" title="{{ 'Settings'|t }}"></a>
                 <a class="move icon" title="Move"></a>
+                <a data-icon="remove" class="delete icon" role="button"></a>
                 <div class="node__type">
                     <span class="node__type--entry">{{ node.type }}</span>
                 </div>
@@ -100,16 +101,14 @@
         </div>
         <script id="navigate__node" type="text/template">
             {% set replaceWith = {} %}
-            <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
-            <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
-            <input type="hidden" name="data[nodes][{{ '%%count%%'|replace(replaceWith) }}][name]"
-                   value="{{ '%%label%%'|replace(replaceWith) }}">
-            <a href="{{ '%%url%%'|replace(replaceWith) }}" data-icon="world" target="_blank"
-               title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
-            <a data-icon="remove" class="delete" role="button"></a>
-            <div class="node__type">
-                <span class="node__type--entry">{{ '%%type%%'|replace(replaceWith) }}</span>
-            </div>
+                <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
+                <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
+                <a href="{{ '%%url%%'|replace(replaceWith) }}" data-icon="world" target="_blank" title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
+                <a data-icon="remove" class="delete" role="button"></a>
+                <a class="move icon" title="Move"></a>
+                <div class="node__type">
+                    <span class="node__type--entry">{{ '%%type%%'|replace(replaceWith) }}</span>
+                </div>
         </script>
         <script id="node__url" type="text/template">
             <div class="body">
