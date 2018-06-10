@@ -114,6 +114,12 @@ class NodesController extends Controller
 
         $data = Craft::$app->request->getBodyParams();
 
+        if($node->type === 'url') {
+            $node->setAttributes([
+                'url' => $data['url'],
+            ]);
+        }
+
         $node->setAttributes([
             'name' => $data['name'],
             'enabled'  => $data['enabled'],

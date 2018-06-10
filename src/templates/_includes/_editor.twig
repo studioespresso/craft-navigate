@@ -7,6 +7,15 @@
     value: node.name,
 }) }}
 
+{% if node.type == 'url' %}
+	{{ forms.textField({
+        id: 'url',
+        name: 'url',
+        label: "URL"|t,
+        value: node.url,
+    }) }}
+{% endif %}
+
 {{ forms.lightswitchField({
     id:           'enabled',
     name:         'enabled',
