@@ -454,13 +454,13 @@
                     this.$spinner = $('<div class="spinner left hidden"/>').appendTo($buttonsOuterContainer);
 
                     var $buttonsContainer = $('<div class="buttons right"/>').appendTo($buttonsOuterContainer);
-                    this.$cancelBtn = $('<div class="btn">'+Craft.t('Cancel')+'</div>').appendTo($buttonsContainer);
-                    this.$saveBtn = $('<input class="btn submit" type="submit" value="'+Craft.t('Save')+'"/>').appendTo($buttonsContainer);
+                    this.$cancelBtn = $('<div class="btn">'+Craft.t('navigate','Cancel')+'</div>').appendTo($buttonsContainer);
+                    this.$saveBtn = $('<input class="btn submit" type="submit" value="'+Craft.t('navigate','Save')+'"/>').appendTo($buttonsContainer);
 
                     $hudContents = $hudContents.add(this.$form);
 
                     this.hud = new Garnish.HUD(this.$node, $hudContents, {
-                        bodyClass: 'body elementeditor',
+                        bodyClass: 'body elementeditor elementeditor--navigate',
                         closeOtherHUDs: false
                     });
 
@@ -468,13 +468,60 @@
                         delete this.hud;
                     }, this));
 
-                    this.addListener(this.$saveBtn, 'click', 'saveNode');
+                    this.addListener(this.$saveBtn, 'click', 'save');
                     this.addListener(this.$cancelBtn, 'click', function() {
                         this.hud.hide()
                     });
                 }
             },
-            
+
+            save: function(e) {
+                e.preventDefault();
+
+                this.$spinner.removeClass('hidden');
+
+                var data = this.$form.serialize(),
+                    $status    = this.$node.find('.status');
+                    $blank    = this.$node.find('.blank');
+
+
+                    updateUrl = Craft.getActionUrl('navigate/nodes/update');
+                Craft.postActionRequest(updateUrl, data, $.proxy(function(response, textStatus) {
+                    this.$spinner.addClass('hidden');
+
+                    if (textStatus == 'success') {
+                        if (textStatus == 'success' && response.success) {
+                            Craft.cp.displayNotice(response.message);
+
+                            // Update name
+                            this.$node.data('label', response.nodeData.name);
+                            this.$node.find('.title').text(response.nodeData.name);
+                            // Update status
+                            if (response.nodeData.enabled) {
+                                $status.addClass('live');
+                                $status.removeClass('expired');
+                            } else {
+                                $status.addClass('expired');
+                                $status.removeClass('live');
+                            }
+                            // Update new window icon
+                            if (response.nodeData.blank) {
+                                $blank.removeClass('visuallyhidden');
+                            } else {
+                                $blank.addClass('visuallyhidden');
+                            }
+
+                            this.closeHud();
+                        }
+                        else
+                        {
+                            Garnish.shake(this.hud.$hud);
+                        }
+                    }
+                }, this));
+
+            },
+
             closeHud: function() {
                 this.hud.hide();
                 delete this.hud;

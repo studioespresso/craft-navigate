@@ -100,6 +100,40 @@ class NodesController extends Controller
 
     }
 
+    public function actionUpdate()
+    {
+        $this->requireAcceptsJson();
+        $this->requirePostRequest();
+
+        $nodeId = Craft::$app->request->getRequiredBodyParam('nodeId');
+        $node = Navigate::$plugin->nodes->getNodeById($nodeId);
+
+        if (!$node) {
+            throw new NotFoundHttpException('Node not found', 404);
+        }
+
+        $data = Craft::$app->request->getBodyParams();
+
+        $node->setAttributes([
+            'name' => $data['name'],
+            'enabled'  => $data['enabled'],
+            'blank'  => $data['blank'],
+
+        ]);
+
+        $payload = array('success' => false);
+
+        $save = Navigate::$plugin->nodes->save($node);
+        if ($save) {
+            $payload['success'] = true;
+            $returnData['message'] = Craft::t('navigate', 'Node saved.');
+            $payload['nodeData'] = $node;
+        }
+
+        return $this->asJson($payload);
+
+    }
+
     public function actionMove()
     {
         $this->requirePostRequest();
@@ -142,7 +176,7 @@ class NodesController extends Controller
             throw new NotFoundHttpException('Node not foud', 404);
         }
 
-        $payload['html'] = Craft::$app->view->renderTemplate('navigate/_includes/_editor', [$node]);
+        $payload['html'] = Craft::$app->view->renderTemplate('navigate/_includes/_editor', ['node' => $node]);
 
         return $this->asJson($payload);
     }

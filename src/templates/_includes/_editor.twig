@@ -1,0 +1,29 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    id: 'name',
+    name: 'name',
+    label: "Name"|t,
+    value: node.name,
+}) }}
+
+{{ forms.lightswitchField({
+    id:           'enabled',
+    name:         'enabled',
+    label:        'Enabled'|t,
+    on:           node.enabled,
+    instructions: 'Show or hide in navigation.'|t
+}) }}
+
+{{ forms.lightswitchField({
+    id:           'blank',
+    name:         'blank',
+    label:        'Open in new windows'|t,
+    on:           node.blank,
+}) }}
+
+<style>
+    .hud .elementeditor--navigate .main {
+        padding: 0;
+    }
+</style>

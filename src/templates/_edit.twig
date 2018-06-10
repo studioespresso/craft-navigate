@@ -54,6 +54,7 @@
             <div class="node__node row element" data-id="{{ node.id }}" data-label="{{ node.name }}">
                 <span class="status {{ node.enabled ? 'on': 'off' }}"></span>
                 <span class="title">{{ node.name }}</span>
+                <span class="amnav__blank {{ node.blank }}" title="{{ 'Opens in a new window'|t }}"></span>
                 <a href="{{ actionUrl('navigate/nodes/url', { id: node.id}) }}" data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
                 <a class="settings icon" data-id="{{ node.id }}" title="{{ 'Settings'|t }}"></a>
                 <a class="move icon" title="Move"></a>
