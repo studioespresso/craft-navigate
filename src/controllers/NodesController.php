@@ -124,6 +124,7 @@ class NodesController extends Controller
             'name' => $data['name'],
             'enabled'  => $data['enabled'],
             'blank'  => $data['blank'],
+            'classes'  => $data['classes'],
 
         ]);
 

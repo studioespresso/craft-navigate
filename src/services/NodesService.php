@@ -168,6 +168,7 @@ class NodesService extends Component
         $record->parent = $model->parent;
         $record->enabled= $model->enabled ? 1 : 0;
         $record->blank= $model->blank ? 1 : 0;
+        $record->classes= $model->classes;
         $record->elementType = $model->elementType;
         $record->elementId = $model->elementId;
         $record->url = $model->url;
