@@ -19,6 +19,7 @@ use craft\base\Component;
 use studioespresso\navigate\records\NavigationRecord;
 use studioespresso\navigate\records\NodeRecord;
 use Twig\Node\Node;
+use yii\web\NotFoundHttpException;
 
 /**
  * NodesService Service
@@ -140,6 +141,22 @@ class NodesService extends Component
         }
 
         return $nodeTypes;
+    }
+
+    public function deleteNode(NodeModel $model) {
+        $record = false;
+        
+        if (isset($model->id)) {
+            $record = NodeRecord::findOne([
+                'id' => $model->id
+            ]);
+        } else {
+            throw new NotFoundHttpException('Node not found', 404);
+        }
+
+        if($record->delete()) {
+            return true;
+        }
     }
 
     public function save(NodeModel $model)

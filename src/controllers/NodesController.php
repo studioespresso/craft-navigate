@@ -100,6 +100,23 @@ class NodesController extends Controller
 
     }
 
+    public function actionDelete() {
+        $this->requireAcceptsJson();
+        $this->requirePostRequest();
+
+        $nodeId = Craft::$app->request->getRequiredBodyParam('nodeId');
+        $node = Navigate::$plugin->nodes->getNodeById($nodeId);
+
+        if(Navigate::$plugin->nodes->deleteNode($node)) {
+            // Return data
+            $returnData['success'] = true;
+            $returnData['message'] = Craft::t('navigate', 'Node removed');
+            $returnData['nodeData'] = $node;
+        }
+
+        return $this->asJson($returnData);
+    }
+
     public function actionUpdate()
     {
         $this->requireAcceptsJson();
