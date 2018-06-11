@@ -398,7 +398,11 @@
             removeElement: function ($element) {
                 var $li = $element.closest('li');
                 confirmation = confirm(Craft.t('navigate', 'Are you sure you want to delete “{name}” and its descendants?', {name: $li.find('.node__node').data('label')}));
+
                 if (confirmation) {
+                    this.deleteNode($element.parent());
+                    this.dragdrop.removeItems($li);
+
                     if (!$li.siblings().length) {
                         var $parentUl = $li.parent();
                     }
@@ -408,6 +412,20 @@
                     }, this));
                 }
             },
+
+            deleteNode: function($element) {
+                console.log($element);
+                var nodeId = $element.data('id'),
+                    url = Craft.getActionUrl('navigate/nodes/delete'),
+                    data = { nodeId: nodeId };
+
+
+                Craft.postActionRequest(url, data, $.proxy(function(response, textStatus) {
+                    if (textStatus == 'success' && response.success) {
+                        Craft.cp.displayNotice(response.message);
+                    }
+                }, this));
+            }
         });
 
     Craft.NavigateEditor = Garnish.Base.extend(
