@@ -508,9 +508,8 @@
                 this.$spinner.removeClass('hidden');
 
                 var data = this.$form.serialize(),
-                    $status    = this.$node.find('.status');
+                    $status    = this.$node.parent().find('.status');
                     $blank    = this.$node.find('.blank');
-
 
                     updateUrl = Craft.getActionUrl('navigate/nodes/update');
                     Craft.postActionRequest(updateUrl, data, $.proxy(function(response, textStatus) {
@@ -518,7 +517,7 @@
 
                     if (textStatus == 'success') {
                         if (textStatus == 'success' && response.success) {
-                            Craft.cp.displayNotice(response.message);
+                            Craft.cp.displayNotice('navigate', response.message);
 
                             // Update name
                             this.$node.parent().data('label', response.nodeData.name);
