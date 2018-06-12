@@ -197,7 +197,7 @@ class NodesService extends Component
         }
 
 
-        return $model;
+        return $record;
     }
 
     public function move(NodeModel $node, $parent, $previousId)

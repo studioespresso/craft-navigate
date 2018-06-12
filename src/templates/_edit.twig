@@ -105,8 +105,9 @@
                 <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
                 <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
                 <a href="{{ '%%url%%'|replace(replaceWith) }}" data-icon="world" target="_blank" title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
-                <a data-icon="remove" class="delete" role="button"></a>
-                <a class="move icon" title="Move"></a>
+            <a class="settings icon" data-id="{{ '%%id%%'|replace(replaceWith) }}" title="{{ 'Settings'|t }}"></a>
+            <a class="move icon" title="Move"></a>
+            <a data-icon="remove" class="delete icon" role="button"></a>
                 <div class="node__type">
                     <span class="node__type--entry">{{ '%%type%%'|replace(replaceWith) }}</span>
                 </div>

@@ -160,7 +160,7 @@
                             }
 
                             // Add node to structure!
-                            this.structure.addNode(data, 'element');
+                            this.structure.addNode(response.nodeData, 'element');
 
                             // Display parent options
                             this.$parentContainer.html(response.parentOptions);
@@ -268,7 +268,7 @@
                             this.loading =  true;
 
                             this.$spinner.show();
-                            this.structure.addNode(data, 'url');
+                            this.structure.addNode(response.nodeData, 'url');
                             this.$spinner.hide();
                             this.hide();
 
@@ -318,6 +318,7 @@
                 this.dragdrop = new Craft.NavigateDragDrop(this, this.levels);
 
                 this.$container.find('.settings').on('click', $.proxy(function(ev) {
+                    console.log('blaa');
                     this.getNodeEditor($(ev.currentTarget));
                 }, this));
 
@@ -346,13 +347,12 @@
                     .replace(/%%count%%/ig, count + 1)
                     .replace(/%%status%%/ig, data.enabled ? "live" : "expired")
                     .replace(/%%label%%/ig, data.name)
+                    .replace(/%%id%%/ig, data.id)
                     .replace(/%%type%%/ig, nodeType)
                     .replace(/%%url%%/ig, nodeType == 'url' ? data.url : '')
                     .replace(/%%elementType%%/ig, data.elementType ? data.elementType : '' )
                     .replace(/%%type%%/ig, data.elementType ? data.elementType.toLowerCase() : "url")
                     .replace(/%%typeLabel%%/ig, data.elementType ? data.elementType : "")
-                    .replace(/%%url%%/ig, data.url.replace('{siteUrl}', this.siteUrl))
-                    .replace(/%%urlless%%/ig, data.url.replace('{siteUrl}', ''))
 
                 $node = $(nodeHtml);
 
@@ -384,6 +384,14 @@
 
                 this.dragdrop.addItems($li);
 
+                this.$container.find('.settings').on('click', $.proxy(function(ev) {
+                    console.log('blaa');
+                    this.getNodeEditor($(ev.currentTarget));
+                }, this));
+
+                this.$container.find('.delete').on('click', $.proxy(function (ev) {
+                    this.removeElement($(ev.currentTarget));
+                }, this));
 
                 if (this.$container.length) {
                     this.$emptyContainer.addClass('hidden');
@@ -504,7 +512,7 @@
 
 
                     updateUrl = Craft.getActionUrl('navigate/nodes/update');
-                Craft.postActionRequest(updateUrl, data, $.proxy(function(response, textStatus) {
+                    Craft.postActionRequest(updateUrl, data, $.proxy(function(response, textStatus) {
                     this.$spinner.addClass('hidden');
 
                     if (textStatus == 'success') {
