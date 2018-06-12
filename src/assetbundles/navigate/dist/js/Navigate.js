@@ -318,7 +318,6 @@
                 this.dragdrop = new Craft.NavigateDragDrop(this, this.levels);
 
                 this.$container.find('.settings').on('click', $.proxy(function(ev) {
-                    console.log('blaa');
                     this.getNodeEditor($(ev.currentTarget));
                 }, this));
 
@@ -522,8 +521,8 @@
                             Craft.cp.displayNotice(response.message);
 
                             // Update name
-                            this.$node.data('label', response.nodeData.name);
-                            this.$node.find('.title').text(response.nodeData.name);
+                            this.$node.parent().data('label', response.nodeData.name);
+                            this.$node.parent().find('.title').text(response.nodeData.name);
                             // Update status
                             if (response.nodeData.enabled) {
                                 $status.addClass('live');
