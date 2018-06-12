@@ -464,7 +464,6 @@
             },
 
             showEditor: function(response, textStatus) {
-                this.$node.removeClass('loading');
 
                 if (textStatus == 'success') {
                     var $hudContents = $();
