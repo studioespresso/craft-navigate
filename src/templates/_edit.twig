@@ -48,7 +48,6 @@
 {% macro renderNode(navigation, node, level) %}
     {% import _self as macros %}
     {% set indent = 8 + (level - 1) * 35 %}
-
     <li data-level="{{ level }}">
         <div class="row" style="padding-left: {{ indent }}px;">
             <div class="node__node row element" data-id="{{ node.id }}" data-label="{{ node.name }}">
@@ -102,15 +101,15 @@
         </div>
         <script id="navigate__node" type="text/template">
             {% set replaceWith = {} %}
-                <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
-                <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
-                <a href="{{ '%%url%%'|replace(replaceWith) }}" data-icon="world" target="_blank" title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
+            <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
+            <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
+            <a href="{{ '%%url%%'|replace(replaceWith) }}" data-icon="world" target="_blank" title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
             <a class="settings icon" data-id="{{ '%%id%%'|replace(replaceWith) }}" title="{{ 'Settings'|t }}"></a>
             <a class="move icon" title="Move"></a>
             <a data-icon="remove" class="delete icon" role="button"></a>
-                <div class="node__type">
-                    <span class="node__type--entry">{{ '%%type%%'|replace(replaceWith) }}</span>
-                </div>
+            <div class="node__type">
+                <span class="node__type--entry">{{ '%%type%%'|replace(replaceWith) }}</span>
+            </div>
         </script>
         <script id="node__url" type="text/template">
             <div class="body">

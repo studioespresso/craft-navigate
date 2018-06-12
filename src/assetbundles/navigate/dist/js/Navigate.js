@@ -357,7 +357,7 @@
                 $node = $(nodeHtml);
 
                 // Add it to the structure
-                this.addElement($node, data.parentId);
+                this.addElement($node, data.parentId, data);
 
             },
 
@@ -371,21 +371,21 @@
              *
              * @param object $element
              */
-            addElement: function ($element, parentId) {
+            addElement: function ($element, parentId, data) {
                 var $appendTo = this.$container,
                     level = 1;
 
+                console.log($element);
                 // Add node to the structure
                 var $li = $('<li data-level="' + level + '"/>').appendTo($appendTo),
                     indent = this.getIndent(level),
-                    $row = $('<div class="node__node row" style="margin-' + Craft.left + ': -' + indent + 'px; padding-' + Craft.left + ': ' + indent + 'px;">').appendTo($li);
+                    $row = $('<div class="node__node row element" data-label= "' + data.name + '" style="margin-' + Craft.left + ': -' + indent + 'px; padding-' + Craft.left + ': ' + indent + 'px;">').appendTo($li);
 
                 $row.append($element);
 
                 this.dragdrop.addItems($li);
 
                 this.$container.find('.settings').on('click', $.proxy(function(ev) {
-                    console.log('blaa');
                     this.getNodeEditor($(ev.currentTarget));
                 }, this));
 
@@ -404,7 +404,9 @@
              * @param object $element
              */
             removeElement: function ($element) {
+                console.log($element);
                 var $li = $element.closest('li');
+                console.log($li);
                 confirmation = confirm(Craft.t('navigate', 'Are you sure you want to delete “{name}” and its descendants?', {name: $li.find('.node__node').data('label')}));
 
                 if (confirmation) {
