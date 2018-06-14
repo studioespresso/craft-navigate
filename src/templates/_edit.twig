@@ -49,28 +49,27 @@
     {% import _self as macros %}
     {% set indent = 8 + (level - 1) * 35 %}
     <li data-level="{{ level }}">
-        <div class="row" style="padding-left: {{ indent }}px;">
-            <div class="node__node row element" data-id="{{ node.id }}" data-label="{{ node.name }}">
-                <span class="status {{ node.enabled ? 'on': 'off' }}"></span>
-                <span class="title">{{ node.name }}</span>
-                <span class="amnav__blank {{ node.blank }}" title="{{ 'Opens in a new window'|t }}"></span>
-                <a href="{{ actionUrl('navigate/nodes/url', { id: node.id}) }}" data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
-                <a class="settings icon" data-id="{{ node.id }}" title="{{ 'Settings'|t }}"></a>
-                <a class="move icon" title="Move"></a>
-                <a data-icon="remove" class="delete icon" role="button"></a>
-                <div class="node__type">
-                    <span class="node__type--entry">{{ node.type }}</span>
-                </div>
-                {% if node.getChildren|length %}
-                    {% set level = level + 1 %}
-                    <ul class="navigate__nav">
+        <div class="node__node row element" data-id="{{ node.id }}" data-label="{{ node.name }}">
+            <span class="status {{ node.enabled ? 'on': 'off' }}"></span>
+            <span class="title">{{ node.name }}</span>
+            <span class="amnav__blank {{ node.blank }}" title="{{ 'Opens in a new window'|t }}"></span>
+            <a href="{{ actionUrl('navigate/nodes/url', { id: node.id}) }}" data-icon="world" target="_blank"
+               title="{{ node.name }}" rel="nofollow"></a>
+            <a class="settings icon" data-id="{{ node.id }}" title="{{ 'Settings'|t }}"></a>
+            <a class="move icon" title="Move"></a>
+            <a data-icon="remove" class="delete icon" role="button"></a>
+            <div class="node__type">
+                <span class="node__type--entry">{{ node.type }}</span>
+            </div>
+            {% if node.getChildren|length %}
+                {% set level = level + 1 %}
+                <ul class="navigate__nav">
 
                     {% for child in node.getChildren() %}
                         {{ macros.renderNode(navigation, child, level) }}
                     {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
+                </ul>
+            {% endif %}
         </div>
     </li>
 {% endmacro renderNode %}
@@ -95,7 +94,8 @@
         <div class="buttons">
             <div class="btngroup" id="navigate-nodeTypes">
                 {% for nodeType in nodeTypes %}
-                    <div class="btn{% if loop.first %} add icon{% endif %}" data-type="{{ nodeType.handle }}">{{ nodeType.title|t('navigate') }}</div>
+                    <div class="btn{% if loop.first %} add icon{% endif %}"
+                         data-type="{{ nodeType.handle }}">{{ nodeType.title|t('navigate') }}</div>
                 {% endfor %}
             </div>
         </div>
@@ -103,7 +103,8 @@
             {% set replaceWith = {} %}
             <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
             <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
-            <a href="{{ '%%url%%'|replace(replaceWith) }}" data-icon="world" target="_blank" title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
+            <a href="{{ '%%url%%'|replace(replaceWith) }}" data-icon="world" target="_blank"
+               title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
             <a class="settings icon" data-id="{{ '%%id%%'|replace(replaceWith) }}" title="{{ 'Settings'|t }}"></a>
             <a class="move icon" title="Move"></a>
             <a data-icon="remove" class="delete icon" role="button"></a>
@@ -154,7 +155,8 @@
                     <label id="handle-label" for="handle">Handle</label>
                 </div>
                 <div class="input ltr">
-                    <input class="text fullwidth" disabled="disabled" type="text" id="handle" name="handle" value="{{ navigation.handle }}" autocomplete="off">
+                    <input class="text fullwidth" disabled="disabled" type="text" id="handle" name="handle"
+                           value="{{ navigation.handle }}" autocomplete="off">
                 </div>
             </div>
             <div class="field" id="slug-field">
@@ -162,7 +164,8 @@
                     <label id="handle-label" for="handle">Max levels</label>
                 </div>
                 <div class="input ltr">
-                    <input class="text fullwidth" disabled="disabled" type="text" id="handle" name="handle" value="{{ navigation.levels }}" autocomplete="off">
+                    <input class="text fullwidth" disabled="disabled" type="text" id="handle" name="handle"
+                           value="{{ navigation.levels }}" autocomplete="off">
                 </div>
             </div>
 

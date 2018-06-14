@@ -876,14 +876,14 @@
                         }
 
                         // Make it real
-                        var $element = this.$draggee.children('.row').children('.element');
-                        console.log($element);
+                        var $element = this.$draggee.children('.node__node');
                         var data = {
                             navId:    this.structure.navId,
                             nodeId:   $element.data('id'),
-                            prevId:   $element.closest('li').prev().children('.row').children('.element').data('id'),
-                            parentId: this.$draggee.parent('ul').parent('li').children('.row').children('.element').data('id')
+                            prevId:   $element.closest('li').prev().children('.node__node').data('id'),
+                            parentId: this.$draggee.parent('ul').parent('li').children('.node__node').data('id')
                         };
+
                         var url = Craft.getActionUrl('navigate/nodes/move');
                         Craft.postActionRequest(url, data, function(response, textStatus)
                         {
