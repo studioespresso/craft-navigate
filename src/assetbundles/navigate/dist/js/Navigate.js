@@ -383,7 +383,7 @@
                 // Add node to the structure
                 var $li = $('<li data-level="' + level + '"/>').appendTo($appendTo),
                     indent = this.getIndent(level),
-                    $row = $('<div class="node__node row element" data-label= "' + data.name + '" style="margin-' + Craft.left + ': -' + indent + 'px; padding-' + Craft.left + ': ' + indent + 'px;">').appendTo($li);
+                    $row = $('<div class="node__node row element" data-label= "' + data.name + '">').appendTo($li);
 
                 $row.append($element);
 
