@@ -16,13 +16,17 @@
 
 body.ltr .structure ul li {
     margin-left: 7px;
-    margin-top: -5px;
-    background-position: 0 4px;
+    margin-top: 0px;
+    background-position: 2px 5px;
 }
 
 .navigate__nav .node__node {
     width: 100%;
     padding: 3px 0;
+}
+
+.node__node > ul li .node__node {
+    padding-left: 10px;
 }
 
 .navigate__nav .icon {

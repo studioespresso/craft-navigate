@@ -63,7 +63,7 @@
             </div>
             {% if node.getChildren|length %}
                 {% set level = level + 1 %}
-                <ul class="navigate__nav">
+                <ul>
 
                     {% for child in node.getChildren() %}
                         {{ macros.renderNode(navigation, child, level) }}
