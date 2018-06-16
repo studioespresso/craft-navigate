@@ -826,13 +826,11 @@
                         // Make sure this is a different parent than the draggee's
                         if (!$draggeeParent || !$ul.length || $ul[0] !== $draggeeParent[0]) {
                             if (!$ul.length) {
-                                var $toggle = $('<div class="toggle" title="' + Craft.t('app', 'Show/hide children') + '"/>').prependTo(this._.$closestTarget);
-                                this.structure.initToggle($toggle);
+
 
                                 $ul = $('<ul>').appendTo(this._.$closestTargetLi);
                             }
                             else if (this._.$closestTargetLi.hasClass('collapsed')) {
-                                this._.$closestTarget.children('.toggle').trigger('click');
                             }
 
                             this.$draggee.appendTo($ul);
