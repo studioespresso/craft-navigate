@@ -94,6 +94,7 @@
     padding: 3px 10px;
     color: #999;
     background: #F5F5F5;
+    float: right;
 }
 
 .navigate__nav .node__type .node__type--manual {

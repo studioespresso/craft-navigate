@@ -178,8 +178,6 @@
 
     Craft.NavigateUrlModal = Garnish.Modal.extend(
         {
-
-
             body: null,
             $subjectInput: null,
             $bodyInput: null,
@@ -253,6 +251,13 @@
                         this.$urlInput.addClass('error');
                     }
 
+                    Garnish.shake(this.$container);
+                    return;
+                }
+
+                var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+                if(!re.test(data.url)) {
+                    this.$urlInput.addClass('error');
                     Garnish.shake(this.$container);
                     return;
                 }
