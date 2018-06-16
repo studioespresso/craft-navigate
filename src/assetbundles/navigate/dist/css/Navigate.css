@@ -32,6 +32,10 @@ body.ltr .structure ul li {
     -moz-transition: opacity linear 100ms;
 }
 
+.navigate__nav .icon.move {
+    opacity: 100;
+}
+
 .navigate__nav .icon.settings {
     display: inline-block;
 }
