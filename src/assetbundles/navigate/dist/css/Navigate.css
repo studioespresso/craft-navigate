@@ -63,21 +63,8 @@ body.ltr .structure ul li {
     color: #999;
     background: #F5F5F5;
     float: right;
-}
-
-.navigate__nav .node__type .node__type--manual {
-    color: #0d78f2;
-    border-color: #0d78f2;
-}
-
-.navigate__nav .node__type .node__type--category {
-    color: #1BB311;
-    border-color: #1BB311;
-}
-
-.navigate__nav .node__type .node__type--asset {
-    color: #da5a47;
-    border-color: #da5a47;
+    width: 30px;
+    text-align: center;
 }
 
 .hud .elementeditor .fields {

@@ -59,7 +59,7 @@
             <a class="settings icon" data-id="{{ node.id }}" title="{{ 'Settings'|t }}"></a>
             <a data-icon="remove" class="delete icon" role="button"></a>
             <div class="node__type">
-                <span class="node__type--entry">{{ node.type }}</span>
+                <span class="node__type">{{ node.type == 'element' ? node.elementType : node.type }}</span>
             </div>
             {% if node.getChildren|length %}
                 {% set level = level + 1 %}
