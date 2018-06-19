@@ -15,7 +15,7 @@
 }
 
 body.ltr .structure ul li {
-    background-position: 9px 0;
+    background-position: 9px 2px;
     padding-left: 47px;
 
 }
@@ -75,6 +75,7 @@ body.ltr .structure ul li:not(:last-child):not(.last) {
     float: right;
     width: 30px;
     text-align: center;
+    position: relative;
 }
 
 .hud .elementeditor .fields {

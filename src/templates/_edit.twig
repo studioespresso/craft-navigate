@@ -59,7 +59,8 @@
             <a class="settings icon" data-id="{{ node.id }}" title="{{ 'Settings'|t }}"></a>
             <a data-icon="remove" class="delete icon" role="button"></a>
             <div class="node__type">
-                <span class="node__type">{{ node.type == 'element' ? node.elementType : node.type }}</span>
+                {% set right = level * 10 %}
+                <span class="node__type" style="right: {{ right }}px">{{ node.type == 'element' ? node.elementType : node.type }}</span>
             </div>
             {% if node.getChildren|length %}
                 {% set level = level + 1 %}
@@ -108,9 +109,6 @@
                title="{{ '%%label%%'|replace(replaceWith) }}" rel="nofollow"></a>
             <a class="settings icon" data-id="{{ '%%id%%'|replace(replaceWith) }}" title="{{ 'Settings'|t }}"></a>
             <a data-icon="remove" class="delete icon" role="button"></a>
-            <div class="node__type">
-                <span class="node__type">{{ '%%type%%'|replace(replaceWith) }}</span>
-            </div>
         </script>
         <script id="node__url" type="text/template">
             <div class="body">
@@ -147,9 +145,7 @@
 
 
 {% block details %}
-    <div id="details">
         <div id="settings" class="meta">
-
             <div class="field" id="slug-field">
                 <div class="heading">
                     <label id="handle-label" for="handle">Handle</label>
@@ -170,5 +166,4 @@
             </div>
 
         </div>
-    </div>
 {% endblock %}
