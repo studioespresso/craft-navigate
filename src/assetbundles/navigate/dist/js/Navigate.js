@@ -879,12 +879,13 @@
                         }
 
                         // Make it real
-                        var $element = this.$draggee.children('.node__node');
+                        var $element = this.$draggee.find('.node__node');
+
                         var data = {
                             navId:    this.structure.navId,
                             nodeId:   $element.data('id'),
-                            prevId:   $element.closest('li').prev().children('.node__node').data('id'),
-                            parentId: this.$draggee.parent('ul').parent('li').children('.node__node').data('id')
+                            prevId:   $element.closest('li').prev().find('.node__node').data('id'),
+                            parentId: this.$draggee.parent('ul').parent('li').find('.node__node').data('id')
                         };
 
                         var url = Craft.getActionUrl('navigate/nodes/move');

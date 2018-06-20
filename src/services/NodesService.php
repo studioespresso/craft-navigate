@@ -37,6 +37,8 @@ use yii\web\NotFoundHttpException;
 class NodesService extends Component
 {
 
+    private $nodes;
+
     public $types = [
         'entry' => 'Entry',
         'url' => 'Url',
@@ -57,7 +59,7 @@ class NodesService extends Component
     {
         $data = [];
         $query = NodeRecord::find();
-        $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => null]);
+        $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => 0]);
         $query->orderBy('parent ASC, order ASC');
         foreach ($query->all() as $record) {
             $model = new NodeModel();
@@ -82,8 +84,12 @@ class NodesService extends Component
         return $data;
     }
 
-    public function getNodesByNavIdAndSiteById(int $navId = null, $siteId)
+    public function getNodesByNavIdAndSiteById(int $navId = null, $siteId, $refresh = false)
     {
+        if(!$refresh && isset($this->nodes[$navId])) {
+            return $this->nodes[$navId];
+        }
+
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId]);
         $query->indexBy('id');
@@ -92,10 +98,11 @@ class NodesService extends Component
             $model = new NodeModel();
             $model->setAttributes($record->getAttributes());
 
-            $data[$model->order] = $model;
+            $data[$model->id] = $model;
 
         }
-        return $data;
+        $this->nodes[$navId] = $data;
+        return $this->nodes[$navId];
 
     }
 
@@ -207,14 +214,18 @@ class NodesService extends Component
         $record->parent = $parent;
 
         $currentOrder = 0;
-        $nodes = $this->getNodesByNavIdAndSite($record->navId, $record->siteId);
-        if (!$previousId) {
+
+        //var_dump($node->id, $parent, $previousId); exit;
+        if ($previousId  === false) {
             $record->order = $currentOrder;
             $currentOrder++;
         }
 
+        $nodes = $this->getNodesByNavIdAndSiteById($record->navId, $record->siteId, true);
+
         foreach ($nodes as $node) {
-            if ($parent === $node->parent) {
+
+            if ($parent == $node->parent) {
                 if ($previousId && $previousId == $node->id) {
                     $this->updateNode($node, $currentOrder);
                     $currentOrder++;
@@ -226,11 +237,33 @@ class NodesService extends Component
                 }
             }
             $currentOrder++;
-        }
 
+        }
         $record->save();
+        //$this->updateNavOrder($node->navId, $node->siteId);
 
         return true;
+    }
+
+    private function updateNavOrder($navId, $site, $nodes = false, $parentId = 0)
+    {
+        // Get nodes for first run
+        if ($nodes === false) {
+            $nodes = $this->getNodesByNavIdAndSiteById($navId, $site, true);
+        }
+
+        // Update order
+        $order = 0;
+        foreach ($nodes as $node) {
+            if ($node->parent == $parentId && isset($parentId)) {
+                // Update current node's order
+                $this->updateNode($node, array('order' => $order));
+                $order ++;
+
+                // Update order for child nodes
+                $this->updateNavOrder($navId, $site, $nodes, $node->id);
+            }
+        }
     }
 
 

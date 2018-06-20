@@ -172,8 +172,7 @@ class NodesController extends Controller
         }
 
         $prevId = Craft::$app->request->getBodyParam('prevId', false);
-        $parentId = Craft::$app->request->getBodyParam('parentId', null);
-
+        $parentId = Craft::$app->request->getBodyParam('parentId', 0);
         // Move it move it!
         $moved = Navigate::$plugin->nodes->move($node, $parentId, $prevId);
         if ($moved) {
