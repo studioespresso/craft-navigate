@@ -76,7 +76,7 @@ class NodesController extends Controller
         $model->setAttributes([
             'siteId' => $attributes['siteId'],
             'navId' => $attributes['navId'],
-            'parentId' => (int)$attributes['parentId'],
+            'parent' => $attributes['parent'],
             'name' => $attributes['name'],
             'blank' => isset($attributes['blank']) ? $attributes['blank'] == 'true' : false,
             'enabled' => true,

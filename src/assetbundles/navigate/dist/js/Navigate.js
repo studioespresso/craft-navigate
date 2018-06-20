@@ -119,7 +119,7 @@
                         elementType: elementType,
                         blank: this.$newWindowElement.val() == '1',
                         elementId: element.id,
-                        parentId: parentId === undefined ? 0 : parentId
+                        parent: parentId === undefined ? 0 : parentId
                     };
                     this.saveNewNode(data, 'element');
                 }

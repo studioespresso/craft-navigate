@@ -67,7 +67,6 @@ class NodeModel extends Model
 
     public $blank = false;
 
-    public $parentId;
 
     // Public Methods
     // =========================================================================
