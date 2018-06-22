@@ -45,12 +45,10 @@ class NavigateVariable
      * @param null $optional
      * @return string
      */
-    public function exampleVariable($optional = null)
+    public function getNavRaw($navHandle)
     {
-        $result = "And away we go to the Twig template...";
-        if ($optional) {
-            $result = "I'm feeling optional today...";
-        }
-        return $result;
+        $nodes = Navigate::$plugin->nodes->getNodesForRender($navHandle, Craft::$app->sites->getCurrentSite()->id);
+        return $nodes;
+
     }
 }

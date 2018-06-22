@@ -70,12 +70,37 @@ class NodesService extends Component
         return $data;
     }
 
+    public function getNodesForRender($navHandle, $site): array
+    {
+        $nav = Navigate::$plugin->navigate->getNavigationByHandle($navHandle);
+        $nodes = $this->getNodesByNavIdAndSite($nav->id, $site);
+        $nodes = $this->parseNodesForRender($nodes);
+        return $nodes;
+    }
+
+    private function parseNodesForRender(array $nodes): array
+    {
+        $data = [];
+        foreach($nodes as $node) {
+            /* @var $node NodeModel*/
+            if($node->type === 'element') {
+                $element = Craft::$app->elements->getElementById($node->elementId);
+                $node->url = $element->getUrl();
+            }
+            $node->children = $node->getChildren();
+
+            $data[$node->order] = $node;
+        }
+        return $data;
+    }
+
     public function getChildrenByNode(NodeModel $node)
     {
         $data = [];
         $query = NodeRecord::find();
         $query->where(['navId' => $node->navId, 'siteId' => $node->siteId, 'parent' => $node->id]);
         $query->orderBy('order');
+
         foreach ($query->all() as $record) {
             $model = new NodeModel();
             $model->setAttributes($record->getAttributes());
@@ -86,7 +111,7 @@ class NodesService extends Component
 
     public function getNodesByNavIdAndSiteById(int $navId = null, $siteId, $refresh = false)
     {
-        if(!$refresh && isset($this->nodes[$navId])) {
+        if (!$refresh && isset($this->nodes[$navId])) {
             return $this->nodes[$navId];
         }
 
@@ -150,9 +175,10 @@ class NodesService extends Component
         return $nodeTypes;
     }
 
-    public function deleteNode(NodeModel $model) {
+    public function deleteNode(NodeModel $model)
+    {
         $record = false;
-        
+
         if (isset($model->id)) {
             $record = NodeRecord::findOne([
                 'id' => $model->id
@@ -161,7 +187,7 @@ class NodesService extends Component
             throw new NotFoundHttpException('Node not found', 404);
         }
 
-        if($record->delete()) {
+        if ($record->delete()) {
             return true;
         }
     }
@@ -190,9 +216,9 @@ class NodesService extends Component
         $record->type = $model->type;
         $record->order = $model->order;
         $record->parent = $model->parent;
-        $record->enabled= $model->enabled ? 1 : 0;
-        $record->blank= $model->blank ? 1 : 0;
-        $record->classes= $model->classes;
+        $record->enabled = $model->enabled ? 1 : 0;
+        $record->blank = $model->blank ? 1 : 0;
+        $record->classes = $model->classes;
         $record->elementType = $model->elementType;
         $record->elementId = $model->elementId;
         $record->url = $model->url;
@@ -216,7 +242,7 @@ class NodesService extends Component
         $currentOrder = 0;
 
         //var_dump($node->id, $parent, $previousId); exit;
-        if ($previousId  === false) {
+        if ($previousId === false) {
             $record->order = $currentOrder;
             $currentOrder++;
         }
@@ -258,7 +284,7 @@ class NodesService extends Component
             if ($node->parent == $parentId && isset($parentId)) {
                 // Update current node's order
                 $this->updateNode($node, array('order' => $order));
-                $order ++;
+                $order++;
 
                 // Update order for child nodes
                 $this->updateNavOrder($navId, $site, $nodes, $node->id);
