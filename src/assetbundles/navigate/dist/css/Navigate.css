@@ -27,40 +27,8 @@ body.ltr .structure ul li:not(:last-child):not(.last) {
     margin-left: 9px;
 }
 
-.navigate__nav .node__node {
-    width: 100%;
-}
 
-.node__node > ul li .node__node {
-    padding-left: 10px;
-}
-
-.navigate__nav .icon {
-    margin: 5px 5px 0 0;
-    opacity: 0;
-    -webkit-transition: opacity linear 100ms;
-    -moz-transition: opacity linear 100ms;
-}
-
-.navigate__nav .icon.move {
-    opacity: 100;
-}
-
-.navigate__nav .icon.settings {
-    display: inline-block;
-}
-
-.navigate__nav .icon.settings:before {
-    color: rgba(0, 0, 0, 0.2);
-}
-
-.navigate__nav .icon.settings:hover:before {
-    color: #0d78f2;
-}
-
-.navigate__nav .node__node.element.loading {
-}
-
+/* Node type block */
 .navigate__nav .node__type {
     display: inline;
     font-size: 12px;
@@ -78,39 +46,10 @@ body.ltr .structure ul li:not(:last-child):not(.last) {
     position: relative;
 }
 
+/* Add padding to the editor hud */
 .hud .elementeditor .fields {
     padding: 24px;
 }
-
-.navigate__nav .node__url {
-    float: right;
-    width: 250px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.node__listclass,
-.navigate__nav .node__url a {
-    color: #8f98a3;
-}
-
-.navigate__nav .node__url a:hover {
-    color: #0d78f2;
-}
-
-.structure .draghelper .status {
-    margin-right: 5px;
-}
-
-.structure .draghelper .node__url,
-.structure .draghelper .node__type,
-.structure .draghelper .node__listclass,
-.structure .draghelper .icon.settings,
-.structure .draghelper .icon.delete {
-    display: none;
-}
-
 body elementeditor elementeditor--navigate {
     padding: 20px;
 }

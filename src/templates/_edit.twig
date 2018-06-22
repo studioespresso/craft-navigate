@@ -110,12 +110,12 @@
                     <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
                     <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
                 </div>
-            </div>
-            <a class="move icon" title="{{ 'Move'|t }}"></a>
-            <a class="settings icon" title="{{ 'Settings'|t }}"></a>
-            <a class="delete icon" title="{{ 'Delete'|t }}"></a>
-            <div class="node__type">
-                <span class="node__type--{{ '%%type%%'|replace(replaceWith)|lower }}">{{ '%%typeLabel%%'|replace(replaceWith)|t }}</span>
+                <a class="move icon" title="{{ 'Move'|t }}"></a>
+                <a class="settings icon" title="{{ 'Settings'|t }}"></a>
+                <a class="delete icon" title="{{ 'Delete'|t }}"></a>
+                <div class="node__type">
+                    <span class="node__type--{{ '%%type%%'|replace(replaceWith)|lower }}">{{ '%%typeLabel%%'|replace(replaceWith)|t }}</span>
+                </div>
             </div>
         </script>
         <script id="node__url" type="text/template">
