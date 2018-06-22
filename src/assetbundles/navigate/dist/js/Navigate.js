@@ -379,8 +379,6 @@
                 var $appendTo = this.$container,
                     level = 1;
 
-                console.log($element);
-                // Add node to the structure
                 var $li = $('<li data-level="' + level + '"/>').appendTo($appendTo),
                     indent = this.getIndent(level),
                     $row = $('<div class="node__node row element" data-label= "' + data.name + '">').appendTo($li);
@@ -408,9 +406,7 @@
              * @param object $element
              */
             removeElement: function ($element) {
-                console.log($element);
                 var $li = $element.closest('li');
-                console.log($li);
                 confirmation = confirm(Craft.t('navigate', 'Are you sure you want to delete “{name}” and its descendants?', {name: $li.find('.node__node').data('label')}));
 
                 if (confirmation) {
