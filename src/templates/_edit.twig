@@ -49,7 +49,7 @@
     {% import _self as macros %}
     {% set indent = 8 + (level - 1) * 35 %}
     <li data-level="{{ level }}">
-        <div class="row" style="margin-left: -{{ indent }}px; padding-left: {{ indent }}px;">
+        <div class="row" style="margin-left: -{{ indent }}px; padding-left: {{ indent }}px;" data-id="{{ node.id }}">
             <div class="node__node element" data-id="{{ node.id }}" data-label="{{ node.name }}">
                 <div class="label">
                     <span class="node__id visuallyhidden"><strong>{{ node.id }}</strong></span>
@@ -57,12 +57,13 @@
                     <span class="title">{{ node.name }}</span>
                 </div>
             </div>
-            <a class="move icon" title="{{ 'Move'|t }}"></a>
-            <a class="settings icon" title="{{ 'Settings'|t }}"></a>
-            <a class="delete icon" title="{{ 'Delete'|t }}"></a>
-            <div class="node__type">
-                <span class="node__type--{{ node.type == 'element' ? node.elementType : node.type }}">{{ node.type == 'element' ? node.elementType : node.type }}</span>
-            </div>
+
+                <a class="move icon" title="{{ 'Move'|t }}" data-id="{{ node.id }}"></a>
+                <a class="settings icon" title="{{ 'Settings'|t }}" data-id="{{ node.id }}"></a>
+                <a class="delete icon" title="{{ 'Delete'|t }}"></a>
+                <div class="node__type">
+                    <span class="node__type--{{ node.type == 'element' ? node.elementType : node.type }}">{{ node.type == 'element' ? node.elementType : node.type }}</span>
+                </div>
             {% if node.getChildren|length %}
                 {% set level = level + 1 %}
                 <ul>

@@ -428,11 +428,9 @@
             },
 
             deleteNode: function($element) {
-                console.log($element);
                 var nodeId = $element.data('id'),
                     url = Craft.getActionUrl('navigate/nodes/delete'),
                     data = { nodeId: nodeId };
-
 
                 Craft.postActionRequest(url, data, $.proxy(function(response, textStatus) {
                     if (textStatus == 'success' && response.success) {
