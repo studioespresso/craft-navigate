@@ -65,6 +65,8 @@ class NodeModel extends Model
 
     public $elementType;
 
+    public $children;
+
     public $blank = false;
 
 
@@ -85,7 +87,7 @@ class NodeModel extends Model
     {
         return [
             [['type', 'navId', 'siteId', 'name'], 'required'],
-            [[ 'id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type', 'url', 'siteId', 'order', 'parent', 'blank', 'classes'], 'safe'],
+            [[ 'id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type', 'url', 'siteId', 'order', 'parent', 'blank', 'classes', 'children'], 'safe'],
         ];
     }
 
