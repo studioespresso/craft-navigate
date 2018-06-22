@@ -56,7 +56,6 @@
                     <span class="status {{ node.enabled ? 'on': 'off' }}"></span>
                     <span class="title">{{ node.name }}</span>
                 </div>
-            </div>
 
                 <a class="move icon" title="{{ 'Move'|t }}" data-id="{{ node.id }}"></a>
                 <a class="settings icon" title="{{ 'Settings'|t }}" data-id="{{ node.id }}"></a>
@@ -64,6 +63,7 @@
                 <div class="node__type">
                     <span class="node__type--{{ node.type == 'element' ? node.elementType : node.type }}">{{ node.type == 'element' ? node.elementType : node.type }}</span>
                 </div>
+            </div>
             {% if node.getChildren|length %}
                 {% set level = level + 1 %}
                 <ul>
