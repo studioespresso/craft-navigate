@@ -101,7 +101,7 @@ class DefaultController extends Controller
 
 
             return $this->renderTemplate('navigate/_edit', [
-                'nodes' => Navigate::$plugin->nodes->getNodesByNavIdAndSite($navId, $site->id),
+                'nodes' => Navigate::$plugin->nodes->getNodesByNavIdAndSiteById($navId, $site->id),
                 'nodeTypes' =>$nodeTypes,
                 'navigation' => $navigation,
                 'site' => $site,

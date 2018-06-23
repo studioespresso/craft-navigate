@@ -55,25 +55,11 @@ class NodesService extends Component
         return $query->all();
     }
 
-    public function getNodesByNavIdAndSite(int $navId = null, $siteId)
-    {
-        $data = [];
-        $query = NodeRecord::find();
-        $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => 0]);
-        $query->orderBy('parent ASC, order ASC');
-        foreach ($query->all() as $record) {
-            $model = new NodeModel();
-            $model->setAttributes($record->getAttributes());
-
-            $data[$model->order] = $model;
-        }
-        return $data;
-    }
 
     public function getNodesForRender($navHandle, $site): array
     {
         $nav = Navigate::$plugin->navigate->getNavigationByHandle($navHandle);
-        $nodes = $this->getNodesByNavIdAndSite($nav->id, $site);
+        $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site);
         $nodes = $this->parseNodesForRender($nodes);
         return $nodes;
     }
@@ -117,7 +103,7 @@ class NodesService extends Component
 
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId]);
-        $query->indexBy('id');
+        $query->orderBy('parent ASC, order ASC');
 
         foreach ($query->all() as $record) {
             $model = new NodeModel();
