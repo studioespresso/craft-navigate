@@ -174,6 +174,22 @@ class Navigate extends Plugin
         );
     }
 
+
+    /**
+     * @inheritdoc
+     */
+    public function getCpNavItem()
+    {
+        $ret = [
+            'label' => $this->getSettings()->pluginLabel ? $this->getSettings()->pluginLabel : 'Navigate',
+            'url' => $this->id,
+        ];
+        if (($iconPath = $this->cpNavIconPath()) !== null) {
+            $ret['icon'] = $iconPath;
+        }
+        return $ret;
+    }
+
     // Protected Methods
     // =========================================================================
 
