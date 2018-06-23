@@ -122,7 +122,11 @@ class DefaultController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        return Navigate::$plugin->navigate->deleteNavigationById(Craft::$app->request->post('id'));
+        if(Navigate::$plugin->navigate->deleteNavigationById(Craft::$app->request->post('id'))) {
+            // Return data
+            $returnData['success'] = true;
+            return $this->asJson($returnData);
+        };
 
     }
 }

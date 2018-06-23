@@ -64,16 +64,9 @@
 
 {% js %}
     var adminTable = new Craft.AdminTable({
-    tableSelector: '#navigations',
-    noItemsSelector: '#nonavigations',
-    deleteAction: 'navigate/default/delete',
-    confirmDeleteMessage: '{{ "Are you sure you want to delete “{name}”?"|t('navigate') }}',
-    onDeleteItem: function()
-    {
-        // Hide the Entries tab if that was the last one
-        if (adminTable.totalItems == 0)
-        {
-            $('#navigations').remove();
-        }
-    }});
+        tableSelector: '#navigations',
+        noItemsSelector: '#nonavigations',
+        deleteAction: 'navigate/default/delete',
+        confirmDeleteMessage: '{{ "Are you sure you want to delete “{name}”?"|t('navigate') }}',
+    });
 {% endjs %}
