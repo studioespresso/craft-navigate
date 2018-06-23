@@ -353,7 +353,7 @@
                     .replace(/%%label%%/ig, data.name)
                     .replace(/%%id%%/ig, data.id)
                     .replace(/%%type%%/ig, nodeType)
-                    .replace(/%%url%%/ig, nodeType == 'url' ? data.url : '')g
+                    .replace(/%%url%%/ig, nodeType == 'url' ? data.url : '')
                     .replace(/%%elementType%%/ig, data.elementType ? data.elementType : '' )
                     .replace(/%%type%%/ig, data.elementType ? data.elementType.toLowerCase() : "url")
                     .replace(/%%typeLabel%%/ig, data.elementType ? data.elementType : "")
