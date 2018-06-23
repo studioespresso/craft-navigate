@@ -27,6 +27,30 @@ body.ltr .structure ul li:not(:last-child):not(.last) {
     margin-left: 9px;
 }
 
+a.icon.detele:hover {
+    color: red;
+}
+a.icon {
+    opacity: 0;
+}
+
+body.ltr .structure li .move {
+    margin: 0;
+}
+
+.node__node:hover a.icon {
+    opacity: 0.9;
+}
+
+.node__node:hover a.icon.settings {
+    opacity: 0.9;
+    color: rgba(0, 0, 0, 0.2);
+}
+
+.node__node:hover a.icon.settings:hover {
+    opacity: 0.9;
+    color: #686969;
+}
 
 /* Node type block */
 .navigate__nav .node__type {
