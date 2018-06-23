@@ -95,4 +95,12 @@ class NodeModel extends Model
     public function getChildren() {
         return Navigate::$plugin->nodes->getChildrenByNode($this);
     }
+
+    public function active() {
+        if($this->url === Craft::$app->request->getAbsoluteUrl()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
