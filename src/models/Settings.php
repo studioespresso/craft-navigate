@@ -39,7 +39,7 @@ class Settings extends Model
      *
      * @var string
      */
-    public $someAttribute = 'Some Default';
+    public $pluginLabel = 'Navigate';
 
     // Public Methods
     // =========================================================================
@@ -57,8 +57,8 @@ class Settings extends Model
     public function rules()
     {
         return [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
+            ['pluginLabel', 'string'],
+            ['pluginLabel', 'default', 'value' => 'Navigate'],
         ];
     }
 }
