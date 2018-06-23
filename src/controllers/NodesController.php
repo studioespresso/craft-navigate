@@ -150,7 +150,7 @@ class NodesController extends Controller
         $save = Navigate::$plugin->nodes->save($node);
         if ($save) {
             $payload['success'] = true;
-            $returnData['message'] = Craft::t('navigate', 'Node saved.');
+            $payload['message'] = Craft::t('navigate', 'Node saved.');
             $payload['nodeData'] = $node;
         }
 

@@ -515,7 +515,7 @@
 
                     if (textStatus == 'success') {
                         if (textStatus == 'success' && response.success) {
-                            Craft.cp.displayNotice('navigate', response.message);
+                            Craft.cp.displayNotice(response.message);
 
                             // Update name
                             this.$node.parent().data('label', response.nodeData.name);
