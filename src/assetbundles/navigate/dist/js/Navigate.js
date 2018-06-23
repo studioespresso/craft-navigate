@@ -353,7 +353,7 @@
                     .replace(/%%label%%/ig, data.name)
                     .replace(/%%id%%/ig, data.id)
                     .replace(/%%type%%/ig, nodeType)
-                    .replace(/%%url%%/ig, nodeType == 'url' ? data.url : '')
+                    .replace(/%%url%%/ig, nodeType == 'url' ? data.url : '')g
                     .replace(/%%elementType%%/ig, data.elementType ? data.elementType : '' )
                     .replace(/%%type%%/ig, data.elementType ? data.elementType.toLowerCase() : "url")
                     .replace(/%%typeLabel%%/ig, data.elementType ? data.elementType : "")
@@ -381,7 +381,7 @@
 
                 var $li = $('<li data-level="' + level + '"/>').appendTo($appendTo),
                     indent = this.getIndent(level),
-                    $row = $('<div class="node__node row element" data-label= "' + data.name + '">').appendTo($li);
+                    $row = $('<div class="node__node row element" data-label= "' + data.name + '" data-id="' + data.id +'">').appendTo($li);
 
                 $row.append($element);
 
