@@ -92,7 +92,7 @@ class DefaultController extends Controller
         if($navId && $siteHandle) {
             $navigation = Navigate::$plugin->navigate->getNavigationById($navId);
             $sites = Craft::$app->sites->getEditableSites();
-            $site = reset($sites);
+            $site = Craft::$app->sites->getSiteByHandle($siteHandle);
 
             $nodeTypes = Navigate::$plugin->nodes->getNodeTypes($navigation);
 
