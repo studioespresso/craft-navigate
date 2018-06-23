@@ -56,9 +56,13 @@ class NodesService extends Component
     }
 
 
-    public function getNodesForRender($navHandle, $site): array
+    public function getNodesForRender($navHandle, $site)
     {
         $nav = Navigate::$plugin->navigate->getNavigationByHandle($navHandle);
+        if(!$nav) {
+            return false;
+        }
+
         $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site);
         $nodes = $this->parseNodesForRender($nodes);
         return $nodes;
