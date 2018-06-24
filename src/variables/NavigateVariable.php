@@ -51,4 +51,15 @@ class NavigateVariable
         return $nodes;
 
     }
+
+    public function getNav($navHandle, array $options = [])
+    {
+        $nodes = $this->getNavRaw($navHandle);
+
+        Craft::$app->view->setTemplateMode('cp');
+        $template = Craft::$app->view->renderTemplate('navigate/_render/_nav', ['nodes' => $nodes, 'classes' => $options ] );
+        return $template;
+
+    }
+
 }
