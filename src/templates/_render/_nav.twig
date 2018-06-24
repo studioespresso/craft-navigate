@@ -1,7 +1,7 @@
 <div {% if classes.wrapperClass is defined %}class="{{ classes.wrapperClass }}"{% endif %}>
     <ul {% if classes.ulClass is defined %}class="{{ classes.ulClass }}"{% endif %}>
         {% for node in nodes %}
-            <li {% if classes.listClass is defined %}class="{{ classes.listClass }}"{% endif %}>
+            <li class="{% if node.classes|length %}{{ node.classes }}{% endif %}{% if classes.listClass is defined %}{{ classes.listClass }}"{% endif %}>
                 <a class="{% if classes.linkClass is defined %}{{ classes.linkClass }}{% endif %} {% if node.active %}active{% endif %}"
                    {% if node.blank %}target="_blank" rel="noopener"{% endif %} href="{{ node.url }}">{{ node.name }}</a>
             </li>
