@@ -58,7 +58,7 @@ class NavigateVariable
 
         Craft::$app->view->setTemplateMode('cp');
         $template = Craft::$app->view->renderTemplate('navigate/_render/_nav', ['nodes' => $nodes, 'classes' => $options ] );
-        return $template;
+        echo $template;
 
     }
 
