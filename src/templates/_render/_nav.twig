@@ -1,14 +1,27 @@
+{% import _self as macros %}
+{% macro renderNode(node) %}
+    {% import _self as macros %}
+    <li class="{% if node.classes|length %}{{ node.classes }}{% endif %}{% if classes.listClass is defined %}{{ classes.listClass }}{% endif %}">
+        <a  href="{{ node.url }}"
+            {% if classes.linkClass is defined or node.active %}
+                class="{% if classes.linkClass is defined %}{{ classes.linkClass }}{% endif %} {% if node.active %}active{% endif %}"
+            {% endif %}
+            {% if node.blank %}target="_blank" rel="noopener"{% endif %}
+        >{{ node.name }}</a>
+        {% if node.children|length %}
+            <ul>
+                {% for child in node.children %}
+                    {{ macros.renderNode(child) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+
 <div {% if classes.wrapperClass is defined %}class="{{ classes.wrapperClass }}"{% endif %}>
     <ul {% if classes.ulClass is defined %}class="{{ classes.ulClass }}"{% endif %}>
         {% for node in nodes %}
-            <li class="{% if node.classes|length %}{{ node.classes }}{% endif %}{% if classes.listClass is defined %}{{ classes.listClass }}{% endif %}">
-                <a  href="{{ node.url }}"
-                    {% if classes.linkClass is defined or node.active %}
-                    class="{% if classes.linkClass is defined %}{{ classes.linkClass }}{% endif %} {% if node.active %}active{% endif %}"
-                    {% endif %}
-                    {% if node.blank %}target="_blank" rel="noopener"{% endif %}
-                >{{ node.name }}</a>
-            </li>
+            {{ macros.renderNode(node) }}
         {% endfor %}
     </ul>
 </div>
