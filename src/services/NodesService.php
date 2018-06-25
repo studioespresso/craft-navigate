@@ -106,6 +106,28 @@ class NodesService extends Component
         }
 
         $query = NodeRecord::find();
+        $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => 0]);
+        $query->orderBy('parent ASC, order ASC');
+        $data = [];
+        foreach ($query->all() as $record) {
+            $model = new NodeModel();
+            $model->setAttributes($record->getAttributes());
+
+            $data[$model->id] = $model;
+
+        }
+        $this->nodes[$navId] = $data;
+        return $this->nodes[$navId];
+
+    }
+
+    public function getNodesStructureByNavIdAndSiteById(int $navId = null, $siteId, $refresh = false)
+    {
+        if (!$refresh && isset($this->nodes[$navId])) {
+            return $this->nodes[$navId];
+        }
+
+        $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId]);
         $query->orderBy('parent ASC, order ASC');
         $data = [];
@@ -231,7 +253,6 @@ class NodesService extends Component
 
         $currentOrder = 0;
 
-        //var_dump($node->id, $parent, $previousId); exit;
         if ($previousId === false) {
             $record->order = $currentOrder;
             $currentOrder++;
@@ -265,7 +286,7 @@ class NodesService extends Component
     {
         // Get nodes for first run
         if ($nodes === false) {
-            $nodes = $this->getNodesByNavIdAndSiteById($navId, $site, true);
+            $nodes = $this->getNodesStructureByNavIdAndSiteById($navId, $site, true);
         }
 
         // Update order
