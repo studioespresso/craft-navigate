@@ -56,7 +56,6 @@
                     <span class="status {{ node.enabled ? 'on': 'off' }}"></span>
                     <span class="title">{{ node.name }}</span>
                 </div>
-
                 <a class="move icon" title="{{ 'Move'|t }}" data-id="{{ node.id }}"></a>
                 <a class="settings icon" title="{{ 'Settings'|t }}" data-id="{{ node.id }}"></a>
                 <a class="delete icon" title="{{ 'Delete'|t }}"></a>
@@ -103,8 +102,7 @@
         </div>
         <script id="navigate__node" type="text/template">
             {% set replaceWith = {} %}
-            <div class="node__node element" data-id="{{ '%%id%%'|replace(replaceWith) }}"
-                 data-label="{{ '%%label%%'|replace(replaceWith) }}">
+            <div class="node__node element" data-id="{{ '%%id%%'|replace(replaceWith) }}" data-label="{{ '%%label%%'|replace(replaceWith) }}">
                 <div class="label">
                     <span class="node__id visuallyhidden"><strong>{{ '%%id%%'|replace(replaceWith) }}</strong></span>
                     <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
