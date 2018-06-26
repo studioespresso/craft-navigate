@@ -27,7 +27,8 @@ body.ltr .structure ul li:not(:last-child):not(.last) {
     margin-left: 9px;
 }
 .node__node {
-    margin: 10px 0px 10px 0px;
+    padding: 8px 5px 8px 5px;
+    display: inline-block;
 }
 a.icon.detele:hover {
     color: red;
