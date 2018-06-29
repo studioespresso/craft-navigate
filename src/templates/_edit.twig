@@ -57,21 +57,21 @@
                     <span class="title">{{ node.name }}</span>
                 </div>
             </div>
-                <a class="move icon" title="{{ 'Move'|t }}" data-id="{{ node.id }}"></a>
-                <a class="settings icon" title="{{ 'Settings'|t }}" data-id="{{ node.id }}"></a>
-                <a class="delete icon" title="{{ 'Delete'|t }}"></a>
-                <div class="node__type">
-                    <span class="node__type--{{ node.type == 'element' ? node.elementType : node.type }}">{{ node.type == 'element' ? node.elementType : node.type }}</span>
-                </div>
-            {% if node.getChildren|length %}
-                {% set level = level + 1 %}
-                <ul>
-                    {% for child in node.getChildren() %}
-                        {{ macros.renderNode(navigation, child, level) }}
-                    {% endfor %}
-                </ul>
-            {% endif %}
+            <a class="move icon" title="{{ 'Move'|t }}" data-id="{{ node.id }}"></a>
+            <a class="settings icon" title="{{ 'Settings'|t }}" data-id="{{ node.id }}"></a>
+            <a class="delete icon" title="{{ 'Delete'|t }}"></a>
+            <div class="node__type">
+                <span class="node__type--{{ node.type == 'element' ? node.elementType : node.type }}">{{ node.type == 'element' ? node.elementType : node.type }}</span>
+            </div>
         </div>
+        {% if node.getChildren|length %}
+        {% set level = level + 1 %}
+        <ul>
+        {% for child in node.getChildren() %}
+            {{ macros.renderNode(navigation, child, level) }}
+        {% endfor %}
+        </ul>
+        {% endif %}
     </li>
 {% endmacro renderNode %}
 
@@ -108,12 +108,12 @@
                     <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
                     <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
                 </div>
-                <a class="move icon" title="{{ 'Move'|t }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
-                <a class="settings icon" title="{{ 'Settings'|t }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
-                <a class="delete icon" title="{{ 'Delete'|t }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
-                <div class="node__type">
-                    <span class="node__type--{{ '%%type%%'|replace(replaceWith)|lower }}">{{ '%%typeLabel%%'|replace(replaceWith)|t }}</span>
-                </div>
+            </div>
+            <a class="move icon" title="{{ 'Move'|t }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
+            <a class="settings icon" title="{{ 'Settings'|t }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
+            <a class="delete icon" title="{{ 'Delete'|t }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
+            <div class="node__type">
+                <span class="node__type--{{ '%%type%%'|replace(replaceWith)|lower }}">{{ '%%typeLabel%%'|replace(replaceWith)|t }}</span>
             </div>
         </script>
         <script id="node__url" type="text/template">
