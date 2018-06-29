@@ -17,7 +17,10 @@
 body.ltr .structure ul li {
     background-position: 9px 2px;
     padding-left: 47px;
+}
 
+.navigate__nav .toggle {
+    display: none;
 }
 
 body.ltr .structure ul li:not(:last-child):not(.last) {
