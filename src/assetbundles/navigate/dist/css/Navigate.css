@@ -38,6 +38,9 @@ body.ltr .structure ul li:last-child {
 body.ltr .structure ul li:not(:last-child):not(.last) .node__node {
     top: -4px;
 }
+body.ltr .status {
+    margin-right: 5px;
+}
 
 .node__node {
     padding: 8px 5px 8px 5px;
@@ -78,7 +81,7 @@ body.ltr .structure li .move {
 }
 
 .navigate__nav .node__type span {
-    padding: 3px 10px;
+    padding: 8px 10px;
     color: #999;
     background: #F5F5F5;
     float: right;
