@@ -54,9 +54,15 @@ class DefaultController extends Controller
     {
         $data = [];
 
-        $sites = Craft::$app->sites->getEditableSites();
+        // TODO: Workaround to check editable sites
+        $sites = Craft::$app->sites->getAllSites();
+        if(count($sites) == 1) {
+            $data['defaultSite'] = $sites[0];
+        } else {
+            $sites = Craft::$app->sites->getEditableSites();
+            $data['defaultSite'] = reset($sites);
+        }
 
-        $data['defaultSite'] = reset($sites);
         $data['navigations'] = Navigate::$plugin->navigate->getAllNavigations();
         return $this->renderTemplate('navigate/_index', $data);
     }
