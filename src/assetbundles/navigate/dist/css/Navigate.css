@@ -34,6 +34,11 @@ body.ltr .structure ul li:not(:last-child):not(.last) {
 body.ltr .structure ul li:last-child {
     margin-top: -5px;
 }
+
+body.ltr .structure ul li:not(:last-child):not(.last) .node__node {
+    top: -4px;
+}
+
 .node__node {
     padding: 8px 5px 8px 5px;
     display: inline-block;
