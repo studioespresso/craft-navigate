@@ -1,12 +1,10 @@
-# Navigate plugin for Craft CMS 3.x
-
-Navigation plugin for Craft 3
+# Navigate for Craft CMS 3.x
 
 ![Screenshot](http://www.studioespresso.co/assets/plugins/navigate/banner.png)
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+This plugin requires Craft CMS 3.0.0 or later.
 
 ## Installation
 
@@ -18,26 +16,12 @@ To install the plugin, follow these instructions.
 
 2. Then tell Composer to load the plugin:
 
-        composer require studioespresso/navigate
+        composer require studioespresso/craft-navigate
 
 3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Navigate.
 
 ## Navigate Overview
 
 -Insert text here-
-
-## Configuring Navigate
-
--Insert text here-
-
-## Using Navigate
-
--Insert text here-
-
-## Navigate Roadmap
-
-Some things to do, and ideas for potential features:
-
-* Release it
 
 Brought to you by [Studio Espresso](https://studioespresso.co)
