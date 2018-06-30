@@ -113,7 +113,7 @@
                 </div>
             </div>
             <div class="input ltr {% if errors is defined and errors.handle is defined %}errors{% endif %}">
-                <input class="text code" type="number" id="levels" name="data[levels]" value="{% if navigation is defined %}{{ navigation.levels }}{% else %}1{% endif %}" maxlength="64" autocomplete="off" required="required">
+                <input class="text code" type="number" id="levels" max="5" name="data[levels]" value="{% if navigation is defined %}{{ navigation.levels }}{% else %}1{% endif %}" autocomplete="off" required="required">
             </div>
             {% if errors is defined and errors.levels is defined %}
                 <ul class="errors">
