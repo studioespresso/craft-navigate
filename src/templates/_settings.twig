@@ -125,7 +125,7 @@
         </div>
 
         {{ forms.lightswitchField({
-            label: 'Can non-admin users change settings'|t('navigate'),
+            label: 'Restrict access to settings to admin users only'|t('navigate'),
             id: 'adminOnly',
             name: 'data[adminOnly]',
             on: (navigation is defined ? navigation.adminOnly: ''),
