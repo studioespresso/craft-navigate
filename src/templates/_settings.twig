@@ -128,7 +128,7 @@
             label: 'Restrict access to settings to admin users only'|t('navigate'),
             id: 'adminOnly',
             name: 'data[adminOnly]',
-            on: (navigation is defined ? navigation.adminOnly: ''),
+            on: (navigation is defined ? navigation.adminOnly: '1'),
         }) }}
 
         <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
