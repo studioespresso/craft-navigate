@@ -1,5 +1,5 @@
 {% import _self as macros %}
-{% macro renderNode(node) %}
+{% macro renderNode(node, classes) %}
     {% import _self as macros %}
     <li class="{% if node.classes|length %}{{ node.classes }}{% endif %}{% if classes.listClass is defined %}{{ classes.listClass }}{% endif %}">
         <a  href="{{ node.url }}"
@@ -21,7 +21,7 @@
 <div {% if classes.wrapperClass is defined %}class="{{ classes.wrapperClass }}"{% endif %}>
     <ul {% if classes.ulClass is defined %}class="{{ classes.ulClass }}"{% endif %}>
         {% for node in nodes %}
-            {{ macros.renderNode(node) }}
+            {{ macros.renderNode(node, classes) }}
         {% endfor %}
     </ul>
 </div>
