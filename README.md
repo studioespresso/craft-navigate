@@ -2,7 +2,7 @@
 
 Navigation plugin for Craft 3
 
-![Screenshot](resources/img/plugin-logo.png)
+![Screenshot](http://www.studioespresso.co/assets/plugins/navigate/banner.png)
 
 ## Requirements
 
