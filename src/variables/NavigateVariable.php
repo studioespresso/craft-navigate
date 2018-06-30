@@ -45,16 +45,16 @@ class NavigateVariable
      * @param null $optional
      * @return string
      */
-    public function getNavRaw($navHandle)
+    public function raw($navHandle)
     {
         $nodes = Navigate::$plugin->nodes->getNodesForRender($navHandle, Craft::$app->sites->getCurrentSite()->id);
         return $nodes;
 
     }
 
-    public function getNav($navHandle, array $options = [])
+    public function render($navHandle, array $options = [])
     {
-        $nodes = $this->getNavRaw($navHandle);
+        $nodes = $this->raw($navHandle);
 
         Craft::$app->view->setTemplateMode('cp');
         $template = Craft::$app->view->renderTemplate('navigate/_render/_nav', ['nodes' => $nodes, 'classes' => $options ] );
