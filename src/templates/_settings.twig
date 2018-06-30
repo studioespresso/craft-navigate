@@ -105,6 +105,7 @@
             value: (navigation is defined ? navigation.defaultNodeType : ''),
         }) }}
 
+
         <div class="field" id="handle-field">
             <div class="heading">
                 <label id="handle-label" class="required" for="levels">{{ 'Maximum levels'|t('navigate') }}</label>
@@ -123,6 +124,12 @@
             {% endif %}
         </div>
 
+        {{ forms.lightswitchField({
+            label: 'Can non-admin users change settings'|t('navigate'),
+            id: 'adminOnly',
+            name: 'data[adminOnly]',
+            on: (navigation is defined ? navigation.adminOnly: ''),
+        }) }}
 
         <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
 

@@ -53,6 +53,8 @@ class NavigationModel extends Model
 
     public $levels = 1;
 
+    public $adminOnly;
+
     public $dateCreated;
 
     public $dateUpdated;
@@ -76,7 +78,7 @@ class NavigationModel extends Model
     {
         return [
             [['title', 'handle', 'defaultNodeType', 'allowedSources'], 'required'],
-            [['title', 'handle', 'defaultNodeType', 'allowedSources', 'levels'], 'safe'],
+            [['title', 'handle', 'defaultNodeType', 'allowedSources', 'levels', 'adminOnly'], 'safe'],
             ['handle', 'validateHandle'],
         ];
     }
@@ -87,7 +89,7 @@ class NavigationModel extends Model
         $validator->validateAttribute($this, 'handle');
         $data = Navigate::$plugin->navigate->getNavigationByHandle($this->handle);
         if($data && $data->id != $this->id) {
-            $this->addError('handle', Craft::t('navigate', 'Handle "{handle}" has already been taken', ['handle' => $this->handle]));
+            $this->addError('handle', Craft::t('navigate', 'Handle "{handle}" is already in use', ['handle' => $this->handle]));
 
         }
 
