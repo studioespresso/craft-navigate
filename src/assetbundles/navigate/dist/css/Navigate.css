@@ -14,24 +14,30 @@
     display: none !important;
 }
 
+.navigate__nav .toggle {
+    display: none;
+}
+body.ltr .structure ul {
+    margin-left: 0px;
+}
 body.ltr .structure ul li {
     background-position: 9px 2px;
     padding-left: 47px;
 }
 
-.navigate__nav .toggle {
-    display: none;
-}
-
 body.ltr .structure ul li:not(:last-child):not(.last) {
     padding-left: 36px;
-    background-position: -1px 0;
     border-left: 1px solid #e3e5e8;
     margin-left: 9px;
+}
+
+body.ltr .structure ul li:last-child {
+    margin-top: -5px;
 }
 .node__node {
     padding: 8px 5px 8px 5px;
     display: inline-block;
+    top: -2px;
 }
 a.icon.detele:hover {
     color: red;
