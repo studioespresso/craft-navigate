@@ -8,11 +8,13 @@
         "cms",
         "craftcms",
         "craft-plugin",
-        "navigate"
+        "navigate",
+        "navigation",
+        "menus"
     ],
     "support": {
-        "docs": "https://github.com/studioespresso/navigate/blob/master/README.md",
-        "issues": "https://github.com/studioespresso/navigate/issues"
+        "docs": "https://github.com/studioespresso/craft3-navigate/blob/master/README.md",
+        "issues": "https://github.com/studioespresso/craft3-navigate/issues"
     },
     "license": "MIT",
     "authors": [
@@ -34,7 +36,7 @@
         "handle": "navigate",
         "hasCpSettings": true,
         "hasCpSection": true,
-        "changelogUrl": "https://raw.githubusercontent.com/studioespresso/navigate/master/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/studioespresso/craft3-navigate/master/CHANGELOG.md",
         "components": {
             "navigate": "studioespresso\\navigate\\services\\NavigateService",
             "nodes": "studioespresso\\navigate\\services\\NodesService"
