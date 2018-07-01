@@ -1,0 +1,22 @@
+{% import _self as macros %}
+{% macro renderNode(node) %}
+    {% import _self as macros %}
+    <li class="{% if node.classes|length %}{{ node.classes }}{% endif %}">
+        <a  href="{{ node.url }}" class="{% if node.active %}active{% endif %}" {% if node.blank %}target="_blank" rel="noopener"{% endif %}>{{ node.name }}</a>
+        {% if node.children|length %}
+            <ul>
+                {% for child in node.children %}
+                    {{ macros.renderNode(child) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+<div>
+    <ul>
+        {% for node in nodes %}
+            {{ macros.renderNode(node) }}
+        {% endfor %}
+    </ul>
+</div>
