@@ -73,15 +73,25 @@ class NodesService extends Component
         $data = [];
         foreach($nodes as $node) {
             /* @var $node NodeModel*/
-            if($node->type === 'element') {
-                $element = Craft::$app->elements->getElementById($node->elementId);
-                $node->url = $element->getUrl();
-            }
-            $node->children = $node->getChildren();
-
-            $data[$node->order] = $node;
+            $data[$node->order] = $this->parseNode($node);
         }
         return $data;
+    }
+
+    private function parseNode(NodeModel $node) {
+        if($node->type === 'element') {
+            $element = Craft::$app->elements->getElementById($node->elementId);
+            $node->url = $element->getUrl();
+        }
+
+        $node->children = $node->getChildren();
+        if($node->children) {
+            foreach($node->children as $child) {
+                $node->children[$child->order] = $this->parseNode($child);
+            }
+        }
+
+        return $node;
     }
 
     public function getChildrenByNode(NodeModel $node)
@@ -90,7 +100,6 @@ class NodesService extends Component
         $query = NodeRecord::find();
         $query->where(['navId' => $node->navId, 'siteId' => $node->siteId, 'parent' => $node->id]);
         $query->orderBy('order');
-
         foreach ($query->all() as $record) {
             $model = new NodeModel();
             $model->setAttributes($record->getAttributes());
@@ -277,55 +286,8 @@ class NodesService extends Component
 
         }
         $record->save();
-        //$this->updateNavOrder($node->navId, $node->siteId);
 
         return true;
-    }
-
-    private function updateNavOrder($navId, $site, $nodes = false, $parentId = 0)
-    {
-        // Get nodes for first run
-        if ($nodes === false) {
-            $nodes = $this->getNodesStructureByNavIdAndSiteById($navId, $site, true);
-        }
-
-        // Update order
-        $order = 0;
-        foreach ($nodes as $node) {
-            if ($node->parent == $parentId && isset($parentId)) {
-                // Update current node's order
-                $this->updateNode($node, array('order' => $order));
-                $order++;
-
-                // Update order for child nodes
-                $this->updateNavOrder($navId, $site, $nodes, $node->id);
-            }
-        }
-    }
-
-
-    public function cleanupNode($nodes, $navigation, $site)
-    {
-
-        $oldNodes = Navigate::$plugin->nodes->getNodesByNavIdAndSiteById($navigation, $site);
-        array_walk($nodes, function ($node) use (&$oldNodes) {
-            $model = new NodeModel();
-            $model->setAttributes($node);
-            if (array_key_exists($model->id, $oldNodes)) {
-                unset($oldNodes[$model->id]);
-            }
-        });
-
-        foreach ($oldNodes as $node) {
-            $record = NodeRecord::findOne([
-                'id' => $node->id,
-            ]);
-            $record->delete();
-        }
-
-        $this->_updateOrderForNavigationId($nodeRecord->navId, $nodeRecord->locale);
-
-        return $result;
     }
 
     public function deleteNodesByNavId($record)
