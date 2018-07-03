@@ -58,6 +58,10 @@ body.ltr .structure li .move {
     margin: 0;
 }
 
+body.ltr .structure li {
+    padding-left: 0px;
+}
+
 .node__node:hover a.icon {
     opacity: 0.9;
 }

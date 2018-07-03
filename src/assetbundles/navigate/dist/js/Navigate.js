@@ -378,8 +378,9 @@
                     level = 1;
 
                 var $li = $('<li data-level="' + level + '"/>').appendTo($appendTo),
+                    // indent = 8 + (level - 1) * 35 %}
                     indent = this.getIndent(level),
-                    $row = $('<div class="row"><div class="node__node element" data-label= "' + data.name + '" data-id="' + data.id +'">').appendTo($li);
+                    $row = $('<div class="row" style="margin-left: -'+ indent + 'px; padding-left: ' + indent + 'px;" data-id="' + data.id + '">').appendTo($li);
 
                 $row.append($element);
 
