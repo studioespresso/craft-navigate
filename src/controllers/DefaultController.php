@@ -56,11 +56,23 @@ class DefaultController extends Controller
 
         // TODO: Workaround to check editable sites
         $sites = Craft::$app->sites->getAllSites();
+        $siteIds = Craft::$app->sites->getAllSiteIds();
+        $primarySite = Craft::$app->sites->getPrimarySite();
         if(count($sites) == 1) {
-            $data['defaultSite'] = $sites[0];
+            $data['defaultSite'] = Craft::$app->sites->getPrimarySite();
         } else {
             $sites = Craft::$app->sites->getEditableSites();
-            $data['defaultSite'] = reset($sites);
+            $canEditDefault = false;
+            $canEditDefault = array_walk($sites, function ($site) use ($primarySite, $canEditDefault) {
+                if ($site->id === $primarySite->id) {
+                    return true;
+                }
+            });
+            if ($canEditDefault) {
+                $data['defaultSite'] = $primarySite;
+            } else {
+                $data['defaultSite'] = reset($sites);
+            }
         }
 
         $data['navigations'] = Navigate::$plugin->navigate->getAllNavigations();
