@@ -84,6 +84,7 @@ body.ltr .structure li .move {
     padding: 8px 10px;
     color: #999;
     background: #F5F5F5;
+    width: 45px;
     float: right;
     text-align: center;
     position: relative;
