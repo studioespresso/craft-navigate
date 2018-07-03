@@ -114,9 +114,15 @@ class DefaultController extends Controller
 
             $nodeTypes = Navigate::$plugin->nodes->getNodeTypes($navigation);
 
-            Craft::$app->getView()->registerJs('new Craft.Navigate('. $navId . ', '.
-                Json::encode($nodeTypes, JSON_UNESCAPED_UNICODE) . ',' . $navId .',' . $site->id .',' . $navigation->levels .' );');
-
+            $jsOptions = implode("','", [
+                $navId,
+                Json::encode($nodeTypes, JSON_UNESCAPED_UNICODE),
+                $navId,
+                $site->id,
+                $siteHandle,
+                $navigation->levels
+            ]);
+            Craft::$app->getView()->registerJs("new Craft.Navigate('" . $jsOptions . "');");
 
             return $this->renderTemplate('navigate/_edit', [
                 'nodes' => Navigate::$plugin->nodes->getNodesByNavIdAndSiteById($navId, $site->id),

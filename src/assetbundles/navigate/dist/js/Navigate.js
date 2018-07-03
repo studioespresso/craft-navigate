@@ -24,11 +24,11 @@
 
             $addElementLoader: $('.navigate .buttons .spinner'),
 
-            init: function (id, entrySources, nav, site, levels) {
+            init: function (id, entrySources, nav, site, siteHandle, levels) {
                 this.id = id;
                 this.site = site;
                 this.entrySources = '*';
-                this.siteHandle = 'default';
+                this.siteHandle = siteHandle;
                 this.levels = levels;
                 this.structure = new Craft.NavigateStructure(this.id, '#navigate__nav', '.navigate__nav', settings, this.levels);
 
