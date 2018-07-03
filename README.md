@@ -1,6 +1,6 @@
 # Navigate for Craft CMS 3.x
 
-![Screenshot](http://www.studioespresso.co/assets/plugins/navigate/banner.png)
+![Screenshot](resources/banner.png)
 
 ## Requirements
 
