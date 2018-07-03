@@ -354,7 +354,7 @@
                     .replace(/%%url%%/ig, nodeType == 'url' ? data.url : '')
                     .replace(/%%elementType%%/ig, data.elementType ? data.elementType : '' )
                     .replace(/%%type%%/ig, data.elementType ? data.elementType.toLowerCase() : "url")
-                    .replace(/%%typeLabel%%/ig, data.elementType ? data.elementType : "")
+                    .replace(/%%typeLabel%%/ig, data.elementType ? data.elementType : "url")
 
                 $node = $(nodeHtml);
 
