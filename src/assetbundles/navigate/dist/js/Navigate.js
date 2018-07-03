@@ -11,9 +11,7 @@
             structure: null,
             levels: null,
 
-            locale: null,
             siteHandle: null,
-            siteUrl: 'craft3.local',
             savingNode: false,
             entrySources: '',
 
