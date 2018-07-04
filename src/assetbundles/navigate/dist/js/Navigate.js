@@ -22,11 +22,10 @@
 
             $addElementLoader: $('.navigate .buttons .spinner'),
 
-            init: function (id, entrySources, nav, site, siteHandle, levels) {
+            init: function (id, entrySources, nav, site, levels) {
                 this.id = id;
                 this.site = site;
                 this.entrySources = '*';
-                this.siteHandle = siteHandle;
                 this.levels = levels;
                 this.structure = new Craft.NavigateStructure(this.id, '#navigate__nav', '.navigate__nav', settings, this.levels);
 
@@ -76,7 +75,8 @@
                 } else {
                     return Craft.createElementSelectorModal(elementType, {
                         criteria: {
-                            site: this.siteHandle
+                            enabledForSite: null,
+                            siteId: this.site
                         },
                         sources: elementSources,
                         multiSelect: true,

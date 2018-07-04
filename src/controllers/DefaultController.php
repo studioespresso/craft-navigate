@@ -119,7 +119,6 @@ class DefaultController extends Controller
                 Json::encode($nodeTypes, JSON_UNESCAPED_UNICODE),
                 $navId,
                 $site->id,
-                $siteHandle,
                 $navigation->levels
             ]);
             Craft::$app->getView()->registerJs("new Craft.Navigate('" . $jsOptions . "');");
