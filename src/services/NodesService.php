@@ -201,16 +201,18 @@ class NodesService extends Component
         $record = false;
 
         if (isset($model->id)) {
-            $record = NodeRecord::findOne([
+            if(NodeRecord::deleteAll([
                 'id' => $model->id
-            ]);
+            ])) {
+                NodeRecord::deleteAll([
+                    'parent' => $model->id
+                ]);
+                return true;
+            };
         } else {
             throw new NotFoundHttpException('Node not found', 404);
         }
 
-        if ($record->delete()) {
-            return true;
-        }
     }
 
     public function save(NodeModel $model)
