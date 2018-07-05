@@ -22,11 +22,10 @@
 
             $addElementLoader: $('.navigate .buttons .spinner'),
 
-            init: function (id, entrySources, nav, site, siteHandle, levels) {
+            init: function (id, entrySources, nav, site, levels) {
                 this.id = id;
                 this.site = site;
                 this.entrySources = '*';
-                this.siteHandle = siteHandle;
                 this.levels = levels;
                 this.structure = new Craft.NavigateStructure(this.id, '#navigate__nav', '.navigate__nav', settings, this.levels);
 
@@ -76,7 +75,8 @@
                 } else {
                     return Craft.createElementSelectorModal(elementType, {
                         criteria: {
-                            site: this.siteHandle
+                            enabledForSite: null,
+                            siteId: this.site
                         },
                         sources: elementSources,
                         multiSelect: true,
@@ -117,7 +117,7 @@
                         elementType: elementType,
                         blank: this.$newWindowElement.val() == '1',
                         elementId: element.id,
-                        parent: parentId === undefined ? 0 : parentId
+                        parent: parentId === undefined ? null : parentId
                     };
                     this.saveNewNode(data, 'element');
                 }
@@ -253,12 +253,12 @@
                     return;
                 }
 
-                var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
-                if(!re.test(data.url)) {
-                    this.$urlInput.addClass('error');
-                    Garnish.shake(this.$container);
-                    return;
-                }
+                // var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+                // if(!re.test(data.url)) {
+                //     this.$urlInput.addClass('error');
+                //     Garnish.shake(this.$container);
+                //     return;
+                // }
 
 
                 var url = Craft.getActionUrl('navigate/nodes/add');

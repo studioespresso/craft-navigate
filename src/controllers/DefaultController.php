@@ -74,7 +74,7 @@ class DefaultController extends Controller
                 $data['defaultSite'] = reset($sites);
             }
         }
-
+        $data['settings'] = Navigate::$plugin->getSettings();
         $data['navigations'] = Navigate::$plugin->navigate->getAllNavigations();
         return $this->renderTemplate('navigate/_index', $data);
     }
@@ -119,7 +119,6 @@ class DefaultController extends Controller
                 Json::encode($nodeTypes, JSON_UNESCAPED_UNICODE),
                 $navId,
                 $site->id,
-                $siteHandle,
                 $navigation->levels
             ]);
             Craft::$app->getView()->registerJs("new Craft.Navigate('" . $jsOptions . "');");

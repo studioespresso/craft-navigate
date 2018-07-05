@@ -63,7 +63,7 @@ class NodesService extends Component
             return false;
         }
 
-        $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site);
+        $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, false, true);
         $nodes = $this->parseNodesForRender($nodes);
         return $nodes;
     }
@@ -108,14 +108,17 @@ class NodesService extends Component
         return $data;
     }
 
-    public function getNodesByNavIdAndSiteById(int $navId = null, $siteId, $refresh = false)
+    public function getNodesByNavIdAndSiteById(int $navId = null, $siteId, $refresh = false, $excludeDisabled = false)
     {
         if (!$refresh && isset($this->nodes[$navId])) {
             return $this->nodes[$navId];
         }
 
         $query = NodeRecord::find();
-        $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => 0]);
+        $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => null]);
+        if($excludeDisabled) {
+            $query->andWhere(['enabled' => 1]);
+        }
         $query->orderBy('parent ASC, order ASC');
         $data = [];
         foreach ($query->all() as $record) {
@@ -201,16 +204,18 @@ class NodesService extends Component
         $record = false;
 
         if (isset($model->id)) {
-            $record = NodeRecord::findOne([
+            if(NodeRecord::deleteAll([
                 'id' => $model->id
-            ]);
+            ])) {
+                NodeRecord::deleteAll([
+                    'parent' => $model->id
+                ]);
+                return true;
+            };
         } else {
             throw new NotFoundHttpException('Node not found', 404);
         }
 
-        if ($record->delete()) {
-            return true;
-        }
     }
 
     public function save(NodeModel $model)
@@ -228,7 +233,7 @@ class NodesService extends Component
         }
 
         if ($isNew) {
-            $model->order = $this->getOrderForNewNode($model->navId, $model->siteId, $model->parent);
+            $model->order = $this->getOrderForNewNode($model->navId, $model->siteId, $model->parent ? $model->parent : null);
         }
 
         $record->siteId = $model->siteId;

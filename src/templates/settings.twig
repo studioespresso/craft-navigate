@@ -22,3 +22,10 @@
     name: 'pluginLabel',
     value: settings['pluginLabel']})
 }}
+
+{{ forms.lightswitchField({
+    label: 'Allow non-admin users to add/remove navigations'|t('navigate'),
+    id: 'anyoneCanAdd',
+    name: 'anyoneCanAdd',
+    on: settings['anyoneCanAdd']
+}) }}

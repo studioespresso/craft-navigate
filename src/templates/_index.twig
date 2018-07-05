@@ -24,6 +24,7 @@
 {% set createUrl = url('navigate/add') %}
 
 {% block actionButton %}
+   {% if (not currentUser.admin and settings.anyoneCanAdd) or currentUser.admin %}
     <div id="button-container">
         <div class="btngroup submit">
             <a class="btn submit add icon" href="{{ createUrl }}">
@@ -31,6 +32,7 @@
             </a>
         </div>
     </div>
+    {% endif %}
 {% endblock %}
 
 {# The content of the CP Section#}
@@ -53,7 +55,11 @@
                     <a href="{{ url('navigate/settings/'~navigation.id) }}" role="button"><span data-icon="settings"></span></a>
                     {% endif %}
                 </td>
-                <td class="thin"><a class="delete icon" title="Delete" role="button"></a></td>
+                <td class="thin">
+                {% if (not currentUser.admin and settings.anyoneCanAdd) or currentUser.admin %}
+                    <a class="delete icon" title="Delete" role="button"></a>
+                {% endif %}
+                </td>
             </tr>
             {% endfor %}
             </tbody>
