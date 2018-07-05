@@ -230,7 +230,7 @@ class NodesService extends Component
         }
 
         if ($isNew) {
-            $model->order = $this->getOrderForNewNode($model->navId, $model->siteId, $model->parent);
+            $model->order = $this->getOrderForNewNode($model->navId, $model->siteId, $model->parent ? $model->parent : null);
         }
 
         $record->siteId = $model->siteId;
@@ -238,7 +238,7 @@ class NodesService extends Component
         $record->name = $model->name;
         $record->type = $model->type;
         $record->order = $model->order;
-        $record->parent = $model->parent ? $model->parent : null;
+        $record->parent = $model->parent;
         $record->enabled = $model->enabled ? 1 : 0;
         $record->blank = $model->blank ? 1 : 0;
         $record->classes = $model->classes;

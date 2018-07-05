@@ -76,7 +76,7 @@ class NodesController extends Controller
         $model->setAttributes([
             'siteId' => $attributes['siteId'],
             'navId' => $attributes['navId'],
-            'parent' => isset($attributes['parent']) ? $attributes['parent'] : 0,
+            'parent' => isset($attributes['parent']) ? $attributes['parent'] : null,
             'name' => $attributes['name'],
             'blank' => isset($attributes['blank']) ? $attributes['blank'] == 'true' : false,
             'enabled' => true,
@@ -172,7 +172,7 @@ class NodesController extends Controller
         }
 
         $prevId = Craft::$app->request->getBodyParam('prevId', false);
-        $parentId = Craft::$app->request->getBodyParam('parentId', 0);
+        $parentId = Craft::$app->request->getBodyParam('parentId', null);
         // Move it move it!
         $moved = Navigate::$plugin->nodes->move($node, $parentId, $prevId);
         if ($moved) {
