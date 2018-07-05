@@ -63,7 +63,7 @@ class NodesService extends Component
             return false;
         }
 
-        $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site);
+        $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, false, true);
         $nodes = $this->parseNodesForRender($nodes);
         return $nodes;
     }
@@ -108,7 +108,7 @@ class NodesService extends Component
         return $data;
     }
 
-    public function getNodesByNavIdAndSiteById(int $navId = null, $siteId, $refresh = false)
+    public function getNodesByNavIdAndSiteById(int $navId = null, $siteId, $refresh = false, $excludeDisabled = false)
     {
         if (!$refresh && isset($this->nodes[$navId])) {
             return $this->nodes[$navId];
@@ -116,6 +116,9 @@ class NodesService extends Component
 
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => null]);
+        if($excludeDisabled) {
+            $query->andWhere(['enabled' => 1]);
+        }
         $query->orderBy('parent ASC, order ASC');
         $data = [];
         foreach ($query->all() as $record) {
