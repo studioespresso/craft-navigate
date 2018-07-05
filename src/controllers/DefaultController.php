@@ -74,7 +74,7 @@ class DefaultController extends Controller
                 $data['defaultSite'] = reset($sites);
             }
         }
-
+        $data['settings'] = Navigate::$plugin->getSettings();
         $data['navigations'] = Navigate::$plugin->navigate->getAllNavigations();
         return $this->renderTemplate('navigate/_index', $data);
     }
