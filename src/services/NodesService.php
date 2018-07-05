@@ -115,7 +115,7 @@ class NodesService extends Component
         }
 
         $query = NodeRecord::find();
-        $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => 0]);
+        $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => null]);
         $query->orderBy('parent ASC, order ASC');
         $data = [];
         foreach ($query->all() as $record) {
@@ -238,7 +238,7 @@ class NodesService extends Component
         $record->name = $model->name;
         $record->type = $model->type;
         $record->order = $model->order;
-        $record->parent = $model->parent;
+        $record->parent = $model->parent ? $model->parent : null;
         $record->enabled = $model->enabled ? 1 : 0;
         $record->blank = $model->blank ? 1 : 0;
         $record->classes = $model->classes;
