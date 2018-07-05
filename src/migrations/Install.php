@@ -95,6 +95,8 @@ class Install extends Migration
      *
      * @return bool
      */
+
+
     protected function createTables()
     {
         $tablesCreated = false;
@@ -135,7 +137,6 @@ class Install extends Migration
                     'classes' => $this->string(255),
                     'parent' => $this->integer(10)->defaultValue(0),
                     'order' => $this->integer(10),
-                    'enabled' => $this->boolean()->defaultValue(1),
 
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
