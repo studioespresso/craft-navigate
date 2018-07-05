@@ -41,6 +41,8 @@ class Settings extends Model
      */
     public $pluginLabel = 'Navigate';
 
+    public $anyoneCanAdd = false;
+
     // Public Methods
     // =========================================================================
 
@@ -58,6 +60,7 @@ class Settings extends Model
     {
         return [
             ['pluginLabel', 'string'],
+            ['anyoneCanAdd', 'boolean'],
             ['pluginLabel', 'default', 'value' => 'Navigate'],
         ];
     }
