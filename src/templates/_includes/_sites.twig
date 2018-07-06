@@ -4,14 +4,10 @@
 <div id="revision-btn" class="btn menubtn" data-icon="world">{{ thisSite.name }}</div>
 <div class="menu">
     <ul class="padded">
-        <li>
-            <a class="sel">
-                {{ thisSite.name }}
-            </a>
-        </li>
-        {% for site in craft.app.sites.getAllSites() if site.handle != thisSite.handle %}
+        {% for site in craft.app.sites.getAllSites() %}
             <li>
-                <a href="/admin/navigate/edit/{{ navigation.id }}/{{ site.handle }}">
+
+                <a href="/admin/navigate/edit/{{ navigation.id }}/{{ site.handle }}" {% if site.handle == thisSite.handle %}class="sel"{% endif %}>
                     {{ site.name }}
                 </a>
             </li>
