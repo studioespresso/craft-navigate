@@ -85,7 +85,7 @@ body.ltr .structure li {
 }
 
 .navigate__nav .node__type span {
-    padding: 8px 10px;
+    padding: auto 10px;
     color: #999;
     background: #F5F5F5;
     width: 45px;
