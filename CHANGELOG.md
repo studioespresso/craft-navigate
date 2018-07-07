@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 
 ## Unreleased
+
+### Changed
+- Opening the URL modal now moves focus to the name field, so you can start typing right away ([#7](https://github.com/studioespresso/craft3-navigate/issues/7))
 ### Fixed
 - Sites in the multisite dropdown now stay in the same order ([#6](https://github.com/studioespresso/craft3-navigate/issues/6))
 - Styling issue with node type in Chrome and Firefox ([#8](https://github.com/studioespresso/craft3-navigate/issues/8))
