@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## Unreleased
+## 1.0.1 - 2018-07-09
 
 ### Changed
 - Opening the URL modal now moves focus to the name field, so you can start typing right away ([#7](https://github.com/studioespresso/craft3-navigate/issues/7))
