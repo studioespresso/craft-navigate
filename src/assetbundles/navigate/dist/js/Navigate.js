@@ -180,6 +180,7 @@
             $subjectInput: null,
             $bodyInput: null,
             $spinner: null,
+            $nameInput: null,
             site : null,
             nav: null,
 
@@ -216,6 +217,55 @@
                 this.$spinner = this.$container.find('.spinner:first');
 
 
+            },
+
+            show: function() {
+                // Close other modals as needed
+                if (this.settings.closeOtherModals && Garnish.Modal.visibleModal && Garnish.Modal.visibleModal !== this) {
+                    Garnish.Modal.visibleModal.hide();
+                }
+
+                if (this.$container) {
+                    // Move it to the end of <body> so it gets the highest sub-z-index
+                    this.$shade.appendTo(Garnish.$bod);
+                    this.$container.appendTo(Garnish.$bod);
+
+                    this.$container.show();
+                    this.updateSizeAndPosition();
+
+                    this.$shade.velocity('fadeIn', {
+                        duration: 50,
+                        complete: $.proxy(function() {
+                            this.$container.velocity('fadeIn', {
+                                complete: $.proxy(function() {
+                                    this.updateSizeAndPosition();
+                                    this.$nameInput.trigger('focus');
+                                    this.onFadeIn();
+                                }, this)
+                            });
+                        }, this)
+                    });
+
+                    if (this.settings.hideOnShadeClick) {
+                        this.addListener(this.$shade, 'click', 'hide');
+                    }
+
+                    this.addListener(Garnish.$win, 'resize', 'updateSizeAndPosition');
+                }
+
+                this.enable();
+
+                if (this.settings.hideOnEsc) {
+                    Garnish.escManager.register(this, 'hide');
+                }
+
+                if (!this.visible) {
+                    this.visible = true;
+                    Garnish.Modal.visibleModal = this;
+
+                    this.trigger('show');
+                    this.settings.onShow();
+                }
             },
 
             addNode: function (event) {
