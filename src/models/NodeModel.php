@@ -89,7 +89,7 @@ class NodeModel extends Model
     {
         return [
             [['type', 'navId', 'siteId', 'name'], 'required'],
-            [[ 'id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type', 'url', 'siteId', 'order', 'parent', 'blank', 'classes', 'children'], 'safe'],
+            [[ 'id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type', 'url', 'slug','siteId', 'order', 'parent', 'blank', 'classes', 'children'], 'safe'],
         ];
     }
 
@@ -101,8 +101,11 @@ class NodeModel extends Model
     public function active() {
         if($this->url === Craft::$app->request->getAbsoluteUrl()) {
             return true;
-        } else {
-            return false;
         }
+
+        if(strpos(Craft::$app->request->getAbsoluteUrl(), $this->slug)) {
+            return true;
+        }
+        return false;
     }
 }
