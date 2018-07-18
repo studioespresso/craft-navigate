@@ -40,10 +40,10 @@
     {% if navigations|length %}
         <table id="navigations" class="data fullwidth collapsible">
             <thead>
-            <tr><th scope="col">Name</th>
-                <th scope="col">Handle</th>
-                <th scope="col">Settings</th>
-                <th scope="col">Remove</th>
+            <tr><th scope="col">{{ 'Name'|t('navigate') }}</th>
+                <th scope="col">{{ 'Handle'|t('navigate') }}</th>
+                <th scope="col">{{ 'Settings'|t('navigate') }}</th>
+                <th scope="col">{{ 'Remove'|t('navigate') }}</th>
             </tr></thead>
             <tbody>
             {% for navigation in navigations %}

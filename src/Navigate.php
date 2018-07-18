@@ -96,7 +96,7 @@ class Navigate extends Plugin
         self::$plugin = $this;
 
         $this->name = Craft::t('navigate', 'Navigate');
-        
+
         // Add in our Twig extensions
         Craft::$app->view->registerTwigExtension(new NavigateTwigExtension());
 

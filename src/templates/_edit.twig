@@ -120,7 +120,7 @@
             <div class="body">
                 <div class="field" id="node__url-name">
                     <div class="heading">
-                        <label class="required" for="name">{{ 'Name' }}</label>
+                        <label class="required" for="name">{{ 'Name'|t('navigate') }}</label>
                     </div>
                     <div class="input ltr">
                         <input class="text node-name fullwidth" type="text" id="name" autocomplete="off" autofocus="autofocus">
@@ -128,7 +128,7 @@
                 </div>
                 <div class="field" id="node__url-url">
                     <div class="heading">
-                        <label class="required" for="url">{{ 'URL' }}</label>
+                        <label class="required" for="url">{{ 'URL'|t('navigate') }}</label>
                     </div>
                     <div class="input ltr">
                         <input class="text node-url fullwidth" type="text" id="url" name="url" autocomplete="off">
@@ -137,8 +137,8 @@
             </div>
             <footer class="footer">
                 <div class="buttons right">
-                    <input type="button" class="btn cancel" value="{{ 'Cancel'|t('app') }}">
-                    <input type="submit" class="btn submit" value="{{ 'Add'|t('app') }}">
+                    <input type="button" class="btn cancel" value="{{ 'Cancel'|t('navigate') }}">
+                    <input type="submit" class="btn submit" value="{{ 'Add'|t('navigate') }}">
                 </div>
             </footer>
             <div class="spinner" style="display: none;"></div>
@@ -154,7 +154,7 @@
     <div id="settings" class="meta">
         <div class="field" id="slug-field">
             <div class="heading">
-                <label id="handle-label" for="handle">Handle</label>
+                <label id="handle-label" for="handle">{{ 'Handle'|t('navigate') }}</label>
             </div>
             <div class="input ltr">
                 <span>{{ navigation.handle }}</span>
@@ -163,7 +163,7 @@
         </div>
         <div class="field" id="slug-field">
             <div class="heading">
-                <label id="handle-label" for="handle">Max levels</label>
+                <label id="handle-label" for="handle">{{ "Maximum levels"|t('navigate') }}</label>
             </div>
             <div class="input ltr">
                 <span>{{ navigation.levels }}</span>
