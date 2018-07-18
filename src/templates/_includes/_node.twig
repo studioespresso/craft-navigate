@@ -2,7 +2,7 @@
     <span class="status {{ node.enabled ? 'on': 'off'}}"></span>
     <span class="title">{{ node.name }}</span>
     <a href="{{ actionUrl('navigate/nodes/url', { id: node.id}) }}" data-icon="world" target="_blank" title="{{ node.name }}" rel="nofollow"></a>
-    <a class="settings icon" title="{{ 'Settings'|t }}"></a>
+    <a class="settings icon" title="{{ 'Settings'|t('navigate') }}"></a>
     <a data-icon="remove" class="delete" role="button"></a>
     <a class="move icon" title="Move"></a>
     <div class="node__type">

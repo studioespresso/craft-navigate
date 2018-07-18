@@ -57,9 +57,9 @@
                     <span class="title">{{ node.name }}</span>
                 </div>
             </div>
-            <a class="move icon" title="{{ 'Move'|t }}" data-id="{{ node.id }}"></a>
-            <a class="settings icon" title="{{ 'Settings'|t }}" data-id="{{ node.id }}"></a>
-            <a class="delete icon" title="{{ 'Delete'|t }}"></a>
+            <a class="move icon" title="{{ 'Move'|t('navigate') }}" data-id="{{ node.id }}"></a>
+            <a class="settings icon" title="{{ 'Settings'|t('navigate') }}" data-id="{{ node.id }}"></a>
+            <a class="delete icon" title="{{ 'Delete'|t('navigate') }}"></a>
             <div class="node__type">
                 <span class="node__type--{{ node.type == 'element' ? node.elementType : node.type }}">{{ node.type == 'element' ? node.elementType : node.type }}</span>
             </div>
@@ -109,11 +109,11 @@
                     <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
                 </div>
             </div>
-            <a class="move icon" title="{{ 'Move'|t }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
-            <a class="settings icon" title="{{ 'Settings'|t }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
-            <a class="delete icon" title="{{ 'Delete'|t }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
+            <a class="move icon" title="{{ 'Move'|t('navigate') }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
+            <a class="settings icon" title="{{ 'Settings'|t('navigate') }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
+            <a class="delete icon" title="{{ 'Delete'|t('navigate') }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
             <div class="node__type">
-                <span class="node__type--{{ '%%type%%'|replace(replaceWith)|lower }}">{{ '%%typeLabel%%'|replace(replaceWith)|t }}</span>
+                <span class="node__type--{{ '%%type%%'|replace(replaceWith)|lower }}">{{ '%%typeLabel%%'|replace(replaceWith)|t('navigate') }}</span>
             </div>
         </script>
         <script id="node__url" type="text/template">
