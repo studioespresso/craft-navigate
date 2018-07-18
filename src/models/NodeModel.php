@@ -53,6 +53,8 @@ class NodeModel extends Model
 
     public $url;
 
+    public $slug;
+
     public $order;
 
     public $parent;
