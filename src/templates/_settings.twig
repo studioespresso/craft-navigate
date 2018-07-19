@@ -95,17 +95,7 @@
                 {% endfor %}
                 </ul>
         {% endif %}
-
-        {{ forms.selectField({
-            label: 'Default link type'|t('navigate'),
-            instructions: 'Select the default link type.'|t('navigate'),
-            id: 'defaultNodeType',
-            name: 'data[defaultNodeType]',
-            options: sources,
-            value: (navigation is defined ? navigation.defaultNodeType : ''),
-        }) }}
-
-
+        
         <div class="field" id="handle-field">
             <div class="heading">
                 <label id="handle-label" class="required" for="levels">{{ 'Maximum levels'|t('navigate') }}</label>
