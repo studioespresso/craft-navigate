@@ -48,7 +48,7 @@ class NavigationModel extends Model
     public $handle;
 
     public $allowedSources = '*';
-    
+
     public $levels = 1;
 
     public $adminOnly;
