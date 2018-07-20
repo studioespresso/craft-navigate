@@ -81,7 +81,6 @@ class NavigateService extends Component
         $record->levels = $model->levels;
         $record->adminOnly = $model->adminOnly ? 1 : 0;
         $record->allowedSources= $model->allowedSources;
-        $record->defaultNodeType = $model->defaultNodeType;
 
         $save = $record->save();
         if ( ! $save ) {
