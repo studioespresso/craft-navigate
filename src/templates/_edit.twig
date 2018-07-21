@@ -54,7 +54,16 @@
                 <div class="label">
                     <span class="node__id visuallyhidden"><strong>{{ node.id }}</strong></span>
                     <span class="status {{ node.enabled ? 'on': 'off' }}"></span>
+                    {% set linked = false %}
+                    {% if node.type == 'element' and node.elementType == 'entry'  %}
+                        <a href="{{ craft.entries.id(node.elementId).first().getCpEditUrl() }}" target="_blank">
+                    {% elseif node.type == 'element' and node.elementType == 'category'  %}
+                            <a href="{{ craft.categories.id(node.elementId).first().getCpEditUrl() }}" target="_blank">
+                    {% endif %}
                     <span class="title">{{ node.name }}</span>
+                    {% if linked %}
+                        </a>
+                    {% endif %}
                 </div>
             </div>
             <a class="move icon" title="{{ 'Move'|t('navigate') }}" data-id="{{ node.id }}"></a>
