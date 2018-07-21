@@ -28,7 +28,7 @@
     <div id="button-container">
         <div class="btngroup submit">
             <a class="btn submit add icon" href="{{ createUrl }}">
-                {{ 'New navigation'|t }}
+                {{ 'New navigation'|t('navigate') }}
             </a>
         </div>
     </div>
@@ -40,10 +40,10 @@
     {% if navigations|length %}
         <table id="navigations" class="data fullwidth collapsible">
             <thead>
-            <tr><th scope="col">Name</th>
-                <th scope="col">Handle</th>
-                <th scope="col">Settings</th>
-                <th scope="col">Remove</th>
+            <tr><th scope="col">{{ 'Name'|t('navigate') }}</th>
+                <th scope="col">{{ 'Handle'|t('navigate') }}</th>
+                <th scope="col">{{ 'Settings'|t('navigate') }}</th>
+                <th scope="col">{{ 'Remove'|t('navigate') }}</th>
             </tr></thead>
             <tbody>
             {% for navigation in navigations %}
@@ -67,7 +67,7 @@
 
     {% else %}
         <div id="nonavigations">
-        {{ 'No navigations found, click "New navigation" in the top right corner to get started'|t }}
+        {{ 'No navigations found, click "New navigation" in the top right corner to get started'|t('navigate') }}
         </div>
     {% endif %}
 {% endblock %}

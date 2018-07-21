@@ -49,8 +49,6 @@ class NavigationModel extends Model
 
     public $allowedSources = '*';
 
-    public $defaultNodeType = 'entry';
-
     public $levels = 1;
 
     public $adminOnly;
@@ -77,8 +75,8 @@ class NavigationModel extends Model
     public function rules()
     {
         return [
-            [['title', 'handle', 'defaultNodeType', 'allowedSources'], 'required'],
-            [['title', 'handle', 'defaultNodeType', 'allowedSources', 'levels', 'adminOnly'], 'safe'],
+            [['title', 'handle', 'allowedSources'], 'required'],
+            [['title', 'handle', 'allowedSources', 'levels', 'adminOnly'], 'safe'],
             ['handle', 'validateHandle'],
         ];
     }

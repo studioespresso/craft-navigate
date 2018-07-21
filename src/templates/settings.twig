@@ -16,8 +16,8 @@
 {% import "_includes/forms" as forms %}
 
 {{ forms.textField({
-    label: 'Sidebar label'|t,
-    instructions: 'You can change the plugin label in the CP sidebar here.'|t,
+    label: 'Sidebar label'|t('navigate'),
+    instructions: 'You can change the plugin label in the CP sidebar here.'|t('navigate'),
     id: 'pluginLabel',
     name: 'pluginLabel',
     value: settings['pluginLabel']})

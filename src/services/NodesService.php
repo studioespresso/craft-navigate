@@ -82,6 +82,7 @@ class NodesService extends Component
         if($node->type === 'element') {
             $element = Craft::$app->elements->getElementById($node->elementId);
             $node->url = $element->getUrl();
+            $node->slug = $element->uri;
         }
 
         $node->children = $node->getChildren();

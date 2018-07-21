@@ -41,7 +41,7 @@
         <div class="field" id="name-field">
             <div class="heading">
                 <label id="name-label" class="required" for="title">{{ 'Title'|t('navigate') }}</label>
-                <div class="instructions"><p>{{ 'What this field will be called in the CP.'|t('navigate') }}</p>
+                <div class="instructions"><p>{{ 'What this navigation will be called in the CP.'|t('navigate') }}</p>
                 </div>
             </div>
             <div class="input ltr {% if errors is defined and errors.title is defined %}errors{% endif %}">
@@ -96,16 +96,6 @@
                 </ul>
         {% endif %}
 
-        {{ forms.selectField({
-            label: 'Default link type'|t('navigate'),
-            instructions: 'Select the default link type.'|t('navigate'),
-            id: 'defaultNodeType',
-            name: 'data[defaultNodeType]',
-            options: sources,
-            value: (navigation is defined ? navigation.defaultNodeType : ''),
-        }) }}
-
-
         <div class="field" id="handle-field">
             <div class="heading">
                 <label id="handle-label" class="required" for="levels">{{ 'Maximum levels'|t('navigate') }}</label>
@@ -131,7 +121,7 @@
             on: (navigation is defined ? navigation.adminOnly: '1'),
         }) }}
 
-        <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('navigate') }}">
 
     </form>
 

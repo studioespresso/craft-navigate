@@ -3,7 +3,7 @@
 {{ forms.textField({
     id: 'name',
     name: 'name',
-    label: "Name"|t,
+    label: "Name"|t('navigate'),
     value: node.name,
 }) }}
 
@@ -11,7 +11,7 @@
 	{{ forms.textField({
         id: 'url',
         name: 'url',
-        label: "URL"|t,
+        label: "URL"|t('navigate'),
         value: node.url,
     }) }}
 {% endif %}
@@ -19,23 +19,23 @@
 {{ forms.lightswitchField({
     id:           'enabled',
     name:         'enabled',
-    label:        'Enabled'|t,
+    label:        'Enabled'|t('navigate'),
     on:           node.enabled,
-    instructions: 'Show or hide in navigation.'|t
+    instructions: 'Show or hide in navigation.'|t('navigate')
 }) }}
 
 {{ forms.lightswitchField({
     id:           'blank',
     name:         'blank',
-    label:        'Open in a new window'|t,
+    label:        'Open in a new window'|t('navigate'),
     on:           node.blank,
 }) }}
 
 {{ forms.textField({
     id: 'lasses',
     name: 'classes',
-    label: "Classes"|t,
-    instructions: "These css classes will be applied to this node's list item",
+    label: "Classes"|t('navigate'),
+    instructions: "These css classes will be applied to this node's list item"|t('navigate'),
     value: node.classes,
 }) }}
 
