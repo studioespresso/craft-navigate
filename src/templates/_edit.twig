@@ -55,11 +55,11 @@
                     <span class="node__id visuallyhidden"><strong>{{ node.id }}</strong></span>
                     <span class="status {{ node.enabled ? 'on': 'off' }}"></span>
                     {% if node.type == 'element' and node.elementType == 'entry'  %}
-                        <a href="{{ craft.entries.id(node.elementId).first().getCpEditUrl() }}" target="_blank">
+                        <a href="{{ craft.entries.id(node.elementId).one().getCpEditUrl() }}" target="_blank">
                             <span class="title">{{ node.name }}</span>
                         </a>
                     {% elseif node.type == 'element' and node.elementType == 'category'  %}
-                        <a href="{{ craft.categories.id(node.elementId).first().getCpEditUrl() }}" target="_blank">
+                        <a href="{{ craft.categories.id(node.elementId).one().getCpEditUrl() }}" target="_blank">
                             <span class="title">{{ node.name }}</span>
                         </a>
                     {% else %}
