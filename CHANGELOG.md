@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 - Node are now active when on a child url that is not in the navigation ([#10](https://github.com/studioespresso/craft3-navigate/issues/10))
 - Added Dutch (NL) translations ([#5](https://github.com/studioespresso/craft3-navigate/issues/5))
+- Node title now links to the entry's edit page ([#2](https://github.com/studioespresso/craft3-navigate/issues/2))
 
 ### Removed
 - The "Default Node Type" setting wasn't used for anything so this update removes it 
