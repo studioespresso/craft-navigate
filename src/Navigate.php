@@ -99,12 +99,7 @@ class Navigate extends Plugin
 
         // Add in our Twig extensions
         Craft::$app->view->registerTwigExtension(new NavigateTwigExtension());
-
-        // Add in our console commands
-        if (Craft::$app instanceof ConsoleApplication) {
-            $this->controllerNamespace = 'studioespresso\navigate\console\controllers';
-        }
-
+        
         // Register our CP routes
         Event::on(
             UrlManager::class,
