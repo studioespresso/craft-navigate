@@ -81,8 +81,10 @@ class NodesService extends Component
     private function parseNode(NodeModel $node) {
         if($node->type === 'element') {
             $element = Craft::$app->elements->getElementById($node->elementId);
-            $node->url = $element->getUrl();
-            $node->slug = $element->uri;
+            if($element) {
+                $node->url = $element->getUrl();
+                $node->slug = $element->uri;
+            }
         }
 
         $node->children = $node->getChildren();
