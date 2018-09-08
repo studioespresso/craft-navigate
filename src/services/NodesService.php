@@ -81,7 +81,7 @@ class NodesService extends Component
             return false;
         }
 
-        $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, false, true);
+        $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $siteId, false, true);
         $nodes = $this->parseNodesForRender($nodes);
 
         return $nodes;
