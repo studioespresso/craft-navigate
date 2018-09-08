@@ -37,7 +37,6 @@ use yii\web\NotFoundHttpException;
 class NodesService extends Component
 {
 
-    private $nodes;
 
     public $types = [
         'entry' => 'Entry',
@@ -133,9 +132,6 @@ class NodesService extends Component
 
     public function getNodesByNavIdAndSiteById(int $navId = null, $siteId, $refresh = false, $excludeDisabled = false)
     {
-        if (!$refresh && isset($this->nodes[$navId])) {
-            return $this->nodes[$navId];
-        }
 
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => null]);
@@ -151,17 +147,12 @@ class NodesService extends Component
             $data[$model->id] = $model;
 
         }
-        $this->nodes[$navId] = $data;
-        return $this->nodes[$navId];
+        return $data;
 
     }
 
     public function getNodesStructureByNavIdAndSiteById(int $navId = null, $siteId, $refresh = false)
     {
-        if (!$refresh && isset($this->nodes[$navId])) {
-            return $this->nodes[$navId];
-        }
-
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId]);
         $query->orderBy('parent ASC, order ASC');
@@ -173,8 +164,7 @@ class NodesService extends Component
             $data[$model->id] = $model;
 
         }
-        $this->nodes[$navId] = $data;
-        return $this->nodes[$navId];
+        return $data;
 
     }
 
@@ -316,9 +306,9 @@ class NodesService extends Component
             $currentOrder++;
 
         }
-        $this->setNodeCache($record->navId, $record->siteId);
 
         $record->save();
+        $this->setNodeCache($record->navId, $record->siteId);
 
         return true;
     }
@@ -360,8 +350,9 @@ class NodesService extends Component
     {
         $record = NodeRecord::findOne(['id' => $node->id]);
         $record->setAttribute('order', $order);
+        $result = $record->save();
         $this->setNodeCache($record->navId, $record->siteId);
-        return $record->save();
+        return $result;
 
     }
 
