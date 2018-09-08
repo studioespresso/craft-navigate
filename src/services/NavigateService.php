@@ -45,6 +45,9 @@ class NavigateService extends Component
     }
 
     public function getNavigationByHandle($handle) {
+        if(Craft::$app->cache->exists('navigate_nav_'.$handle)) {
+            return Craft::$app->cache->get('navigate_nav_'.$handle);
+        }
         return NavigationRecord::findOne([
             'handle' => $handle
         ]);
@@ -55,8 +58,8 @@ class NavigateService extends Component
             'id' => $id
         ]);
         if($record) {
-
             Navigate::$plugin->nodes->deleteNodesByNavId($record);
+            Craft::$app->cache->delete('navigate_nav_' . $record->handle);
             if($record->delete()) {
                 return 1;
            };
@@ -86,6 +89,7 @@ class NavigateService extends Component
         if ( ! $save ) {
             Craft::getLogger()->log( $record->getErrors(), LOG_ERR, 'navigate' );
         }
+        Craft::$app->cache->add('navigate_nav_' . $record->handle, $record);
         return $save;
     }
 }
