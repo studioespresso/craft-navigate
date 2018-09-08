@@ -63,7 +63,11 @@ class NodesService extends Component
             return false;
         }
 
-        $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, false, true);
+        if(Craft::$app->cache->exists('navigate_nodes_' . $nav->id . '_' . $site)) {
+            $nodes = Craft::$app->cache->get('navigate_nodes_' . $nav->id . '_' . $site);
+        } else {
+            $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, false, true);
+        }
         $nodes = $this->parseNodesForRender($nodes);
         return $nodes;
     }
@@ -253,6 +257,7 @@ class NodesService extends Component
         $record->url = $model->url;
 
         $save = $record->save();
+        Craft::$app->cache->set('navigate_nodes_' . $record->navId . '_' . $record->siteId, $this->getNodesByNavIdAndSiteById($record->navId, $record->siteId, false, true));
 
         if (!$save) {
             Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
