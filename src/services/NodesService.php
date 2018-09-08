@@ -211,6 +211,7 @@ class NodesService extends Component
         $record = false;
 
         if (isset($model->id)) {
+            Craft::$app->cache->set('navigate_nodes_' . $model->navId . '_' . $model->siteId, $this->getNodesByNavIdAndSiteById($record->navId, $record->siteId, false, true));
             if(NodeRecord::deleteAll([
                 'id' => $model->id
             ])) {
@@ -298,6 +299,8 @@ class NodesService extends Component
             $currentOrder++;
 
         }
+        Craft::$app->cache->set('navigate_nodes_' . $record->navId . '_' . $record->siteId, $this->getNodesByNavIdAndSiteById($record->navId, $record->siteId, false, true));
+
         $record->save();
 
         return true;
@@ -340,6 +343,7 @@ class NodesService extends Component
     {
         $record = NodeRecord::findOne(['id' => $node->id]);
         $record->setAttribute('order', $order);
+        Craft::$app->cache->set('navigate_nodes_' . $record->navId . '_' . $record->siteId, $this->getNodesByNavIdAndSiteById($record->navId, $record->siteId, false, true));
         return $record->save();
 
     }
