@@ -59,41 +59,57 @@ class NodesService extends Component
     public function getNodesForRender($navHandle, $site)
     {
         $nav = Navigate::$plugin->navigate->getNavigationByHandle($navHandle);
-        if(!$nav) {
+        if (!$nav) {
             return false;
         }
 
-        if(Craft::$app->cache->exists('navigate_nodes_' . $nav->id . '_' . $site)) {
+        if (Craft::$app->cache->exists('navigate_nodes_' . $nav->id . '_' . $site)) {
             $nodes = Craft::$app->cache->get('navigate_nodes_' . $nav->id . '_' . $site);
-        } else {
-            $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, false, true);
+            return $nodes;
         }
+
+        $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, false, true);
         $nodes = $this->parseNodesForRender($nodes);
+
+        return $nodes;
+    }
+
+    public function getNodesForCache($navId, $siteId)
+    {
+        $nav = Navigate::$plugin->navigate->getNavigationById($navId);
+        if (!$nav) {
+            return false;
+        }
+
+        $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, false, true);
+        $nodes = $this->parseNodesForRender($nodes);
+
         return $nodes;
     }
 
     private function parseNodesForRender(array $nodes): array
     {
         $data = [];
-        foreach($nodes as $node) {
-            /* @var $node NodeModel*/
+        foreach ($nodes as $node) {
+            /* @var $node NodeModel */
             $data[$node->order] = $this->parseNode($node);
         }
         return $data;
     }
 
-    private function parseNode(NodeModel $node) {
-        if($node->type === 'element') {
+    private function parseNode(NodeModel $node)
+    {
+        if ($node->type === 'element') {
             $element = Craft::$app->elements->getElementById($node->elementId);
-            if($element) {
+            if ($element) {
                 $node->url = $element->getUrl();
                 $node->slug = $element->uri;
             }
         }
 
         $node->children = $node->getChildren();
-        if($node->children) {
-            foreach($node->children as $child) {
+        if ($node->children) {
+            foreach ($node->children as $child) {
                 $node->children[$child->order] = $this->parseNode($child);
             }
         }
@@ -123,7 +139,7 @@ class NodesService extends Component
 
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => null]);
-        if($excludeDisabled) {
+        if ($excludeDisabled) {
             $query->andWhere(['enabled' => 1]);
         }
         $query->orderBy('parent ASC, order ASC');
@@ -211,8 +227,8 @@ class NodesService extends Component
         $record = false;
 
         if (isset($model->id)) {
-            Craft::$app->cache->set('navigate_nodes_' . $model->navId . '_' . $model->siteId, $this->getNodesByNavIdAndSiteById($model->navId, $model->siteId, false, true));
-            if(NodeRecord::deleteAll([
+            Craft::$app->cache->set('navigate_nodes_' . $model->navId . '_' . $model->siteId, $this->getNodesForCache($model->navId, $model->siteId));
+            if (NodeRecord::deleteAll([
                 'id' => $model->id
             ])) {
                 NodeRecord::deleteAll([
@@ -258,7 +274,8 @@ class NodesService extends Component
         $record->url = $model->url;
 
         $save = $record->save();
-        Craft::$app->cache->set('navigate_nodes_' . $record->navId . '_' . $record->siteId, $this->getNodesByNavIdAndSiteById($record->navId, $record->siteId, false, true));
+        $nav = Navigate::$plugin->navigate->getNavigationById($record->navId);
+        Craft::$app->cache->set('navigate_nodes_' . $record->navId . '_' . $record->siteId, $this->getNodesForCache($record->navId, $record->siteId));
 
         if (!$save) {
             Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
@@ -299,7 +316,7 @@ class NodesService extends Component
             $currentOrder++;
 
         }
-        Craft::$app->cache->set('navigate_nodes_' . $record->navId . '_' . $record->siteId, $this->getNodesByNavIdAndSiteById($record->navId, $record->siteId, false, true));
+        Craft::$app->cache->set('navigate_nodes_' . $record->navId . '_' . $record->siteId, $this->getNodesForCache($record->navId, $record->siteId));
 
         $record->save();
 
@@ -343,7 +360,7 @@ class NodesService extends Component
     {
         $record = NodeRecord::findOne(['id' => $node->id]);
         $record->setAttribute('order', $order);
-        Craft::$app->cache->set('navigate_nodes_' . $record->navId . '_' . $record->siteId, $this->getNodesByNavIdAndSiteById($record->navId, $record->siteId, false, true));
+        Craft::$app->cache->set('navigate_nodes_' . $record->navId . '_' . $record->siteId, $this->getNodesForCache($record->navId, $record->siteId));
         return $record->save();
 
     }
