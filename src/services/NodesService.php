@@ -211,7 +211,7 @@ class NodesService extends Component
         $record = false;
 
         if (isset($model->id)) {
-            Craft::$app->cache->set('navigate_nodes_' . $model->navId . '_' . $model->siteId, $this->getNodesByNavIdAndSiteById($record->navId, $record->siteId, false, true));
+            Craft::$app->cache->set('navigate_nodes_' . $model->navId . '_' . $model->siteId, $this->getNodesByNavIdAndSiteById($model->navId, $model->siteId, false, true));
             if(NodeRecord::deleteAll([
                 'id' => $model->id
             ])) {
