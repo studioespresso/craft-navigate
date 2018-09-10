@@ -3,7 +3,9 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
-## Unrelease
+## 1.2.0 - 2018-09-10
+### Added
+- Added some big performance improvments, especially for sites using lots of different navigations per page. Navigations are now cached and updated on change.
 ### Fixed
 - Fixed an issue with active states with the same word would occur twice in a url([#14](https://github.com/studioespresso/craft3-navigate/issues/14))
 
