@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## 1.2.1 - 2018-09-12
+### Fixed
+- Fixed a crashing issue with fresh installs where defaultNodeType would still be in the database
+
 ## 1.2.0 - 2018-09-10
 ### Added
 - Added some big performance improvments, especially for sites using lots of different navigations per page. Navigations are now cached and updated on change.
