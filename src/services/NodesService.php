@@ -10,6 +10,10 @@
 
 namespace studioespresso\navigate\services;
 
+use craft\elements\db\ElementQuery;
+use craft\elements\Asset;
+use craft\elements\Category;
+use craft\elements\Entry;
 use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\models\NodeModel;
 use studioespresso\navigate\Navigate;
