@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.2.2 - 2018-09-27
+### Fixed
+- Fixed an issue with caching nodes for diferent sites.
+
 ## 1.2.1 - 2018-09-12
 ### Fixed
 - Fixed a crashing issue with fresh installs where defaultNodeType would still be in the database
