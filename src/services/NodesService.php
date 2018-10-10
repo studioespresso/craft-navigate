@@ -50,7 +50,7 @@ class NodesService extends Component
     ];
 
 
-    public function getNodesByNavId(int $navId = null)
+    public function getNodesByNavId($navId = null)
     {
         $query = NodeRecord::find();
         $query->where(['navId' => $navId]);
@@ -90,7 +90,7 @@ class NodesService extends Component
         Craft::$app->cache->set('navigate_nodes_' . $navId . '_' . $siteId, $nodes);
     }
 
-    private function parseNodesForRender(array $nodes): array
+    private function parseNodesForRender(array $nodes)
     {
         $data = [];
         foreach ($nodes as $node) {
@@ -145,7 +145,7 @@ class NodesService extends Component
         return $data;
     }
 
-    public function getNodesByNavIdAndSiteById(int $navId = null, $siteId, $refresh = false, $excludeDisabled = false)
+    public function getNodesByNavIdAndSiteById($navId = null, $siteId, $refresh = false, $excludeDisabled = false)
     {
 
         $query = NodeRecord::find();
@@ -166,7 +166,7 @@ class NodesService extends Component
 
     }
 
-    public function getNodesStructureByNavIdAndSiteById(int $navId = null, $siteId, $refresh = false)
+    public function getNodesStructureByNavIdAndSiteById($navId = null, $siteId, $refresh = false)
     {
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId]);
@@ -293,7 +293,11 @@ class NodesService extends Component
 
     public function move(NodeModel $node, $parent, $previousId)
     {
+        /** @var NodeRecord $object */
         $record = NodeRecord::findOne(['id' => $node->id]);
+        if(!$record) {
+            return false;
+        }
 
         $record->parent = $parent;
 
