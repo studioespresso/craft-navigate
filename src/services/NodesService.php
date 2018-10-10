@@ -239,13 +239,13 @@ class NodesService extends Component
                 NodeRecord::deleteAll([
                     'parent' => $model->id
                 ]);
-                return true;
             };
-            $this->setNodeCache($record->navId, $record->siteId);
         } else {
             throw new NotFoundHttpException('Node not found', 404);
         }
 
+        $this->setNodeCache($model->navId, $model->siteId);
+        return true;
     }
 
     public function save(NodeModel $model)
