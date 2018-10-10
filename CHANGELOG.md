@@ -1,8 +1,12 @@
-# Navigate Changelog
+# Release notes for Navigate for Craft CMS 3.x
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## 1.2.4 - 2018-09-27
+### Fixed
+- Fixed an issue where removing a node from a navigation would not refresh the cache
 
 ## 1.2.3 - 2018-09-27
 ### Fixed

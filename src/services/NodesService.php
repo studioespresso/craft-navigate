@@ -50,7 +50,7 @@ class NodesService extends Component
     ];
 
 
-    public function getNodesByNavId(int $navId = null)
+    public function getNodesByNavId($navId = null)
     {
         $query = NodeRecord::find();
         $query->where(['navId' => $navId]);
@@ -90,7 +90,7 @@ class NodesService extends Component
         Craft::$app->cache->set('navigate_nodes_' . $navId . '_' . $siteId, $nodes);
     }
 
-    private function parseNodesForRender(array $nodes): array
+    private function parseNodesForRender(array $nodes)
     {
         $data = [];
         foreach ($nodes as $node) {
@@ -103,18 +103,18 @@ class NodesService extends Component
     private function parseNode(NodeModel $node)
     {
         if ($node->type === 'element') {
-            if($node->elementType == 'entry') {
+            if ($node->elementType == 'entry') {
                 $query = new ElementQuery(Entry::class);
-            } elseif($node->elementType === 'asset') {
+            } elseif ($node->elementType === 'asset') {
                 $query = new ElementQuery(Asset::class);
-            } elseif($node->elementType === 'category') {
+            } elseif ($node->elementType === 'category') {
                 $query = new ElementQuery(Category::class);
             }
 
             $query->siteId($node->siteId);
             $query->id($node->elementId);
             $element = $query->one();
-            
+
             if ($element) {
                 $node->url = $element->getUrl();
                 $node->slug = $element->uri;
@@ -145,7 +145,7 @@ class NodesService extends Component
         return $data;
     }
 
-    public function getNodesByNavIdAndSiteById(int $navId = null, $siteId, $refresh = false, $excludeDisabled = false)
+    public function getNodesByNavIdAndSiteById($navId = null, $siteId, $refresh = false, $excludeDisabled = false)
     {
 
         $query = NodeRecord::find();
@@ -166,7 +166,7 @@ class NodesService extends Component
 
     }
 
-    public function getNodesStructureByNavIdAndSiteById(int $navId = null, $siteId, $refresh = false)
+    public function getNodesStructureByNavIdAndSiteById($navId = null, $siteId, $refresh = false)
     {
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId]);
@@ -239,12 +239,13 @@ class NodesService extends Component
                 NodeRecord::deleteAll([
                     'parent' => $model->id
                 ]);
-                return true;
             };
         } else {
             throw new NotFoundHttpException('Node not found', 404);
         }
 
+        $this->setNodeCache($model->navId, $model->siteId);
+        return true;
     }
 
     public function save(NodeModel $model)
@@ -292,7 +293,11 @@ class NodesService extends Component
 
     public function move(NodeModel $node, $parent, $previousId)
     {
+        /** @var NodeRecord $object */
         $record = NodeRecord::findOne(['id' => $node->id]);
+        if(!$record) {
+            return false;
+        }
 
         $record->parent = $parent;
 
