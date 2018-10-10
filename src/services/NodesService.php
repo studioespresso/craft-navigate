@@ -241,6 +241,7 @@ class NodesService extends Component
                 ]);
                 return true;
             };
+            $this->setNodeCache($record->navId, $record->siteId);
         } else {
             throw new NotFoundHttpException('Node not found', 404);
         }
