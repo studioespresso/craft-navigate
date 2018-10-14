@@ -17,7 +17,7 @@ class m181014_100025_softDeletes extends Migration
     public function safeUp()
     {
         $this->addColumn(NavigationRecord::tableName(), 'dateDeleted', $this->dateTime()->null()->after('dateUpdated'));
-        $this->createIndex(null, '{{%tablename}}', ['tablename'], false);
+        $this->createIndex(null, NavigationRecord::tableName(), NavigationRecord::tableName(), false);
     }
 
     /**
