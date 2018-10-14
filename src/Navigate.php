@@ -126,6 +126,7 @@ class Navigate extends Plugin
         $navigationService = $this->get('navigate');
         $projectConfig->onAdd(NavigateService::CONFIG_NAVIGATE_KEY . '.{uid}', [$navigationService, 'handleChangedNavigation']);
         $projectConfig->onUpdate(NavigateService::CONFIG_NAVIGATE_KEY . '.{uid}', [$navigationService, 'handleChangedNavigation']);
+        $projectConfig->onRemove(NavigateService::CONFIG_NAVIGATE_KEY . '.{uid}', [$navigationService, 'handleDeleteNavigation']);
 
 
         // Register our variables

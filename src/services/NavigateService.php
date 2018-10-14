@@ -62,13 +62,11 @@ class NavigateService extends Component
         $record = NavigationRecord::findOne([
             'id' => $id
         ]);
-        if($record) {
-            Navigate::$plugin->nodes->deleteNodesByNavId($record);
-            Craft::$app->cache->delete('navigate_nav_' . $record->handle);
-            if($record->softDelete()) {
-                return 1;
-           };
-        }
+
+        $projectConfig = Craft::$app->getProjectConfig();
+        $configPath = self::CONFIG_NAVIGATE_KEY . '.' . $record->uid;
+        $projectConfig->remove($configPath);
+        return true;
     }
 
     public function saveNavigation(NavigationModel $model) {
@@ -100,7 +98,21 @@ class NavigateService extends Component
 
     }
 
-    public function handleChangedNavigation(ConfigEvent $event) {
+    public function handleDeleteNavigation(ConfigEvent $event) {
+        $data = $event->newValue;
+        $record = NavigationRecord::findOne([
+            'uid' => $event->tokenMatches[0]
+        ]);
+        if($record) {
+            Navigate::$plugin->nodes->deleteNodesByNavId($record);
+            Craft::$app->cache->delete('navigate_nav_' . $record->handle);
+            if($record->softDelete()) {
+                return 1;
+            };
+        }
+    }
+
+        public function handleChangedNavigation(ConfigEvent $event) {
 
         $data = $event->newValue;
         $record = NavigationRecord::findOne(['uid' => $event->tokenMatches[0]]) ?? new NavigationRecord();
