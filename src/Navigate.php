@@ -10,6 +10,7 @@
 
 namespace studioespresso\navigate;
 
+use craft\helpers\ProjectConfig;
 use studioespresso\navigate\services\NavigateService as NavigateServiceService;
 use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
@@ -120,6 +121,12 @@ class Navigate extends Plugin
                 $event->rules['navigate/nodes/delete'] = 'navigate/nodes/delete';
             }
         );
+
+        $projectConfig = Craft::$app->getProjectConfig();
+        $navigationService = $this->get('navigate');
+        $projectConfig->onAdd(NavigateService::CONFIG_NAVIGATE_KEY . '.{uid}', [$navigationService, 'handleChangedNavigation']);
+        $projectConfig->onUpdate(NavigateService::CONFIG_NAVIGATE_KEY . '.{uid}', [$navigationService, 'handleChangedNavigation']);
+
 
         // Register our variables
         Event::on(

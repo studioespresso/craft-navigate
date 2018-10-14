@@ -10,12 +10,15 @@
 
 namespace studioespresso\navigate\services;
 
+use craft\events\ConfigEvent;
+use craft\helpers\StringHelper;
 use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\Navigate;
 
 use Craft;
 use craft\base\Component;
 use studioespresso\navigate\records\NavigationRecord;
+use yii\web\NotFoundHttpException;
 
 /**
  * NavigateService Service
@@ -32,6 +35,8 @@ use studioespresso\navigate\records\NavigationRecord;
  */
 class NavigateService extends Component
 {
+
+    const CONFIG_NAVIGATE_KEY = 'navigate_navs';
 
     public function getAllNavigations() {
         return NavigationRecord::find()->all();
@@ -67,29 +72,52 @@ class NavigateService extends Component
     }
 
     public function saveNavigation(NavigationModel $model) {
-
-        $record = false;
-        if(isset($model->id)) {
-            $record = NavigationRecord::findOne( [
+        $isNew = !$model->id;
+        if($isNew){
+            $navigationUid = StringHelper::UUID();
+        } else {
+            $navigationRecord = NavigationRecord::findOne( [
                 'id' => $model->id
             ]);
+            if(!$navigationRecord) {
+                throw new NotFoundHttpException('Navigation not found', 404);
+            }
+
+            $navigationUid = $navigationRecord->uid;
         }
 
-        if(!$record){
-            $record = new NavigationRecord();
+        $configData = [
+            'title' => $model->title,
+            'handle' => $model->handle,
+            'levels' => $model->levels,
+            'adminOnly' => $model->adminOnly ? 1 : 0,
+            'allowedSources' => $model->allowedSources,
+        ];
+
+        $projectConfig = Craft::$app->getProjectConfig();
+        $configPath = self::CONFIG_NAVIGATE_KEY . '.' . $navigationUid;
+        $projectConfig->set($configPath, $configData);
+
+    }
+
+    public function handleChangedNavigation(ConfigEvent $event) {
+
+        $data = $event->newValue;
+        $record = NavigationRecord::findOne(['uid' => $event->tokenMatches[0]]) ?? new NavigationRecord();
+
+        $record->title = $data['title'];
+        $record->handle = $data['handle'];
+        $record->levels = $data['levels'];
+        $record->adminOnly = $data['adminOnly'];
+        $record->allowedSources = $data['allowedSources'];
+        if(!$record->uid) {
+            $record->uid = $event->tokenMatches[0];
         }
 
-        $record->title = $model->title;
-        $record->handle = $model->handle;
-        $record->levels = $model->levels;
-        $record->adminOnly = $model->adminOnly ? 1 : 0;
-        $record->allowedSources= $model->allowedSources;
-
-        $save = $record->save();
-        if ( ! $save ) {
-            Craft::getLogger()->log( $record->getErrors(), LOG_ERR, 'navigate' );
+        if ( ! $record->save() ) {
+            Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
         }
-        Craft::$app->cache->add('navigate_nav_' . $record->handle, $record);
-        return $save;
+
+//        Craft::$app->cache->add('navigate_nav_' . $record->handle, $record);
     }
 }
