@@ -10,6 +10,7 @@
 
 namespace studioespresso\navigate\records;
 
+use craft\db\SoftDeleteTrait;
 use studioespresso\navigate\Navigate;
 
 use Craft;
@@ -33,6 +34,8 @@ use craft\db\ActiveRecord;
  */
 class NavigationRecord extends ActiveRecord
 {
+
+    use SoftDeleteTrait;
     // Public Static Methods
     // =========================================================================
 

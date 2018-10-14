@@ -60,7 +60,7 @@ class NavigateService extends Component
         if($record) {
             Navigate::$plugin->nodes->deleteNodesByNavId($record);
             Craft::$app->cache->delete('navigate_nav_' . $record->handle);
-            if($record->delete()) {
+            if($record->softDelete()) {
                 return 1;
            };
         }
