@@ -177,6 +177,7 @@ class NodesService extends Component
             $query->andWhere(['enabled' => 1]);
         }
         $query->orderBy('parent ASC, order ASC');
+        $query->cache(true);
         $data = [];
         foreach ($query->all() as $record) {
             $model = new NodeModel();
