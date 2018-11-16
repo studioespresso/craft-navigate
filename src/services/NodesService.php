@@ -119,6 +119,9 @@ class NodesService extends Component
                 $node->url = $element->getUrl();
                 $node->slug = $element->uri;
             }
+        } elseif($node->type === 'url') {
+            $url = Craft::getAlias($node->url);
+            $node->url = $url;
         }
 
         $node->children = $node->getChildren();
