@@ -49,6 +49,7 @@ class NodesService extends Component
         'category' => 'Category'
     ];
 
+    private $_nodes = [];
 
     public function getNodesByNavId($navId = null)
     {
@@ -102,6 +103,9 @@ class NodesService extends Component
 
     private function parseNode(NodeModel $node)
     {
+        if(isset($this->_nodes[$node->id])) {
+            return $this->_nodes[$node->id];
+        }
         if ($node->type === 'element') {
             if ($node->elementType == 'entry') {
                 $query = new ElementQuery(Entry::class);
@@ -130,7 +134,7 @@ class NodesService extends Component
                 $node->children[$child->order] = $this->parseNode($child);
             }
         }
-
+        $this->_nodes[$node->id] = $node;
         return $node;
     }
 
