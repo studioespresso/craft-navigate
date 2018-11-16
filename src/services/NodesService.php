@@ -51,6 +51,8 @@ class NodesService extends Component
 
     private $_nodes = [];
 
+    private $_elements = [];
+
     public function getNodesByNavId($navId = null)
     {
         $query = NodeRecord::find();
@@ -107,22 +109,29 @@ class NodesService extends Component
             return $this->_nodes[$node->id];
         }
         if ($node->type === 'element') {
-            if ($node->elementType == 'entry') {
-                $query = new ElementQuery(Entry::class);
-            } elseif ($node->elementType === 'asset') {
-                $query = new ElementQuery(Asset::class);
-            } elseif ($node->elementType === 'category') {
-                $query = new ElementQuery(Category::class);
+            if(isset($this->_elements[$node->siteId][$node->elementId])) {
+                $element = $this->_elements[$node->siteId][$node->elementId];
+            } else {
+                if ($node->elementType == 'entry') {
+                    $query = new ElementQuery(Entry::class);
+                } elseif ($node->elementType === 'asset') {
+                    $query = new ElementQuery(Asset::class);
+                } elseif ($node->elementType === 'category') {
+                    $query = new ElementQuery(Category::class);
+                }
+                $query->siteId($node->siteId);
+                $query->id($node->elementId);
+                $element = $query->one();
             }
 
-            $query->siteId($node->siteId);
-            $query->id($node->elementId);
-            $element = $query->one();
 
             if ($element) {
                 $node->url = $element->getUrl();
                 $node->slug = $element->uri;
+                $this->_elements[$node->siteId][$node->elementId] = $element;
             }
+
+
         } elseif($node->type === 'url') {
             $url = Craft::getAlias($node->url);
             $node->url = $url;
