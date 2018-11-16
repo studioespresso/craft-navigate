@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.3.0 - Unreleased-09-27
+### Added
+- URL nodes can now contain Craft aliases like `@web` or your own custom aliases. [#18](https://github.com/studioespresso/craft3-navigate/issues/18) 
+
+
 ## 1.2.4 - 2018-09-27
 ### Fixed
 - Fixed an issue where removing a node from a navigation would not refresh the cache
