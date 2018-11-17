@@ -49,6 +49,11 @@ class NodesService extends Component
         'category' => 'Category'
     ];
 
+    private $_nodes = [];
+
+    private $_elements = [];
+
+    private $_navs = [];
 
     public function getNodesByNavId($navId = null)
     {
@@ -61,7 +66,12 @@ class NodesService extends Component
 
     public function getNodesForRender($navHandle, $site)
     {
-        $nav = Navigate::$plugin->navigate->getNavigationByHandle($navHandle);
+        if(isset($this->_navs[$navHandle])) {
+            $nav = $this->_navs[$navHandle];
+        } else {
+            $nav = Navigate::$plugin->navigate->getNavigationByHandle($navHandle);
+            $this->_navs[$navHandle] = $nav;
+        }
         if (!$nav) {
             return false;
         }
@@ -102,23 +112,36 @@ class NodesService extends Component
 
     private function parseNode(NodeModel $node)
     {
+        if(isset($this->_nodes[$node->id])) {
+            return $this->_nodes[$node->id];
+        }
         if ($node->type === 'element') {
-            if ($node->elementType == 'entry') {
-                $query = new ElementQuery(Entry::class);
-            } elseif ($node->elementType === 'asset') {
-                $query = new ElementQuery(Asset::class);
-            } elseif ($node->elementType === 'category') {
-                $query = new ElementQuery(Category::class);
+            if(isset($this->_elements[$node->siteId][$node->elementId])) {
+                $element = $this->_elements[$node->siteId][$node->elementId];
+            } else {
+                if ($node->elementType == 'entry') {
+                    $query = new ElementQuery(Entry::class);
+                } elseif ($node->elementType === 'asset') {
+                    $query = new ElementQuery(Asset::class);
+                } elseif ($node->elementType === 'category') {
+                    $query = new ElementQuery(Category::class);
+                }
+                $query->siteId($node->siteId);
+                $query->id($node->elementId);
+                $element = $query->one();
             }
 
-            $query->siteId($node->siteId);
-            $query->id($node->elementId);
-            $element = $query->one();
 
             if ($element) {
                 $node->url = $element->getUrl();
                 $node->slug = $element->uri;
+                $this->_elements[$node->siteId][$node->elementId] = $element;
             }
+
+
+        } elseif($node->type === 'url') {
+            $url = Craft::getAlias($node->url);
+            $node->url = $url;
         }
 
         $node->children = $node->getChildren();
@@ -127,7 +150,7 @@ class NodesService extends Component
                 $node->children[$child->order] = $this->parseNode($child);
             }
         }
-
+        $this->_nodes[$node->id] = $node;
         return $node;
     }
 
@@ -154,6 +177,7 @@ class NodesService extends Component
             $query->andWhere(['enabled' => 1]);
         }
         $query->orderBy('parent ASC, order ASC');
+        $query->cache(true);
         $data = [];
         foreach ($query->all() as $record) {
             $model = new NodeModel();
