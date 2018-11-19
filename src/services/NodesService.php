@@ -100,9 +100,16 @@ class NodesService extends Component
         Craft::$app->cache->set('navigate_nodes_' . $navId . '_' . $siteId, $nodes);
     }
 
-    private function parseNodesForRender(array $nodes, NavigationRecord $nav)
+    private function parseNodesForRender(array $nodes, $nav)
     {
         $data = [];
+        foreach ($nodes as $node) {
+            if($node->type === 'element') {
+                $navElements[$node->elementType][$node->id] = $node->elementId;
+            }
+        }
+        $nodes = $this->getNavElements($nodes, $navElements);
+
         foreach ($nodes as $node) {
             /* @var $node NodeModel */
             $data[$node->order] = $this->parseNode($node, $nav);
@@ -110,7 +117,32 @@ class NodesService extends Component
         return $data;
     }
 
-    private function parseNode(NodeModel $node, NavigationRecord $nav)
+    private function getNavElements($nodes, array $navElements) {
+        $params = [];
+        foreach($navElements as $elementType => $elements) {
+            $params[$elementType]['ids'] = implode(', ', $elements);
+        }
+        $data = [];
+        foreach ($params as $type => $element) {
+            if ($type == 'entry') {
+                $query = new ElementQuery(Entry::class);
+            } elseif ($type === 'asset') {
+                $query = new ElementQuery(Asset::class);
+            } elseif ($type === 'category') {
+                $query = new ElementQuery(Category::class);
+            }
+            $query->siteId(end($nodes)->siteId);
+            $query->indexBy('id');
+            $query->id($element['ids']);
+            $data = $data + $query->all();
+        }
+        foreach($nodes as $node) {
+            $node->element = $data[$node->elementId];
+        }
+        return $nodes;
+    }
+
+    private function parseNode(NodeModel $node, $nav)
     {
         if(isset($this->_nodes[$node->id])) {
             return $this->_nodes[$node->id];
@@ -118,27 +150,11 @@ class NodesService extends Component
         if ($node->type === 'element') {
             if(isset($this->_elements[$node->siteId][$node->elementId])) {
                 $element = $this->_elements[$node->siteId][$node->elementId];
-            } else {
-                if ($node->elementType == 'entry') {
-                    $query = new ElementQuery(Entry::class);
-                } elseif ($node->elementType === 'asset') {
-                    $query = new ElementQuery(Asset::class);
-                } elseif ($node->elementType === 'category') {
-                    $query = new ElementQuery(Category::class);
-                }
-                $query->siteId($node->siteId);
-                $query->id($node->elementId);
-                $element = $query->one();
+            } elseif ($node->element) {
+                $node->url = $node->element->getUrl();
+                $node->slug = $node->element->uri;
+                $this->_elements[$node->siteId][$node->elementId] = $node->element;
             }
-
-
-            if ($element) {
-                $node->url = $element->getUrl();
-                $node->slug = $element->uri;
-                $this->_elements[$node->siteId][$node->elementId] = $element;
-            }
-
-
         } elseif($node->type === 'url') {
             $url = Craft::getAlias($node->url);
             $node->url = $url;
