@@ -82,7 +82,7 @@ class NodesService extends Component
         }
 
         $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
-        $nodes = $this->parseNodesForRender($nodes);
+        $nodes = $this->parseNodesForRender($nodes, $nav);
 
         return $nodes;
     }
@@ -95,22 +95,22 @@ class NodesService extends Component
         }
 
         $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $siteId, true, true);
-        $nodes = $this->parseNodesForRender($nodes);
+        $nodes = $this->parseNodesForRender($nodes, $nav);
 
         Craft::$app->cache->set('navigate_nodes_' . $navId . '_' . $siteId, $nodes);
     }
 
-    private function parseNodesForRender(array $nodes)
+    private function parseNodesForRender(array $nodes, NavigationRecord $nav)
     {
         $data = [];
         foreach ($nodes as $node) {
             /* @var $node NodeModel */
-            $data[$node->order] = $this->parseNode($node);
+            $data[$node->order] = $this->parseNode($node, $nav);
         }
         return $data;
     }
 
-    private function parseNode(NodeModel $node)
+    private function parseNode(NodeModel $node, NavigationRecord $nav)
     {
         if(isset($this->_nodes[$node->id])) {
             return $this->_nodes[$node->id];
@@ -143,11 +143,12 @@ class NodesService extends Component
             $url = Craft::getAlias($node->url);
             $node->url = $url;
         }
-
-        $node->children = $node->getChildren();
-        if ($node->children) {
-            foreach ($node->children as $child) {
-                $node->children[$child->order] = $this->parseNode($child);
+        if($nav->levels > 1) {
+            $node->children = $node->getChildren();
+            if ($node->children) {
+                foreach ($node->children as $child) {
+                    $node->children[$child->order] = $this->parseNode($child);
+                }
             }
         }
         $this->_nodes[$node->id] = $node;
@@ -177,7 +178,6 @@ class NodesService extends Component
             $query->andWhere(['enabled' => 1]);
         }
         $query->orderBy('parent ASC, order ASC');
-        $query->cache(true);
         $data = [];
         foreach ($query->all() as $record) {
             $model = new NodeModel();
