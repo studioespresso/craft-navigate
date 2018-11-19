@@ -130,14 +130,12 @@ class NodesService extends Component
                 $query->id($node->elementId);
                 $element = $query->one();
             }
-
-
+            
             if ($element) {
                 $node->url = $element->getUrl();
                 $node->slug = $element->uri;
                 $this->_elements[$node->siteId][$node->elementId] = $element;
             }
-
 
         } elseif($node->type === 'url') {
             $url = Craft::getAlias($node->url);
@@ -147,7 +145,7 @@ class NodesService extends Component
             $node->children = $node->getChildren();
             if ($node->children) {
                 foreach ($node->children as $child) {
-                    $node->children[$child->order] = $this->parseNode($child);
+                    $node->children[$child->order] = $this->parseNode($child, $nav);
                 }
             }
         }
