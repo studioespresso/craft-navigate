@@ -100,7 +100,7 @@ class NodesService extends Component
         Craft::$app->cache->set('navigate_nodes_' . $navId . '_' . $siteId, $nodes);
     }
 
-    private function parseNodesForRender(array $nodes, NavigationRecord $nav)
+    private function parseNodesForRender(array $nodes, $nav)
     {
         $data = [];
         foreach ($nodes as $node) {
@@ -110,7 +110,7 @@ class NodesService extends Component
         return $data;
     }
 
-    private function parseNode(NodeModel $node, NavigationRecord $nav)
+    private function parseNode(NodeModel $node, $nav)
     {
         if(isset($this->_nodes[$node->id])) {
             return $this->_nodes[$node->id];
