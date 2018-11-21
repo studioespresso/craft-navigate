@@ -139,7 +139,7 @@ class NodesService extends Component
 
         } elseif($node->type === 'url') {
             $url = Craft::getAlias($node->url);
-            $node->url = $url;
+            $node->url = Craft::$app->view->renderObjectTemplate($url, Craft::$app->getConfig()->general);
         }
         if($nav->levels > 1) {
             $node->children = $node->getChildren();
