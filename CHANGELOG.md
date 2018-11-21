@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 1.3.2 - 2018-11-19
+### Fixed
+- Fixed an issue where IE11 users could not move nodes
+
+### Added
+- URL nodes are now also parsed for variables from your ``config/general.php``
+
 ## 1.3.1 - 2018-11-19
 ### Fixed
 - Fixed an issue with rebuilding navigation caches after making changes in the CP
