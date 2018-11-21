@@ -37,7 +37,7 @@
             /**
              * Display ElementSelectorModal.
              */
-            showModal: function (ev,) {
+            showModal: function (ev) {
                 this.currentElementType = $(ev.currentTarget).data('type');
                 if (this.currentElementType == 'entry') {
                     if (!this.entryModal) {
