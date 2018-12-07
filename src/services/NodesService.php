@@ -55,6 +55,8 @@ class NodesService extends Component
 
     private $_navs = [];
 
+    private $_nav_nodes = [];
+
     public function getNodesByNavId($navId = null)
     {
         $query = NodeRecord::find();
@@ -66,6 +68,9 @@ class NodesService extends Component
 
     public function getNodesForRender($navHandle, $site)
     {
+        if(isset($this->_nav_nodes[$site][$navHandle])) {
+            return $this->_nav_nodes[$site][$navHandle];
+        }
         if(isset($this->_navs[$navHandle])) {
             $nav = $this->_navs[$navHandle];
         } else {
@@ -83,7 +88,7 @@ class NodesService extends Component
 
         $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
         $nodes = $this->parseNodesForRender($nodes, $nav);
-
+        $this->_nav_nodes[$site][$navHandle] = $nodes;
         return $nodes;
     }
 
