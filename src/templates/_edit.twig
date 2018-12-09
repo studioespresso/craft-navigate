@@ -19,13 +19,9 @@
 
 {% do view.registerAssetBundle("studioespresso\\navigate\\assetbundles\\navigate\\NavigateAsset") %}
 
-{# Link for the ? icon at the bottom of the page #}
-{% set docsUrl = "https://github.com/studioespresso/navigate/blob/master/README.md" %}
-
 {# The title of this CP section #}
 {% set pluginTitle = 'Navigate' %}
 {% set title = navigation.title is defined ? navigation.title : 'New navigation' %}
-
 
 {% set crumbs = [
     { label: pluginTitle, url: url('navigate') },
@@ -167,8 +163,6 @@
     </div>
 
 {% endblock %}
-
-
 
 {% block details %}
     <div id="settings" class="meta">
