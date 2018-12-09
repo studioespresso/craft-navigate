@@ -14,7 +14,6 @@ use studioespresso\navigate\services\NavigateService as NavigateServiceService;
 use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
 use studioespresso\navigate\variables\NavigateVariable;
-use studioespresso\navigate\twigextensions\NavigateTwigExtension;
 use studioespresso\navigate\models\Settings;
 use studioespresso\navigate\fields\NavigateField as NavigateFieldField;
 use studioespresso\navigate\utilities\NavigateUtility as NavigateUtilityUtility;
@@ -97,9 +96,6 @@ class Navigate extends Plugin
         self::$plugin = $this;
 
         $this->name = Craft::t('navigate', 'Navigate');
-
-        // Add in our Twig extensions
-        Craft::$app->view->registerTwigExtension(new NavigateTwigExtension());
 
         $fileTarget = new FileTarget([
             'logFile' => Craft::$app->path->getLogPath() . '/navigate.log', // <--- path of the log file
