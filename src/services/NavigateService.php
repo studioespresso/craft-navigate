@@ -10,11 +10,10 @@
 
 namespace studioespresso\navigate\services;
 
-use studioespresso\navigate\models\NavigationModel;
-use studioespresso\navigate\Navigate;
-
 use Craft;
 use craft\base\Component;
+use studioespresso\navigate\models\NavigationModel;
+use studioespresso\navigate\Navigate;
 use studioespresso\navigate\records\NavigationRecord;
 
 /**

@@ -2,10 +2,8 @@
 
 namespace studioespresso\navigate\migrations;
 
-use Craft;
 use craft\db\Migration;
 use studioespresso\navigate\records\NodeRecord;
-use Twig\Node\Node;
 
 /**
  * m180705_164128_relateNodes migration.

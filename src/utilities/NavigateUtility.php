@@ -10,11 +10,9 @@
 
 namespace studioespresso\navigate\utilities;
 
-use studioespresso\navigate\Navigate;
-use studioespresso\navigate\assetbundles\navigateutilityutility\NavigateUtilityUtilityAsset;
-
 use Craft;
 use craft\base\Utility;
+use studioespresso\navigate\assetbundles\navigateutilityutility\NavigateUtilityUtilityAsset;
 
 /**
  * Navigate Utility

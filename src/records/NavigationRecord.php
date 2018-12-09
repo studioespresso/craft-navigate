@@ -10,9 +10,6 @@
 
 namespace studioespresso\navigate\records;
 
-use studioespresso\navigate\Navigate;
-
-use Craft;
 use craft\db\ActiveRecord;
 
 /**

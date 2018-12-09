@@ -10,28 +10,16 @@
 
 namespace studioespresso\navigate;
 
-use studioespresso\navigate\services\NavigateService as NavigateServiceService;
+use Craft;
+use craft\base\Plugin;
+use craft\events\RegisterUrlRulesEvent;
+use craft\log\FileTarget;
+use craft\web\twig\variables\CraftVariable;
+use craft\web\UrlManager;
+use studioespresso\navigate\models\Settings;
 use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
 use studioespresso\navigate\variables\NavigateVariable;
-use studioespresso\navigate\models\Settings;
-use studioespresso\navigate\fields\NavigateField as NavigateFieldField;
-use studioespresso\navigate\utilities\NavigateUtility as NavigateUtilityUtility;
-
-use Craft;
-use craft\base\Plugin;
-use craft\services\Plugins;
-use craft\events\PluginEvent;
-use craft\console\Application as ConsoleApplication;
-use craft\log\FileTarget;
-use craft\web\UrlManager;
-use craft\services\Elements;
-use craft\services\Fields;
-use craft\services\Utilities;
-use craft\web\twig\variables\CraftVariable;
-use craft\events\RegisterComponentTypesEvent;
-use craft\events\RegisterUrlRulesEvent;
-
 use yii\base\Event;
 
 /**

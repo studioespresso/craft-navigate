@@ -10,13 +10,11 @@
 
 namespace studioespresso\navigate\controllers;
 
+use Craft;
 use craft\helpers\Json;
+use craft\web\Controller;
 use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\Navigate;
-
-use Craft;
-use craft\web\Controller;
-use yii\bootstrap\Nav;
 
 /**
  * Default Controller

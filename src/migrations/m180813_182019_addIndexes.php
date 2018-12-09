@@ -2,7 +2,6 @@
 
 namespace studioespresso\navigate\migrations;
 
-use Craft;
 use craft\db\Migration;
 use studioespresso\navigate\records\NavigationRecord;
 use studioespresso\navigate\records\NodeRecord;

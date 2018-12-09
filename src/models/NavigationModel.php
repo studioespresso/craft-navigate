@@ -10,12 +10,10 @@
 
 namespace studioespresso\navigate\models;
 
-use craft\validators\HandleValidator;
-use studioespresso\navigate\Navigate;
-
 use Craft;
 use craft\base\Model;
-use yii\bootstrap\Nav;
+use craft\validators\HandleValidator;
+use studioespresso\navigate\Navigate;
 
 /**
  * Navigate Settings Model

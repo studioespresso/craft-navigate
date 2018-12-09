@@ -10,19 +10,16 @@
 
 namespace studioespresso\navigate\services;
 
-use craft\elements\db\ElementQuery;
+use Craft;
+use craft\base\Component;
 use craft\elements\Asset;
 use craft\elements\Category;
+use craft\elements\db\ElementQuery;
 use craft\elements\Entry;
 use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\models\NodeModel;
 use studioespresso\navigate\Navigate;
-
-use Craft;
-use craft\base\Component;
-use studioespresso\navigate\records\NavigationRecord;
 use studioespresso\navigate\records\NodeRecord;
-use Twig\Node\Node;
 use yii\web\NotFoundHttpException;
 
 /**

@@ -10,9 +10,8 @@
 
 namespace studioespresso\navigate\variables;
 
-use studioespresso\navigate\Navigate;
-
 use Craft;
+use studioespresso\navigate\Navigate;
 
 /**
  * Navigate Variable

@@ -10,15 +10,10 @@
 
 namespace studioespresso\navigate\controllers;
 
-use craft\helpers\Json;
-use studioespresso\navigate\models\NavigationModel;
-use studioespresso\navigate\models\NodeModel;
-use studioespresso\navigate\Navigate;
-
 use Craft;
 use craft\web\Controller;
-use Twig\Node\Node;
-use yii\bootstrap\Nav;
+use studioespresso\navigate\models\NodeModel;
+use studioespresso\navigate\Navigate;
 use yii\web\NotFoundHttpException;
 
 /**
