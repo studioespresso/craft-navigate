@@ -77,7 +77,7 @@ class NodesService extends Component
         if (!$nav) {
             return false;
         }
-
+        Craft::beginProfile('getNodesForNav', __METHOD__);
         if (Craft::$app->cache->exists('navigate_nodes_' . $nav->id . '_' . $site)) {
             $nodes = Craft::$app->cache->get('navigate_nodes_' . $nav->id . '_' . $site);
             return $nodes;
@@ -86,6 +86,7 @@ class NodesService extends Component
         $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
         $nodes = $this->parseNodesForRender($nodes, $nav);
         $this->_nav_nodes[$site][$navHandle] = $nodes;
+        Craft::endProfile('getNodesForNav', __METHOD__);
         return $nodes;
     }
 

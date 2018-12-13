@@ -46,7 +46,9 @@ class NavigateVariable
      */
     public function raw($navHandle)
     {
+        Craft::beginProfile('getNavigation', __METHOD__);
         $nodes = Navigate::$plugin->nodes->getNodesForRender($navHandle, Craft::$app->sites->getCurrentSite()->id);
+        Craft::endProfile('getNavigation', __METHOD__);
         return $nodes;
 
     }
