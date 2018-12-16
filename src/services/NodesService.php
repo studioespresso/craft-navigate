@@ -65,10 +65,10 @@ class NodesService extends Component
 
     public function getNodesForRender($navHandle, $site)
     {
-        if(isset($this->_nav_nodes[$site][$navHandle])) {
+        if (isset($this->_nav_nodes[$site][$navHandle])) {
             return $this->_nav_nodes[$site][$navHandle];
         }
-        if(isset($this->_navs[$navHandle])) {
+        if (isset($this->_navs[$navHandle])) {
             $nav = $this->_navs[$navHandle];
         } else {
             $nav = Navigate::$plugin->navigate->getNavigationByHandle($navHandle);
@@ -97,8 +97,13 @@ class NodesService extends Component
             return false;
         }
 
-        $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $siteId, true, true);
-        $nodes = $this->parseNodesForRender($nodes, $nav);
+        try {
+            Navigate::info('Building node cache');
+            $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $siteId, true, true);
+            $nodes = $this->parseNodesForRender($nodes, $nav);
+        } catch (\Exception $e) {
+            Navigate::error('Error building navigation cache', '$e');
+        }
 
         Craft::$app->cache->set('navigate_nodes_' . $navId . '_' . $siteId, $nodes);
     }
@@ -115,11 +120,11 @@ class NodesService extends Component
 
     private function parseNode(NodeModel $node, $nav)
     {
-        if(isset($this->_nodes[$node->id])) {
+        if (isset($this->_nodes[$node->id])) {
             return $this->_nodes[$node->id];
         }
         if ($node->type === 'element') {
-            if(isset($this->_elements[$node->siteId][$node->elementId])) {
+            if (isset($this->_elements[$node->siteId][$node->elementId])) {
                 $element = $this->_elements[$node->siteId][$node->elementId];
             } else {
                 if ($node->elementType == 'entry') {
@@ -133,18 +138,18 @@ class NodesService extends Component
                 $query->id($node->elementId);
                 $element = $query->one();
             }
-            
+
             if ($element) {
                 $node->url = $element->getUrl();
                 $node->slug = $element->uri;
                 $this->_elements[$node->siteId][$node->elementId] = $element;
             }
 
-        } elseif($node->type === 'url') {
+        } elseif ($node->type === 'url') {
             $url = Craft::getAlias($node->url);
             $node->url = Craft::$app->view->renderObjectTemplate($url, Craft::$app->getConfig()->general);
         }
-        if($nav->levels > 1) {
+        if ($nav->levels > 1) {
             $node->children = $node->getChildren();
             if ($node->children) {
                 foreach ($node->children as $child) {
@@ -320,7 +325,7 @@ class NodesService extends Component
     {
         /** @var NodeRecord $object */
         $record = NodeRecord::findOne(['id' => $node->id]);
-        if(!$record) {
+        if (!$record) {
             return false;
         }
 
