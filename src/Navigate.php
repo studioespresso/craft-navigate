@@ -16,6 +16,7 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\log\FileTarget;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
+use studioespresso\navigate\base\PluginTrait;
 use studioespresso\navigate\models\Settings;
 use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
@@ -43,41 +44,16 @@ use yii\base\Event;
  */
 class Navigate extends Plugin
 {
-    // Static Properties
-    // =========================================================================
-
-    /**
-     * Static property that is an instance of this plugin class so that it can be accessed via
-     * Navigate::$plugin
-     *
-     * @var Navigate
-     */
-    public static $plugin;
-
     // Public Properties
     // =========================================================================
-
-    /**
-     * To execute your plugin’s migrations, you’ll need to increase its schema version.
-     *
-     * @var string
-     */
     public $schemaVersion = '0.0.1';
+
+    // Traits
+    // =========================================================================
+    use PluginTrait;
 
     // Public Methods
     // =========================================================================
-
-    /**
-     * Set our $plugin static property to this class so that it can be accessed via
-     * Navigate::$plugin
-     *
-     * Called after the plugin class is instantiated; do any one-time initialization
-     * here such as hooks and events.
-     *
-     * If you have a '/vendor/autoload.php' file, it will be loaded for you automatically;
-     * you do not need to load it in your init() method.
-     *
-     */
     public function init()
     {
         parent::init();
@@ -85,59 +61,29 @@ class Navigate extends Plugin
 
         $this->name = Craft::t('navigate', 'Navigate');
 
-        $fileTarget = new FileTarget([
-            'logFile' => Craft::$app->path->getLogPath() . '/navigate.log', // <--- path of the log file
-            'categories' => ['navigate'] // <--- categories in the file
-        ]);
-        // include the new target file target to the dispatcher
-        Craft::getLogger()->dispatcher->targets[] = $fileTarget;
+        $this->_registerRoutes();
+        $this->_registerVariables();
+    }
 
+    private function _registerRoutes()
+    {
         // Register our CP routes
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-
                 $event->rules['navigate'] = 'navigate/default';
                 $event->rules['navigate/add'] = 'navigate/default/settings';
                 $event->rules['navigate/save'] = 'navigate/default/save';
                 $event->rules['navigate/delete'] = 'navigate/default/delete';
-                $event->rules['navigate/edit/<navId:\d+>'] = 'navigate/default/edit';
-                $event->rules['navigate/edit/<navId:\d+>/<siteHandle:{handle}>'] = 'navigate/default/edit';
+                $event->rules['navigate/<action>/<navId:\d+>'] = 'navigate/default/<action>';
+                $event->rules['navigate/<action>/<navId:\d+>/<siteHandle:{handle}>'] = 'navigate/default/<action>';
                 $event->rules['navigate/settings/<navId:\d+>'] = 'navigate/default/settings';
-            }
-        );
-
-        // Register our variables
-        Event::on(
-            CraftVariable::class,
-            CraftVariable::EVENT_INIT,
-            function (Event $event) {
-                /** @var CraftVariable $variable */
-                $variable = $event->sender;
-                $variable->set('navigate', NavigateVariable::class);
+                $event->rules['navigate/nodes/<action>'] = 'navigate/nodes/<action>';
             }
         );
     }
 
-    public static function info($message)
-    {
-        Craft::getLogger()->log($message, \yii\log\Logger::LEVEL_INFO, 'navigate');
-    }
-
-    public static function warning($message)
-    {
-        Craft::getLogger()->log($message, \yii\log\Logger::LEVEL_WARNING, 'navigate');
-    }
-
-    public static function error($message)
-    {
-        Craft::getLogger()->log($message, \yii\log\Logger::LEVEL_ERROR, 'navigate');
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function getCpNavItem()
     {
         $ret = [
@@ -152,23 +98,11 @@ class Navigate extends Plugin
 
     // Protected Methods
     // =========================================================================
-
-    /**
-     * Creates and returns the model used to store the plugin’s settings.
-     *
-     * @return \craft\base\Model|null
-     */
     protected function createSettingsModel()
     {
         return new Settings();
     }
 
-    /**
-     * Returns the rendered settings HTML, which will be inserted into the content
-     * block on the settings page.
-     *
-     * @return string The rendered settings HTML
-     */
     protected function settingsHtml(): string
     {
         return Craft::$app->view->renderTemplate(
@@ -178,4 +112,21 @@ class Navigate extends Plugin
             ]
         );
     }
+
+    // Private Methods
+    // =========================================================================
+    private function _registerVariables()
+    {
+        // Register our variables
+        Event::on(
+            CraftVariable::class,
+            CraftVariable::EVENT_INIT,
+            function (Event $event) {
+                /** @var CraftVariable $variable */
+                $variable = $event->sender;
+                $variable->set('navigate', NavigateVariable::class);
+            }
+        );
+    }
+
 }
