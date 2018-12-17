@@ -10,15 +10,11 @@
 
 namespace studioespresso\navigate\services;
 
-use craft\events\ConfigEvent;
-use craft\helpers\StringHelper;
-use studioespresso\navigate\models\NavigationModel;
-use studioespresso\navigate\Navigate;
-
 use Craft;
 use craft\base\Component;
+use studioespresso\navigate\models\NavigationModel;
+use studioespresso\navigate\Navigate;
 use studioespresso\navigate\records\NavigationRecord;
-use yii\web\NotFoundHttpException;
 
 /**
  * NavigateService Service
@@ -35,8 +31,6 @@ use yii\web\NotFoundHttpException;
  */
 class NavigateService extends Component
 {
-
-    const CONFIG_NAVIGATE_KEY = 'navigate_navs';
 
     public function getAllNavigations() {
         return NavigationRecord::find()->all();
@@ -62,74 +56,39 @@ class NavigateService extends Component
         $record = NavigationRecord::findOne([
             'id' => $id
         ]);
-
-        $projectConfig = Craft::$app->getProjectConfig();
-        $configPath = self::CONFIG_NAVIGATE_KEY . '.' . $record->uid;
-        $projectConfig->remove($configPath);
-        return true;
-    }
-
-    public function saveNavigation(NavigationModel $model) {
-        $isNew = !$model->id;
-        if($isNew){
-            $navigationUid = StringHelper::UUID();
-        } else {
-            $navigationRecord = NavigationRecord::findOne( [
-                'id' => $model->id
-            ]);
-            if(!$navigationRecord) {
-                throw new NotFoundHttpException('Navigation not found', 404);
-            }
-
-            $navigationUid = $navigationRecord->uid;
-        }
-
-        $configData = [
-            'title' => $model->title,
-            'handle' => $model->handle,
-            'levels' => $model->levels,
-            'adminOnly' => $model->adminOnly ? 1 : 0,
-            'allowedSources' => $model->allowedSources,
-        ];
-
-        $projectConfig = Craft::$app->getProjectConfig();
-        $configPath = self::CONFIG_NAVIGATE_KEY . '.' . $navigationUid;
-        $projectConfig->set($configPath, $configData);
-
-    }
-
-    public function handleDeleteNavigation(ConfigEvent $event) {
-        $data = $event->newValue;
-        $record = NavigationRecord::findOne([
-            'uid' => $event->tokenMatches[0]
-        ]);
         if($record) {
             Navigate::$plugin->nodes->deleteNodesByNavId($record);
             Craft::$app->cache->delete('navigate_nav_' . $record->handle);
-            if($record->softDelete()) {
+            if($record->delete()) {
                 return 1;
-            };
+           };
         }
     }
 
-        public function handleChangedNavigation(ConfigEvent $event) {
+    public function saveNavigation(NavigationModel $model) {
 
-        $data = $event->newValue;
-        $record = NavigationRecord::findOne(['uid' => $event->tokenMatches[0]]) ?? new NavigationRecord();
-
-        $record->title = $data['title'];
-        $record->handle = $data['handle'];
-        $record->levels = $data['levels'];
-        $record->adminOnly = $data['adminOnly'];
-        $record->allowedSources = $data['allowedSources'];
-        if(!$record->uid) {
-            $record->uid = $event->tokenMatches[0];
+        $record = false;
+        if(isset($model->id)) {
+            $record = NavigationRecord::findOne( [
+                'id' => $model->id
+            ]);
         }
 
-        if ( ! $record->save() ) {
-            Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
+        if(!$record){
+            $record = new NavigationRecord();
         }
 
-//        Craft::$app->cache->add('navigate_nav_' . $record->handle, $record);
+        $record->title = $model->title;
+        $record->handle = $model->handle;
+        $record->levels = $model->levels;
+        $record->adminOnly = $model->adminOnly ? 1 : 0;
+        $record->allowedSources= $model->allowedSources;
+
+        $save = $record->save();
+        if ( ! $save ) {
+            Craft::getLogger()->log( $record->getErrors(), LOG_ERR, 'navigate' );
+        }
+        Craft::$app->cache->add('navigate_nav_' . $record->handle, $record);
+        return $save;
     }
 }

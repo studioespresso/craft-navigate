@@ -10,9 +10,8 @@
 
 namespace studioespresso\navigate\variables;
 
-use studioespresso\navigate\Navigate;
-
 use Craft;
+use studioespresso\navigate\Navigate;
 
 /**
  * Navigate Variable
@@ -49,7 +48,6 @@ class NavigateVariable
     {
         $nodes = Navigate::$plugin->nodes->getNodesForRender($navHandle, Craft::$app->sites->getCurrentSite()->id);
         return $nodes;
-
     }
 
     public function render($navHandle, array $options = [])

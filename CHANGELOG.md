@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## 1.3.3 - Unreleased
+### Improved
+- More performance tweaks: navigations are only queried once if they appear on a page multiple times
+
+### Fixed
+- The category node label now fits on one line [#15](https://github.com/studioespresso/craft3-navigate/issues/15) 
+
 ## 1.3.2 - 2018-11-19
 ### Fixed
 - Fixed an issue where IE11 users could not move nodes

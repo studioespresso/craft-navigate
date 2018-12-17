@@ -22,7 +22,7 @@ To install the plugin, follow these instructions.
 
 ## Navigate Overview
 
-![Screenshot](resources/screenshots/navigate-nodes.png)
+![Screenshot](https://www.studioespresso.co/resources/navigate/banner.png)
 
 ## Templating
 

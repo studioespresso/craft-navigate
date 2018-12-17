@@ -10,9 +10,6 @@
 
 namespace studioespresso\navigate\models;
 
-use studioespresso\navigate\Navigate;
-
-use Craft;
 use craft\base\Model;
 
 /**

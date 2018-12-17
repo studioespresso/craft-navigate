@@ -10,14 +10,10 @@
 
 namespace studioespresso\navigate\migrations;
 
-use studioespresso\navigate\Navigate;
-
 use Craft;
-use craft\config\DbConfig;
 use craft\db\Migration;
 use studioespresso\navigate\records\NavigationRecord;
 use studioespresso\navigate\records\NodeRecord;
-use Twig\Node\Node;
 
 /**
  * Navigate Install Migration

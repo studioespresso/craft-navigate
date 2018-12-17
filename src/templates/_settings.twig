@@ -16,9 +16,6 @@
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
-{# Link for the ? icon at the bottom of the page #}
-{% set docsUrl = "https://github.com/studioespresso/navigate/blob/master/README.md" %}
-
 {# The title of this CP section #}
 {% set pluginTitle = 'Navigate' %}
 {% set title = navigation.title is defined ? navigation.title : 'New navigation' %}
@@ -26,18 +23,16 @@
 {% set crumbs = [
     { label: pluginTitle, url: url('navigate') },
     { label: 'Settings', url: '#' }
-]
-%}
+] %}
 
 {# The content of the CP Section#}
 {% block content %}
     <form method="post" data-saveshortcut data-confirm-unload action="{{ actionUrl('navigate/default/save') }}">
         {{ csrfInput() }}
         {{ redirectInput('navigate') }}
-        {% if navigation is defined and navigation.id is defined%}
+        {% if navigation is defined and navigation.id is defined %}
             <input type="hidden" name="data[id]" value="{{ navigation.id }}">
         {% endif %}
-
         <div class="field" id="name-field">
             <div class="heading">
                 <label id="name-label" class="required" for="title">{{ 'Title'|t('navigate') }}</label>
@@ -45,7 +40,9 @@
                 </div>
             </div>
             <div class="input ltr {% if errors is defined and errors.title is defined %}errors{% endif %}">
-                <input class="text fullwidth" type="text" id="title" name="data[title]" {% if navigation is defined %}value="{{ navigation.title }}"{% endif %} autofocus="" autocomplete="off" required="required">
+                <input class="text fullwidth" type="text" id="title" name="data[title]"
+                       {% if navigation is defined %}value="{{ navigation.title }}"{% endif %} autofocus=""
+                       autocomplete="off" required="required">
             </div>
             {% if errors is defined and errors.title is defined %}
                 <ul class="errors">
@@ -62,7 +59,9 @@
                 </div>
             </div>
             <div class="input ltr {% if errors is defined and errors.handle is defined %}errors{% endif %}">
-                <input class="text code fullwidth" type="text" id="handle" name="data[handle]" {% if navigation is defined %}value="{{ navigation.handle }}"{% endif %} maxlength="64" autocomplete="off" required="required" >
+                <input class="text code fullwidth" type="text" id="handle" name="data[handle]"
+                       {% if navigation is defined %}value="{{ navigation.handle }}"{% endif %} maxlength="64"
+                       autocomplete="off" required="required">
             </div>
             {% if errors is defined and errors.handle is defined %}
                 <ul class="errors">
@@ -72,13 +71,11 @@
                 </ul>
             {% endif %}
         </div>
-
         {% if navigation is not defined or not navigation.handle|length %}
             {% js %}
                 new Craft.HandleGenerator('#title', '#handle');
             {% endjs %}
         {% endif %}
-
         {{ forms.checkboxSelectField({
             label: 'Available Sources'|t('navigate'),
             instructions: 'Select the types of links would you like to be available in this navigation'|t('navigate'),
@@ -89,21 +86,23 @@
             showAllOption: true,
         }) }}
         {% if errors is defined and errors.allowedSources is defined %}
-                <ul class="errors">
+            <ul class="errors">
                 {% for error in errors.allowedSources %}
                     <li>{{ error }}</li>
                 {% endfor %}
-                </ul>
+            </ul>
         {% endif %}
-
         <div class="field" id="handle-field">
             <div class="heading">
                 <label id="handle-label" class="required" for="levels">{{ 'Maximum levels'|t('navigate') }}</label>
-                <div class="instructions"><p>{{ 'Maximum levels of sub navigations, defaults to 1 if empty'|t('navigate') }}</p>
+                <div class="instructions">
+                    <p>{{ 'Maximum levels of sub navigations, defaults to 1 if empty'|t('navigate') }}</p>
                 </div>
             </div>
             <div class="input ltr {% if errors is defined and errors.handle is defined %}errors{% endif %}">
-                <input class="text code" type="number" id="levels" max="5" name="data[levels]" value="{% if navigation is defined %}{{ navigation.levels }}{% else %}1{% endif %}" autocomplete="off" required="required">
+                <input class="text code" type="number" id="levels" max="5" name="data[levels]"
+                       value="{% if navigation is defined %}{{ navigation.levels }}{% else %}1{% endif %}"
+                       autocomplete="off" required="required">
             </div>
             {% if errors is defined and errors.levels is defined %}
                 <ul class="errors">
@@ -113,16 +112,12 @@
                 </ul>
             {% endif %}
         </div>
-
         {{ forms.lightswitchField({
             label: 'Restrict access to settings to admin users only'|t('navigate'),
             id: 'adminOnly',
             name: 'data[adminOnly]',
             on: (navigation is defined ? navigation.adminOnly: '1'),
         }) }}
-
         <input type="submit" class="btn submit" value="{{ 'Save'|t('navigate') }}">
-
     </form>
-
 {% endblock %}
