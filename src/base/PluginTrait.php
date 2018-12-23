@@ -11,15 +11,4 @@ trait PluginTrait
     // =========================================================================
     public static $plugin;
 
-    // Static Methods
-    // =========================================================================
-    public static function error($message, $params = [], $options = [])
-    {
-        Navigate::$plugin->getLogs()->log(__METHOD__, $message, $params, $options);
-    }
-    public static function info($message, $params = [], $options = [])
-    {
-        Navigate::$plugin->getLogs()->log(__METHOD__, $message, $params, $options);
-    }
-
 }
