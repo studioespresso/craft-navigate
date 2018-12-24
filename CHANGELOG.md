@@ -5,9 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## 1.3.3 - Unreleased
+## 1.4.0 - 2018-12-13
 ### Improved
-- More performance tweaks: navigations are only queried once if they appear on a page multiple times
+- More performance tweaks: navigations are only queried once if they appear on a page multiple times.
+- Better logging when moving or editing nodes in the CP goes wrong, or when building the cache goes wrong
 
 ### Fixed
 - The category node label now fits on one line [#15](https://github.com/studioespresso/craft3-navigate/issues/15) 
