@@ -96,6 +96,21 @@ class Navigate extends Plugin
         return $ret;
     }
 
+    public static function info($message)
+    {
+        Craft::getLogger()->log($message, \yii\log\Logger::LEVEL_INFO, 'navigate');
+    }
+
+    public static function warning($message)
+    {
+        Craft::getLogger()->log($message, \yii\log\Logger::LEVEL_WARNING, 'navigate');
+    }
+
+    public static function error($message)
+    {
+        Craft::getLogger()->log($message, \yii\log\Logger::LEVEL_ERROR, 'navigate');
+    }
+
     // Protected Methods
     // =========================================================================
     protected function createSettingsModel()

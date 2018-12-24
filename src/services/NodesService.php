@@ -98,11 +98,10 @@ class NodesService extends Component
         }
 
         try {
-            Navigate::info('Building node cache');
             $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $siteId, true, true);
             $nodes = $this->parseNodesForRender($nodes, $nav);
         } catch (\Exception $e) {
-            Navigate::error('Error building navigation cache', '$e');
+            Navigate::error('Error building navigation cache');
         }
 
         Craft::$app->cache->set('navigate_nodes_' . $navId . '_' . $siteId, $nodes);
@@ -259,8 +258,6 @@ class NodesService extends Component
 
     public function deleteNode(NodeModel $model)
     {
-        $record = false;
-
         if (isset($model->id)) {
             $this->setNodeCache($model->navId, $model->siteId);
             if (NodeRecord::deleteAll([
@@ -316,8 +313,6 @@ class NodesService extends Component
         if (!$save) {
             Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
         }
-
-
         return $record;
     }
 
@@ -330,7 +325,6 @@ class NodesService extends Component
         }
 
         $record->parent = $parent;
-
         $currentOrder = 0;
 
         if ($previousId === false) {
@@ -346,20 +340,16 @@ class NodesService extends Component
                 if ($previousId && $previousId == $node->id) {
                     $this->updateNode($node, $currentOrder);
                     $currentOrder++;
-
                     $record->order = $currentOrder;
-
                 } else {
                     $this->updateNode($node, $currentOrder);
                 }
             }
             $currentOrder++;
-
         }
 
         $record->save();
         $this->setNodeCache($record->navId, $record->siteId);
-
         return true;
     }
 
@@ -391,7 +381,6 @@ class NodesService extends Component
         if ($result) {
             return (int)$result->order + 1;
         }
-
         return 0;
 
     }
@@ -403,7 +392,6 @@ class NodesService extends Component
         $result = $record->save();
         $this->setNodeCache($record->navId, $record->siteId);
         return $result;
-
     }
 
 }

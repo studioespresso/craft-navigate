@@ -112,10 +112,12 @@ class Install extends Migration
                     'handle' => $this->string(255)->notNull()->defaultValue(''),
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
+                    'dateDeleted' => $this->dateTime()->null(),
                     'uid' => $this->uid(),
+
                 ]
             );
-
+            
             $this->createTable(
                 NodeRecord::tableName(),
                 [

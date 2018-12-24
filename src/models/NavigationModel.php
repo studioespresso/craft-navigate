@@ -55,6 +55,8 @@ class NavigationModel extends Model
 
     public $dateUpdated;
 
+    public $dateDeleted;
+
     public $uid;
 
     // Public Methods
