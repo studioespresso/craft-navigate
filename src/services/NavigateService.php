@@ -64,12 +64,23 @@ class NavigateService extends Component
             'id' => $id
         ]);
         if ($record) {
-            Navigate::$plugin->nodes->deleteNodesByNavId($record);
-            Craft::$app->cache->delete('navigate_nav_' . $record->handle);
-            if ($record->delete()) {
-                return 1;
-            };
+            Craft::$app->projectConfig->remove("navigate.nav.{$record->uid}");
         }
+        return true;
+    }
+
+    public function handleRemoveNavigation(ConfigEvent $event)
+    {
+        $record = NavigationRecord::findOne([
+            'uid' => $event->tokenMatches[0]
+        ]);
+        if (!$record) {
+            return false;
+        }
+        Craft::$app->cache->delete('navigate_nav_' . $record->handle);
+        if ($record->delete()) {
+            return 1;
+        };
     }
 
     public function handleAddNavigation(ConfigEvent $event)

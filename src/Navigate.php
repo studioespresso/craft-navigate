@@ -70,7 +70,8 @@ class Navigate extends Plugin
     private function _projectConfig() {
         Craft::$app->projectConfig
             ->onAdd('navigate.nav.{uid}', [$this->navigate, 'handleAddNavigation'])
-            ->onUpdate('navigate.nav.{uid}', [$this->navigate, 'handleAddNavigation']);
+            ->onUpdate('navigate.nav.{uid}', [$this->navigate, 'handleAddNavigation'])
+            ->onRemove('navigate.nav.{uid}', [$this->navigate, 'handleRemoveNavigation']);
     }
 
     private function _registerRoutes()
