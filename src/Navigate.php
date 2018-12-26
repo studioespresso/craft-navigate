@@ -61,8 +61,15 @@ class Navigate extends Plugin
 
         $this->name = Craft::t('navigate', 'Navigate');
 
+        $this->_projectConfig();
         $this->_registerRoutes();
         $this->_registerVariables();
+
+    }
+
+    private function _projectConfig() {
+        Craft::$app->projectConfig
+            ->onAdd('navigate.nav.{uid}', [$this->navigate, 'handleAddNavigation']);
     }
 
     private function _registerRoutes()
