@@ -80,19 +80,17 @@ class NavigateService extends Component
         if (!$record) {
             $record = new NavigationRecord();
         }
+        $record->uid = $event->tokenMatches[0];
         $record->title = $event->newValue['title'];
         $record->handle = $event->newValue['handle'];
         $record->levels = $event->newValue['levels'];
         $record->adminOnly = $event->newValue['adminOnly'];
         $record->allowedSources = $event->newValue['allowSources'];
 
-        $save = $record->save();
-        if (!$save) {
+        if (!$record->save()) {
             Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
-            if (!$record->validate()) {
-                return false;
-            }
         }
+        Craft::$app->cache->add('navigate_nav_' . $record->handle, $record);
     }
 
     public function saveNavigation(NavigationModel $model)
@@ -128,7 +126,6 @@ class NavigateService extends Component
             'allowSources' => $record->allowedSources
         ]);
 
-//        Craft::$app->cache->add('navigate_nav_' . $record->handle, $record);
         return true;
     }
 }
