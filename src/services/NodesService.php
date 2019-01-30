@@ -164,7 +164,7 @@ class NodesService extends Component
     {
         $data = [];
         $query = NodeRecord::find();
-        $query->where(['navId' => $node->navId, 'siteId' => $node->siteId, 'parent' => $node->id]);
+        $query->where(['navId' => $node->navId, 'siteId' => $node->siteId, 'parent' => $node->id, 'enabled' => 1]);
         $query->orderBy('order');
         foreach ($query->all() as $record) {
             $model = new NodeModel();
