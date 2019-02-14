@@ -112,7 +112,10 @@ class NodesService extends Component
         $data = [];
         foreach ($nodes as $node) {
             /* @var $node NodeModel */
-            $data[$node->order] = $this->parseNode($node, $nav);
+            $node = $this->parseNode($node, $nav);
+            if($node) {
+                $data[$node->order] = $node;
+            }
         }
         return $data;
     }
@@ -138,10 +141,12 @@ class NodesService extends Component
                 $element = $query->one();
             }
 
-            if ($element) {
+            if ($element && $element->enabled) {
                 $node->url = $element->getUrl();
                 $node->slug = $element->uri;
                 $this->_elements[$node->siteId][$node->elementId] = $element;
+            } else {
+                return false;
             }
 
         } elseif ($node->type === 'url') {
@@ -176,7 +181,6 @@ class NodesService extends Component
 
     public function getNodesByNavIdAndSiteById($navId = null, $siteId, $refresh = false, $excludeDisabled = false)
     {
-
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => null]);
         if ($excludeDisabled) {
@@ -187,12 +191,9 @@ class NodesService extends Component
         foreach ($query->all() as $record) {
             $model = new NodeModel();
             $model->setAttributes($record->getAttributes());
-
             $data[$model->id] = $model;
-
         }
         return $data;
-
     }
 
     public function getNodesStructureByNavIdAndSiteById($navId = null, $siteId, $refresh = false)
