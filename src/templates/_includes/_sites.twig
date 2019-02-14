@@ -3,7 +3,7 @@
     <div id="revision-btn" class="btn menubtn" data-icon="world">{{ thisSite.name }}</div>
     <div class="menu">
         <ul class="padded">
-            {% for site in craft.app.sites.getAllSites() %}
+            {% for site in craft.app.sites.getEditableSites %}
                 <li>
                     <a href="/admin/navigate/edit/{{ navigation.id }}/{{ site.handle }}"
                        {% if site.handle == thisSite.handle %}class="sel"{% endif %}>

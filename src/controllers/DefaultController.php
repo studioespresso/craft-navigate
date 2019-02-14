@@ -56,16 +56,17 @@ class DefaultController extends Controller
         $sites = Craft::$app->sites->getAllSites();
         $siteIds = Craft::$app->sites->getAllSiteIds();
         $primarySite = Craft::$app->sites->getPrimarySite();
-        if(count($sites) == 1) {
+        if (count($sites) == 1) {
             $data['defaultSite'] = Craft::$app->sites->getPrimarySite();
         } else {
             $sites = Craft::$app->sites->getEditableSites();
             $canEditDefault = false;
-            $canEditDefault = array_walk($sites, function ($site) use ($primarySite, $canEditDefault) {
-                if ($site->id === $primarySite->id) {
+            $canEditDefault = array_filter($sites, function ($site) use ($primarySite, $canEditDefault) {
+                if ($site->id == $primarySite->id) {
                     return true;
                 }
             });
+
             if ($canEditDefault) {
                 $data['defaultSite'] = $primarySite;
             } else {
@@ -77,20 +78,22 @@ class DefaultController extends Controller
         return $this->renderTemplate('navigate/_index', $data);
     }
 
-    public function actionAdd() {
+    public function actionAdd()
+    {
         return $this->renderTemplate('navigate/_settings');
     }
 
-    public function actionSave() {
+    public function actionSave()
+    {
         $this->requirePostRequest();
-        if(isset(Craft::$app->request->getBodyParams()['data']['id'])) {
+        if (isset(Craft::$app->request->getBodyParams()['data']['id'])) {
             $model = Navigate::$plugin->navigate->getNavigationById(Craft::$app->request->getBodyParams()['data']['id']);
         } else {
             $model = new NavigationModel();
         }
 
         $model->setAttributes(Craft::$app->request->getBodyParams()['data']);
-        if(!$model->validate()) {
+        if (!$model->validate()) {
             return $this->renderTemplate('navigate/_settings', [
                 'navigation' => $model,
                 'errors' => $model->getErrors(),
@@ -104,8 +107,9 @@ class DefaultController extends Controller
 
     }
 
-    public function actionEdit($navId = null, $siteHandle) {
-        if($navId && $siteHandle) {
+    public function actionEdit($navId = null, $siteHandle)
+    {
+        if ($navId && $siteHandle) {
             $navigation = Navigate::$plugin->navigate->getNavigationById($navId);
             $sites = Craft::$app->sites->getEditableSites();
             $site = Craft::$app->sites->getSiteByHandle($siteHandle);
@@ -123,27 +127,29 @@ class DefaultController extends Controller
 
             return $this->renderTemplate('navigate/_edit', [
                 'nodes' => Navigate::$plugin->nodes->getNodesByNavIdAndSiteById($navId, $site->id),
-                'nodeTypes' =>$nodeTypes,
+                'nodeTypes' => $nodeTypes,
                 'navigation' => $navigation,
                 'site' => $site,
             ]);
         }
     }
 
-    public function actionSettings($navId = null) {
+    public function actionSettings($navId = null)
+    {
         $data = [];
         $data['sources'] = Navigate::$plugin->nodes->types;
-        if($navId) {
+        if ($navId) {
             $data['navigation'] = Navigate::$plugin->navigate->getNavigationById($navId);
         }
         return $this->renderTemplate('navigate/_settings', $data);
     }
 
-    public function actionDelete() {
+    public function actionDelete()
+    {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
 
-        if(Navigate::$plugin->navigate->deleteNavigationById(Craft::$app->request->post('id'))) {
+        if (Navigate::$plugin->navigate->deleteNavigationById(Craft::$app->request->post('id'))) {
             // Return data
             $returnData['success'] = true;
             return $this->asJson($returnData);
