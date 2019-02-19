@@ -14,8 +14,8 @@
 #}
 
 {% extends "_layouts/cp" %}
-{% import _self as macros %}
 {% import "_includes/forms" as forms %}
+{% import "navigate/_includes/_node" as macro %}
 
 {% do view.registerAssetBundle("studioespresso\\navigate\\assetbundles\\navigate\\NavigateAsset") %}
 
@@ -40,57 +40,6 @@
     <div class="flex-grow"></div>
 {% endblock %}
 
-
-{% macro renderNode(navigation, node, level) %}
-    {% import _self as macros %}
-    {% set indent = 8 + (level - 1) * 35 %}
-    <li data-level="{{ level }}">
-        <div class="row" style="margin-left: -{{ indent }}px; padding-left: {{ indent }}px;" data-id="{{ node.id }}">
-            <div class="node__node element" data-id="{{ node.id }}" data-label="{{ node.name }}">
-                <div class="label">
-                    <span class="node__id visuallyhidden"><strong>{{ node.id }}</strong></span>
-                    <span class="status {{ node.enabled ? 'on': 'off' }}"></span>
-                    {% if node.type == 'element' and node.elementType == 'entry'  %}
-                        {% set nodeEntry = craft.entries.id(node.elementId).one() %}
-                        {% if nodeEntry|length %}
-                            <a href="{{ craft.entries.id(node.elementId).one().getCpEditUrl() }}" target="_blank">
-                                <span class="title">{{ node.name }}</span>
-                            </a>
-                        {% else %}
-                            <span class="title">{{ node.name }}</span>
-                        {% endif %}
-                    {% elseif node.type == 'element' and node.elementType == 'category'  %}
-                        {% set nodeCategory = craft.categories.id(node.elementId).one() %}
-                        {% if nodeCategory|length %}
-                            <a href="{{ nodeCategory.getCpEditUrl() }}" target="_blank">
-                                <span class="title">{{ node.name }}</span>
-                            </a>
-                        {% else %}
-                            <span class="title">{{ node.name }}</span>
-                        {% endif %}
-                    {% else %}
-                        <span class="title settings" data-id="{{ node.id }}">{{ node.name }}</span>
-                    {% endif %}
-                </div>
-            </div>
-            <a class="move icon" title="{{ 'Move'|t('navigate') }}" data-id="{{ node.id }}"></a>
-            <a class="settings icon" title="{{ 'Settings'|t('navigate') }}" data-id="{{ node.id }}"></a>
-            <a class="delete icon" title="{{ 'Delete'|t('navigate') }}"></a>
-            <div class="node__type">
-                <span class="node__type--{{ node.type == 'element' ? node.elementType : node.type }}">{{ node.type == 'element' ? node.elementType : node.type }}</span>
-            </div>
-        </div>
-        {% if node.getChildren|length %}
-        {% set level = level + 1 %}
-        <ul>
-        {% for child in node.getChildren() %}
-            {{ macros.renderNode(navigation, child, level) }}
-        {% endfor %}
-        </ul>
-        {% endif %}
-    </li>
-{% endmacro renderNode %}
-
 {# The content of the CP Section#}
 {% block content %}
     <div id="navigate-nodes-input">
@@ -103,7 +52,7 @@
             <ul id="navigate__nav" class="navigate__nav structure">
                 {% set level = 1 %}
                 {% for node in nodes %}
-                    {{ macros.renderNode(navigation, node, level) }}
+                    {{ macro.renderNode(navigation, node, level) }}
                 {% endfor %}
             </ul>
         </div>
