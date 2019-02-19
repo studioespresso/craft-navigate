@@ -1,0 +1,16 @@
+<script id="navigate__node" type="text/template">
+    {% set replaceWith = {} %}
+    <div class="node__node element" data-id="{{ '%%id%%'|replace(replaceWith) }}" data-label="{{ '%%label%%'|replace(replaceWith) }}">
+        <div class="label">
+            <span class="node__id visuallyhidden"><strong>{{ '%%id%%'|replace(replaceWith) }}</strong></span>
+            <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
+            <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
+        </div>
+    </div>
+    <a class="move icon" title="{{ 'Move'|t('navigate') }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
+    <a class="settings icon" title="{{ 'Settings'|t('navigate') }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
+    <a class="delete icon" title="{{ 'Delete'|t('navigate') }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
+    <div class="node__type">
+        <span class="node__type--{{ '%%type%%'|replace(replaceWith)|lower }}">{{ '%%typeLabel%%'|replace(replaceWith)|t('navigate') }}</span>
+    </div>
+</script>

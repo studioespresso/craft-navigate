@@ -65,50 +65,8 @@
                 {% endfor %}
             </div>
         </div>
-        <script id="navigate__node" type="text/template">
-            {% set replaceWith = {} %}
-            <div class="node__node element" data-id="{{ '%%id%%'|replace(replaceWith) }}" data-label="{{ '%%label%%'|replace(replaceWith) }}">
-                <div class="label">
-                    <span class="node__id visuallyhidden"><strong>{{ '%%id%%'|replace(replaceWith) }}</strong></span>
-                    <span class="status {{ '%%status%%'|replace(replaceWith) }}"></span>
-                    <span class="title">{{ '%%label%%'|replace(replaceWith) }}</span>
-                </div>
-            </div>
-            <a class="move icon" title="{{ 'Move'|t('navigate') }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
-            <a class="settings icon" title="{{ 'Settings'|t('navigate') }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
-            <a class="delete icon" title="{{ 'Delete'|t('navigate') }}" data-id="{{ '%%id%%'|replace(replaceWith) }}"></a>
-            <div class="node__type">
-                <span class="node__type--{{ '%%type%%'|replace(replaceWith)|lower }}">{{ '%%typeLabel%%'|replace(replaceWith)|t('navigate') }}</span>
-            </div>
-        </script>
-        <script id="node__url" type="text/template">
-            <div class="body">
-                <div class="field" id="node__url-name">
-                    <div class="heading">
-                        <label class="required" for="name">{{ 'Name'|t('navigate') }}</label>
-                    </div>
-                    <div class="input ltr">
-                        <input class="text node-name fullwidth" type="text" id="name" autocomplete="off" autofocus="autofocus">
-                    </div>
-                </div>
-                <div class="field" id="node__url-url">
-                    <div class="heading">
-                        <label class="required" for="url">{{ 'URL'|t('navigate') }}</label>
-                    </div>
-                    <div class="input ltr">
-                        <input class="text node-url fullwidth" type="text" id="url" name="url" autocomplete="off">
-                    </div>
-                </div>
-            </div>
-            <footer class="footer">
-                <div class="buttons right">
-                    <input type="button" class="btn cancel" value="{{ 'Cancel'|t('navigate') }}">
-                    <input type="submit" class="btn submit" value="{{ 'Add'|t('navigate') }}">
-                </div>
-            </footer>
-            <div class="spinner" style="display: none;"></div>
-        </script>
-
+        {% include 'navigate/_includes/_node_template' %}
+        {% include 'navigate/_includes/_url' %}
     </div>
 
 {% endblock %}
@@ -132,6 +90,5 @@
                 <span>{{ navigation.levels }}</span>
             </div>
         </div>
-
     </div>
 {% endblock %}
