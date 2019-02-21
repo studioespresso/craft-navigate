@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Improved
 - The site selection dropdown is no longer shown in the entries/assets/categories modal ([#23](https://github.com/studioespresso/craft3-navigate/issues/23))
+- URL nodes are now also parsed for variables from your .env file
 
 ## 2.0.1 - 2018-01-30
 ### Fixed
