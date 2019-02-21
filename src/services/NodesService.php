@@ -150,7 +150,7 @@ class NodesService extends Component
             }
 
         } elseif ($node->type === 'url') {
-            $url = Craft::getAlias($node->url);
+            $url = Craft::parseEnv($node->url);
             $node->url = Craft::$app->view->renderObjectTemplate($url, Craft::$app->getConfig()->general);
         }
         if ($nav->levels > 1) {
