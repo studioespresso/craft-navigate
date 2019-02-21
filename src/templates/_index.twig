@@ -21,14 +21,14 @@
 {% set createUrl = url('navigate/add') %}
 
 {% block actionButton %}
-   {% if (not currentUser.admin and settings.anyoneCanAdd) or currentUser.admin %}
-    <div id="button-container">
-        <div class="btngroup submit">
-            <a class="btn submit add icon" href="{{ createUrl }}">
-                {{ 'New navigation'|t('navigate') }}
-            </a>
+    {% if (not currentUser.admin and settings.anyoneCanAdd) or currentUser.admin %}
+        <div id="button-container">
+            <div class="btngroup submit">
+                <a class="btn submit add icon" href="{{ createUrl }}">
+                    {{ 'New navigation'|t('navigate') }}
+                </a>
+            </div>
         </div>
-    </div>
     {% endif %}
 {% endblock %}
 
@@ -37,43 +37,48 @@
     {% if navigations|length %}
         <table id="navigations" class="data fullwidth collapsible">
             <thead>
-            <tr><th scope="col">{{ 'Name'|t('navigate') }}</th>
+            <tr>
+                <th scope="col">{{ 'Name'|t('navigate') }}</th>
                 <th scope="col">{{ 'Handle'|t('navigate') }}</th>
                 <th scope="col">{{ 'Settings'|t('navigate') }}</th>
                 <th scope="col">{{ 'Remove'|t('navigate') }}</th>
-            </tr></thead>
+            </tr>
+            </thead>
             <tbody>
             {% for navigation in navigations %}
-            <tr data-id="{{ navigation.id }}" data-name="{{ navigation.title }}">
-                <th scope="row" data-title="Title"><a href="{{ url('navigate/edit/'~navigation.id ~ '/' ~ defaultSite.handle) }}">{{ navigation.title }}</a></th>
-                <td data-title="Handle"><code>{{ navigation.handle }}</code></td>
-                <td data-title="Settings">
-                    {% if not navigation.adminOnly or currentUser.admin %}
-                    <a href="{{ url('navigate/settings/'~navigation.id) }}" role="button"><span data-icon="settings"></span></a>
-                    {% endif %}
-                </td>
-                <td class="thin">
-                {% if (not currentUser.admin and settings.anyoneCanAdd) or currentUser.admin %}
-                    <a class="delete icon" title="Delete" role="button"></a>
-                {% endif %}
-                </td>
-            </tr>
+                <tr data-id="{{ navigation.id }}" data-name="{{ navigation.title }}">
+                    <th scope="row" data-title="Title"><a
+                                href="{{ url('navigate/edit/'~navigation.id ~ '/' ~ defaultSite.handle) }}">{{ navigation.title }}</a>
+                    </th>
+                    <td data-title="Handle"><code>{{ navigation.handle }}</code></td>
+                    <td data-title="Settings">
+                        {% if not navigation.adminOnly or currentUser.admin %}
+                            <a href="{{ url('navigate/settings/'~navigation.id) }}" role="button"><span
+                                        data-icon="settings"></span></a>
+                        {% endif %}
+                    </td>
+                    <td class="thin">
+                        {% if (not currentUser.admin and settings.anyoneCanAdd) or currentUser.admin %}
+                            <a class="delete icon" title="Delete" role="button"></a>
+                        {% endif %}
+                    </td>
+                </tr>
             {% endfor %}
             </tbody>
         </table>
 
     {% else %}
         <div id="nonavigations">
-        {{ 'No navigations found, click "New navigation" in the top right corner to get started'|t('navigate') }}
+            {{ 'No navigations found, click "New navigation" in the top right corner to get started'|t('navigate') }}
         </div>
     {% endif %}
 {% endblock %}
 
 {% js %}
     var adminTable = new Craft.AdminTable({
-        tableSelector: '#navigations',
-        noItemsSelector: '#nonavigations',
-        deleteAction: 'navigate/default/delete',
-        confirmDeleteMessage: '{{ "Are you sure you want to delete “{name}”?"|t('navigate') }}',
+    tableSelector: '#navigations',
+    noItemsSelector: '#nonavigations',
+    deleteAction: 'navigate/default/delete',
+    confirmDeleteMessage: '{{ "Are you sure you want to delete “{name}”?"|t('navigate') }}',
     });
 {% endjs %}

@@ -4,10 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.0.2 - 2018-02-20
+### Fixed
+- Fixed an issue where a disabled element would still be included in the frontend query ([#21](https://github.com/studioespresso/craft3-navigate/issues/21))
+- Fixed an issue where editing a navigaation would always link to the default site navigation ([#23](https://github.com/studioespresso/craft3-navigate/issues/23))
+- Show only editable sites in the edit screen dropdown ([#23](https://github.com/studioespresso/craft3-navigate/issues/23))
+
+### Improved
+- The site selection dropdown is no longer shown in the entries/assets/categories modal ([#23](https://github.com/studioespresso/craft3-navigate/issues/23))
+- URL nodes are now also parsed for variables from your .env file
+
 ## 2.0.1 - 2018-01-30
 ### Fixed
 - Fixed an issue where disabled child nodes would be included in site querries
-
 
 ## 2.0.0 - 2018-01-16
 ### Added
