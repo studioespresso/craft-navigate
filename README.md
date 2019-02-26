@@ -1,6 +1,6 @@
 # Navigate for Craft CMS 3.x
 
-![Screenshot](resources/banner.png)
+![Screenshot](https://www.studioespresso.co/resources/navigate/banner.png)
 
 ## Requirements
 
@@ -17,8 +17,6 @@ To install the plugin, follow these instructions.
         ./craft install/plugin craft-navigate
 
 ## Navigate Overview
-
-![Screenshot](https://www.studioespresso.co/resources/navigate/banner.png)
 
 ## Templating
 
