@@ -18,6 +18,7 @@ use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\Navigate;
 use studioespresso\navigate\records\NavigationRecord;
 use yii\bootstrap\Nav;
+use yii\caching\TagDependency;
 
 /**
  * NavigateService Service
@@ -35,6 +36,8 @@ use yii\bootstrap\Nav;
 class NavigateService extends Component
 {
 
+    const NAVIGATE_CACHE_NAV = "navigate_cache_nav";
+
     public function getAllNavigations()
     {
         return NavigationRecord::find()->all();
@@ -50,12 +53,25 @@ class NavigateService extends Component
 
     public function getNavigationByHandle($handle)
     {
-        if (Craft::$app->cache->exists('navigate_nav_' . $handle)) {
-            return Craft::$app->cache->get('navigate_nav_' . $handle);
-        }
-        return NavigationRecord::findOne([
-            'handle' => $handle
+        $cacheTags = new TagDependency([
+            'tags' => [
+                self::NAVIGATE_CACHE_NAV,
+                self::NAVIGATE_CACHE_NAV . '_' . $handle
+            ]
         ]);
+
+        $nav = Craft::$app->getCache()->getOrSet(
+            self::NAVIGATE_CACHE_NAV . '_' . $handle,
+            function() use ($handle) {
+                return NavigationRecord::findOne([
+                    'handle' => $handle
+                ]);
+            },
+            null,
+            $cacheTags
+        );
+
+        return $nav;
     }
 
     public function deleteNavigationById($id)
@@ -77,8 +93,12 @@ class NavigateService extends Component
         if (!$record) {
             return false;
         }
-        Craft::$app->cache->delete('navigate_nav_' . $record->handle);
+
+
         if ($record->delete()) {
+            TagDependency::invalidate(Craft::$app->getCache(), [
+                self::NAVIGATE_CACHE_NAV . '_' . $record->handle
+            ]);
             return 1;
         };
     }
@@ -101,7 +121,6 @@ class NavigateService extends Component
         if (!$record->save()) {
             Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
         }
-        Craft::$app->cache->add('navigate_nav_' . $record->handle, $record);
     }
 
     public function saveNavigation(NavigationModel $model)
