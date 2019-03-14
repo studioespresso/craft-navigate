@@ -16,6 +16,7 @@ use craft\elements\Asset;
 use craft\elements\Category;
 use craft\elements\db\ElementQuery;
 use craft\elements\Entry;
+use putyourlightson\blitz\Blitz;
 use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\models\NodeModel;
 use studioespresso\navigate\Navigate;
@@ -105,6 +106,13 @@ class NodesService extends Component
         }
 
         Craft::$app->cache->set('navigate_nodes_' . $navId . '_' . $siteId, $nodes);
+
+        // If putyourlightson/craft-blitz is installed & activacted, clear that cache too
+        if (Craft::$app->getPlugins()->isPluginEnabled('blitz')) {
+            if(version_compare(Blitz::$plugin->getVersion(), "2.0.1") >= 0) {
+                Blitz::$plugin->flushCache->flushAll();
+            }
+        }
     }
 
     private function parseNodesForRender(array $nodes, $nav)
@@ -113,7 +121,7 @@ class NodesService extends Component
         foreach ($nodes as $node) {
             /* @var $node NodeModel */
             $node = $this->parseNode($node, $nav);
-            if($node) {
+            if ($node) {
                 $data[$node->order] = $node;
             }
         }
