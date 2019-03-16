@@ -36,6 +36,7 @@ use yii\caching\TagDependency;
 class NavigateService extends Component
 {
 
+    const NAVIGATE_CACHE = "navigate_cache";
     const NAVIGATE_CACHE_NAV = "navigate_cache_nav";
 
     public function getAllNavigations()
@@ -55,6 +56,7 @@ class NavigateService extends Component
     {
         $cacheTags = new TagDependency([
             'tags' => [
+                self::NAVIGATE_CACHE,
                 self::NAVIGATE_CACHE_NAV,
                 self::NAVIGATE_CACHE_NAV . '_' . $handle
             ]
@@ -157,5 +159,12 @@ class NavigateService extends Component
         ]);
 
         return true;
+    }
+
+    public function clearAllCaches() {
+        TagDependency::invalidate(
+            Craft::$app->getCache(),
+            [self::NAVIGATE_CACHE_NAV]
+            );
     }
 }
