@@ -64,7 +64,7 @@ class NavigateService extends Component
 
         $nav = Craft::$app->getCache()->getOrSet(
             self::NAVIGATE_CACHE_NAV . '_' . $handle,
-            function() use ($handle) {
+            function () use ($handle) {
                 return NavigationRecord::findOne([
                     'handle' => $handle
                 ]);
@@ -161,10 +161,11 @@ class NavigateService extends Component
         return true;
     }
 
-    public function clearAllCaches() {
+    public function clearAllCaches()
+    {
         TagDependency::invalidate(
             Craft::$app->getCache(),
             [self::NAVIGATE_CACHE_NAV]
-            );
+        );
     }
 }

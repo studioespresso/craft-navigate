@@ -75,6 +75,7 @@ class NodesService extends Component
             $nav = Navigate::$plugin->navigate->getNavigationByHandle($navHandle);
             $this->_navs[$navHandle] = $nav;
         }
+
         if (!$nav) {
             return false;
         }

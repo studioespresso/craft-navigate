@@ -63,6 +63,11 @@ class Navigate extends Plugin
 
         $this->name = Craft::t('navigate', 'Navigate');
 
+        $this->setComponents([
+            "navigate" => NavigateService::class,
+            "nodes" =>  NodesService::class
+        ]);
+
         $this->_projectConfig();
         $this->_registerRoutes();
         $this->_registerVariables();
