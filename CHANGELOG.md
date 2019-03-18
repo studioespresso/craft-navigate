@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 2.1.0 - 2019-03-16
+## 2.1.0 - 2019-03-18
 ### Added
 - [Blitz ⚡️](https://plugins.craftcms.com/blitz) support! Updating your navigations will now also clear & warm Blitz's cache if it's installed (requires Blitz 2.0.1)
 - Navigation caches can now be cleared from the CP, under utilities/clear-caches.
