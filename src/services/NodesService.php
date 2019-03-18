@@ -137,7 +137,7 @@ class NodesService extends Component
             // If putyourlightson/craft-blitz is installed & activacted, clear that cache too
             if (Craft::$app->getPlugins()->isPluginEnabled('blitz')) {
                 if (version_compare(Blitz::$plugin->getVersion(), "2.0.1") >= 0) {
-                    Blitz::$plugin->flushCache->flushAll();
+                    Blitz::$plugin->clearCache->clearAll();
                 }
             }
 
