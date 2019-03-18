@@ -165,7 +165,7 @@ class NavigateService extends Component
     {
         TagDependency::invalidate(
             Craft::$app->getCache(),
-            [self::NAVIGATE_CACHE_NAV]
+            [self::NAVIGATE_CACHE]
         );
     }
 }
