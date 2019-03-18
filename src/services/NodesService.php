@@ -16,10 +16,12 @@ use craft\elements\Asset;
 use craft\elements\Category;
 use craft\elements\db\ElementQuery;
 use craft\elements\Entry;
+use putyourlightson\blitz\Blitz;
 use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\models\NodeModel;
 use studioespresso\navigate\Navigate;
 use studioespresso\navigate\records\NodeRecord;
+use yii\caching\TagDependency;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -37,6 +39,9 @@ use yii\web\NotFoundHttpException;
  */
 class NodesService extends Component
 {
+
+    const NAVIGATE_CACHE = "navigate_cache";
+    const NAVIGATE_CACHE_NODES = "navigate_cache_nodes";
 
 
     public $types = [
@@ -65,28 +70,40 @@ class NodesService extends Component
 
     public function getNodesForRender($navHandle, $site)
     {
-        if (isset($this->_nav_nodes[$site][$navHandle])) {
-            return $this->_nav_nodes[$site][$navHandle];
-        }
         if (isset($this->_navs[$navHandle])) {
             $nav = $this->_navs[$navHandle];
         } else {
             $nav = Navigate::$plugin->navigate->getNavigationByHandle($navHandle);
             $this->_navs[$navHandle] = $nav;
         }
+
         if (!$nav) {
             return false;
         }
-        Craft::beginProfile('getNodesForNav', __METHOD__);
-        if (Craft::$app->cache->exists('navigate_nodes_' . $nav->id . '_' . $site)) {
-            $nodes = Craft::$app->cache->get('navigate_nodes_' . $nav->id . '_' . $site);
-            return $nodes;
-        }
 
-        $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
-        $nodes = $this->parseNodesForRender($nodes, $nav);
-        $this->_nav_nodes[$site][$navHandle] = $nodes;
+        $cacheTags = new TagDependency([
+            'tags' => [
+                self::NAVIGATE_CACHE,
+                self::NAVIGATE_CACHE_NODES,
+                self::NAVIGATE_CACHE_NODES . '_' . $navHandle . '_' . $site
+            ]
+        ]);
+
+        Craft::beginProfile('getNodesForNav', __METHOD__);
+
+        $nodes = Craft::$app->getCache()->getOrSet(
+            self::NAVIGATE_CACHE_NODES . '_' . $navHandle . '_' . $site,
+            function () use ($nav, $site) {
+                $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
+                $nodes = $this->parseNodesForRender($nodes, $nav);
+                return $nodes;
+            },
+            null,
+            $cacheTags
+        );
+
         Craft::endProfile('getNodesForNav', __METHOD__);
+
         return $nodes;
     }
 
@@ -97,14 +114,39 @@ class NodesService extends Component
             return false;
         }
 
+
         try {
             $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $siteId, true, true);
             $nodes = $this->parseNodesForRender($nodes, $nav);
+
+            $cacheTags = new TagDependency([
+                'tags' => [
+                    self::NAVIGATE_CACHE,
+                    self::NAVIGATE_CACHE_NODES,
+                    self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $siteId
+                ]
+            ]);
+
+            Craft::$app->cache->set(
+                self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $siteId,
+                $nodes,
+                null,
+                $cacheTags
+            );
+
+            // If putyourlightson/craft-blitz is installed & activacted, clear that cache too
+            if (Craft::$app->getPlugins()->isPluginEnabled('blitz')) {
+                if (version_compare(Blitz::$plugin->getVersion(), "2.0.1") >= 0) {
+                    Blitz::$plugin->clearCache->clearAll();
+                }
+            }
+
+            return true;
         } catch (\Exception $e) {
             Navigate::error('Error building navigation cache');
         }
 
-        Craft::$app->cache->set('navigate_nodes_' . $navId . '_' . $siteId, $nodes);
+        return;
     }
 
     private function parseNodesForRender(array $nodes, $nav)
@@ -113,7 +155,7 @@ class NodesService extends Component
         foreach ($nodes as $node) {
             /* @var $node NodeModel */
             $node = $this->parseNode($node, $nav);
-            if($node) {
+            if ($node) {
                 $data[$node->order] = $node;
             }
         }

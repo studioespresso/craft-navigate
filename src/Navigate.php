@@ -12,12 +12,17 @@ namespace studioespresso\navigate;
 
 use Craft;
 use craft\base\Plugin;
+use craft\events\ElementEvent;
+use craft\events\RegisterCacheOptionsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\log\FileTarget;
+use craft\services\Elements;
+use craft\utilities\ClearCaches;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use studioespresso\navigate\base\PluginTrait;
 use studioespresso\navigate\models\Settings;
+use studioespresso\navigate\records\NodeRecord;
 use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
 use studioespresso\navigate\variables\NavigateVariable;
@@ -61,13 +66,21 @@ class Navigate extends Plugin
 
         $this->name = Craft::t('navigate', 'Navigate');
 
+        $this->setComponents([
+            "navigate" => NavigateService::class,
+            "nodes" => NodesService::class
+        ]);
+
         $this->_projectConfig();
         $this->_registerRoutes();
         $this->_registerVariables();
+        $this->_registerCacheOptions();
+        $this->_elementListeners();
 
     }
 
-    private function _projectConfig() {
+    private function _projectConfig()
+    {
         Craft::$app->projectConfig
             ->onAdd('navigate.nav.{uid}', [$this->navigate, 'handleAddNavigation'])
             ->onUpdate('navigate.nav.{uid}', [$this->navigate, 'handleAddNavigation'])
@@ -149,6 +162,56 @@ class Navigate extends Plugin
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
                 $variable->set('navigate', NavigateVariable::class);
+            }
+        );
+    }
+
+    private function _registerCacheOptions()
+    {
+        Event::on(
+            ClearCaches::class,
+            ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
+            function (RegisterCacheOptionsEvent $event) {
+                // Register our Control Panel routes
+                $event->options = array_merge(
+                    $event->options, [
+                    [
+                        "key" => 'navigate_caches_all',
+                        "label" => "Navigation caches (Navigate)",
+                        "action" => [Navigate::getInstance()->navigate, 'clearAllCaches']
+                    ]
+                ]);
+            }
+        );
+    }
+
+    private function _elementListeners()
+    {
+        Event::on(
+            Elements::class,
+            Elements::EVENT_AFTER_SAVE_ELEMENT,
+            function (ElementEvent $event) {
+                if ($event->element->id) {
+                    $query = NodeRecord::find();
+                    $query->where(['elementId' => $event->element->id]);
+                    if ($query->all()) {
+                        Navigate::getInstance()->navigate->clearAllCaches();
+                    }
+                }
+            }
+        );
+
+        Event::on(
+            Elements::class,
+            Elements::EVENT_AFTER_DELETE_ELEMENT,
+            function (ElementEvent $event) {
+                if ($event->element->id) {
+                    $query = NodeRecord::find();
+                    $query->where(['elementId' => $event->element->id]);
+                    if ($query->all()) {
+                        Navigate::getInstance()->navigate->clearAllCaches();
+                    }
+                }
             }
         );
     }
