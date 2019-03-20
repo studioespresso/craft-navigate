@@ -43,7 +43,6 @@ class NodesService extends Component
     const NAVIGATE_CACHE = "navigate_cache";
     const NAVIGATE_CACHE_NODES = "navigate_cache_nodes";
 
-
     public $types = [
         'entry' => 'Entry',
         'url' => 'Url',
@@ -56,8 +55,6 @@ class NodesService extends Component
     private $_elements = [];
 
     private $_navs = [];
-
-    private $_nav_nodes = [];
 
     public function getNodesByNavId($navId = null)
     {
@@ -103,7 +100,6 @@ class NodesService extends Component
         );
 
         Craft::endProfile('getNodesForNav', __METHOD__);
-
         return $nodes;
     }
 
@@ -146,7 +142,7 @@ class NodesService extends Component
             Navigate::error('Error building navigation cache');
         }
 
-        return;
+        return false;
     }
 
     private function parseNodesForRender(array $nodes, $nav)
@@ -247,12 +243,9 @@ class NodesService extends Component
         foreach ($query->all() as $record) {
             $model = new NodeModel();
             $model->setAttributes($record->getAttributes());
-
             $data[$model->id] = $model;
-
         }
         return $data;
-
     }
 
     public function getNodeById(int $navId = null)
@@ -265,6 +258,7 @@ class NodesService extends Component
             $model->setAttributes($query->getAttributes());
             return $model;
         }
+        return false;
     }
 
     public function getNodeUrl(NodeModel $node)
@@ -323,7 +317,6 @@ class NodesService extends Component
 
         $isNew = !$model->id;
 
-        $record = false;
         if (isset($model->id)) {
             $record = NodeRecord::findOne([
                 'id' => $model->id
@@ -350,7 +343,6 @@ class NodesService extends Component
         $record->url = $model->url;
 
         $save = $record->save();
-        $nav = Navigate::$plugin->navigate->getNavigationById($record->navId);
         $this->setNodeCache($record->navId, $record->siteId);
 
         if (!$save) {
