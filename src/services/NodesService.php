@@ -54,8 +54,6 @@ class NodesService extends Component
 
     private $_elements = [];
 
-    private $_navs = [];
-
     public function getNodesByNavId($navId = null)
     {
         $query = NodeRecord::find();
@@ -67,84 +65,23 @@ class NodesService extends Component
 
     public function getNodesForRender($navHandle, $site)
     {
-        if (isset($this->_navs[$navHandle])) {
-            $nav = $this->_navs[$navHandle];
-        } else {
-            $nav = Navigate::$plugin->navigate->getNavigationByHandle($navHandle);
-            $this->_navs[$navHandle] = $nav;
+        Craft::beginProfile('getNodesForRender', __METHOD__);
+
+        if(Craft::$app->getCache()->exists(self::NAVIGATE_CACHE_NODES . '_' . $navHandle . '_' . $site)) {
+            return Craft::$app->getCache()->get(self::NAVIGATE_CACHE_NODES . '_' . $navHandle . '_' . $site);
         }
+        $nav = Navigate::$plugin->navigate->getNavigationByHandle($navHandle);
 
         if (!$nav) {
             return false;
         }
 
-        $cacheTags = new TagDependency([
-            'tags' => [
-                self::NAVIGATE_CACHE,
-                self::NAVIGATE_CACHE_NODES,
-                self::NAVIGATE_CACHE_NODES . '_' . $navHandle . '_' . $site
-            ]
-        ]);
-
-        Craft::beginProfile('getNodesForNav', __METHOD__);
-
-        $nodes = Craft::$app->getCache()->getOrSet(
-            self::NAVIGATE_CACHE_NODES . '_' . $navHandle . '_' . $site,
-            function () use ($nav, $site) {
-                $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
-                $nodes = $this->parseNodesForRender($nodes, $nav);
-                return $nodes;
-            },
-            null,
-            $cacheTags
-        );
-
-        Craft::endProfile('getNodesForNav', __METHOD__);
+        $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
+        $nodes = $this->parseNodesForRender($nodes, $nav);
+        Craft::endProfile('getNodesForRender', __METHOD__);
         return $nodes;
     }
-
-    public function setNodeCache($navId, $siteId)
-    {
-        $nav = Navigate::$plugin->navigate->getNavigationById($navId);
-        if (!$nav) {
-            return false;
-        }
-
-
-        try {
-            $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $siteId, true, true);
-            $nodes = $this->parseNodesForRender($nodes, $nav);
-
-            $cacheTags = new TagDependency([
-                'tags' => [
-                    self::NAVIGATE_CACHE,
-                    self::NAVIGATE_CACHE_NODES,
-                    self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $siteId
-                ]
-            ]);
-
-            Craft::$app->cache->set(
-                self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $siteId,
-                $nodes,
-                null,
-                $cacheTags
-            );
-
-            // If putyourlightson/craft-blitz is installed & activacted, clear that cache too
-            if (Craft::$app->getPlugins()->isPluginEnabled('blitz')) {
-                if (version_compare(Blitz::$plugin->getVersion(), "2.0.1") >= 0) {
-                    Blitz::$plugin->clearCache->clearAll();
-                }
-            }
-
-            return true;
-        } catch (\Exception $e) {
-            Navigate::error('Error building navigation cache');
-        }
-
-        return false;
-    }
-
+    
     private function parseNodesForRender(array $nodes, $nav)
     {
         $data = [];
@@ -234,7 +171,7 @@ class NodesService extends Component
         return $data;
     }
 
-    public function getNodesStructureByNavIdAndSiteById($navId = null, $siteId, $refresh = false)
+    public function getNodesStructureByNavIdAndSiteById($navId = null, $siteId)
     {
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId]);
@@ -248,10 +185,10 @@ class NodesService extends Component
         return $data;
     }
 
-    public function getNodeById(int $navId = null)
+    public function getNodeById($id = null)
     {
         $query = NodeRecord::findOne([
-            'id' => $navId
+            'id' => $id
         ]);
         if ($query) {
             $model = new NodeModel();
@@ -293,61 +230,60 @@ class NodesService extends Component
         return $nodeTypes;
     }
 
-    public function deleteNode(NodeModel $model)
+    public function deleteNode(NodeModel $node)
     {
-        if (isset($model->id)) {
-            $this->setNodeCache($model->navId, $model->siteId);
+        if (isset($node->id)) {
             if (NodeRecord::deleteAll([
-                'id' => $model->id
+                'id' => $node->id
             ])) {
                 NodeRecord::deleteAll([
-                    'parent' => $model->id
+                    'parent' => $node->id
                 ]);
             };
         } else {
             throw new NotFoundHttpException('Node not found', 404);
         }
 
-        $this->setNodeCache($model->navId, $model->siteId);
+        $this->_clearCacheForNav($node);
         return true;
     }
 
-    public function save(NodeModel $model)
+    public function save(NodeModel $node)
     {
 
-        $isNew = !$model->id;
+        $isNew = !$node->id;
 
-        if (isset($model->id)) {
+        if (isset($node->id)) {
             $record = NodeRecord::findOne([
-                'id' => $model->id
+                'id' => $node->id
             ]);
         } else {
             $record = new NodeRecord();
         }
 
         if ($isNew) {
-            $model->order = $this->getOrderForNewNode($model->navId, $model->siteId, $model->parent ? $model->parent : null);
+            $node->order = $this->getOrderForNewNode($node->navId, $node->siteId, $node->parent ? $node->parent : null);
         }
 
-        $record->siteId = $model->siteId;
-        $record->navId = $model->navId;
-        $record->name = $model->name;
-        $record->type = $model->type;
-        $record->order = $model->order;
-        $record->parent = $model->parent;
-        $record->enabled = $model->enabled ? 1 : 0;
-        $record->blank = $model->blank ? 1 : 0;
-        $record->classes = $model->classes;
-        $record->elementType = $model->elementType;
-        $record->elementId = $model->elementId;
-        $record->url = $model->url;
+        $record->siteId = $node->siteId;
+        $record->navId = $node->navId;
+        $record->name = $node->name;
+        $record->type = $node->type;
+        $record->order = $node->order;
+        $record->parent = $node->parent;
+        $record->enabled = $node->enabled ? 1 : 0;
+        $record->blank = $node->blank ? 1 : 0;
+        $record->classes = $node->classes;
+        $record->elementType = $node->elementType;
+        $record->elementId = $node->elementId;
+        $record->url = $node->url;
 
         $save = $record->save();
-        $this->setNodeCache($record->navId, $record->siteId);
 
         if (!$save) {
             Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
         }
+        $this->_clearCacheForNav($node);
         return $record;
     }
 
@@ -367,10 +303,8 @@ class NodesService extends Component
             $currentOrder++;
         }
 
-        $nodes = $this->getNodesStructureByNavIdAndSiteById($record->navId, $record->siteId, true);
-
+        $nodes = $this->getNodesStructureByNavIdAndSiteById($record->navId, $record->siteId);
         foreach ($nodes as $node) {
-
             if ($parent == $node->parent) {
                 if ($previousId && $previousId == $node->id) {
                     $this->updateNode($node, $currentOrder);
@@ -384,7 +318,7 @@ class NodesService extends Component
         }
 
         $record->save();
-        $this->setNodeCache($record->navId, $record->siteId);
+        $this->_clearCacheForNav($node);
         return true;
     }
 
@@ -425,8 +359,16 @@ class NodesService extends Component
         $record = NodeRecord::findOne(['id' => $node->id]);
         $record->setAttribute('order', $order);
         $result = $record->save();
-        $this->setNodeCache($record->navId, $record->siteId);
+        $this->_clearCacheForNav($node);
         return $result;
+    }
+
+    private function _clearCacheForNav(NodeModel $node) {
+        $nav = Navigate::getInstance()->navigate->getNavigationById($node->navId);
+        TagDependency::invalidate(
+            Craft::$app->getCache(),
+            [self::NAVIGATE_CACHE_NODES. '_' . $nav->handle . '_' . $node->siteId]
+        );
     }
 
 }
