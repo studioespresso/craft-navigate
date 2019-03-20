@@ -66,22 +66,34 @@ class NodesService extends Component
     public function getNodesForRender($navHandle, $site)
     {
         Craft::beginProfile('getNodesForRender', __METHOD__);
-
-        if(Craft::$app->getCache()->exists(self::NAVIGATE_CACHE_NODES . '_' . $navHandle . '_' . $site)) {
-            return Craft::$app->getCache()->get(self::NAVIGATE_CACHE_NODES . '_' . $navHandle . '_' . $site);
-        }
         $nav = Navigate::$plugin->navigate->getNavigationByHandle($navHandle);
-
         if (!$nav) {
             return false;
         }
 
-        $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
-        $nodes = $this->parseNodesForRender($nodes, $nav);
+        $cacheTags = new TagDependency([
+            'tags' => [
+                self::NAVIGATE_CACHE,
+                self::NAVIGATE_CACHE_NODES,
+                self::NAVIGATE_CACHE_NODES . '_' . $navHandle . '_' . $site
+            ]
+        ]);
+
+        $nodes = Craft::$app->getCache()->getOrSet(
+            self::NAVIGATE_CACHE_NODES . '_' . $navHandle . '_' . $site,
+            function() use ($nav, $site) {
+                $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
+                $nodes = $this->parseNodesForRender($nodes, $nav);
+                return $nodes;
+            },
+            null,
+            $cacheTags
+        );
+
         Craft::endProfile('getNodesForRender', __METHOD__);
         return $nodes;
     }
-    
+
     private function parseNodesForRender(array $nodes, $nav)
     {
         $data = [];
