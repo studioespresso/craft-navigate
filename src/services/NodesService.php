@@ -76,12 +76,12 @@ class NodesService extends Component
                 self::NAVIGATE_CACHE,
 
                 self::NAVIGATE_CACHE_NODES,
-                self::NAVIGATE_CACHE_NODES . '_' . $navHandle . '_' . $site
+                self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $site
             ]
         ]);
 
         $nodes = Craft::$app->getCache()->getOrSet(
-            self::NAVIGATE_CACHE_NODES . '_' . $navHandle . '_' . $site,
+            self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $site,
             function () use ($nav, $site) {
                 $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
                 $nodes = $this->parseNodesForRender($nodes, $nav);
