@@ -85,7 +85,7 @@ class NavigationModel extends Model
 
         $validator = new HandleValidator();
         $validator->validateAttribute($this, 'handle');
-        $data = Navigate::$plugin->navigate->getNavigationByHandle($this->handle);
+        $data = Navigate::$plugin->navigate->getNavigationByHandle($this->handle, false);
         if($data && $data->id != $this->id) {
             $this->addError('handle', Craft::t('navigate', 'Handle "{handle}" is already in use', ['handle' => $this->handle]));
 
