@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.2.0 - 2019-04-15
+### Added
+- Added support for ``project-config/rebuild``
+
 ## 2.1.3 - 2019-03-21
 ### Fixed
 - Last of the caching update/fixes? Hopefully 🙂 - Fixed an issue where navigation cache wasn't being cleared correctly
