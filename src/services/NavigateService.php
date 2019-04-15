@@ -54,7 +54,7 @@ class NavigateService extends Component
 
     public function getNavigationByHandle($handle, $fromCache = true)
     {
-        if(!$fromCache) {
+        if (!$fromCache) {
             $nav = NavigationRecord::findOne([
                 'handle' => $handle
             ]);
@@ -173,5 +173,22 @@ class NavigateService extends Component
             Craft::$app->getCache(),
             $tags
         );
+    }
+
+    public function rebuildProjectConfig()
+    {
+        $navs = NavigationRecord::find();
+        $data = [];
+        /** @var NavigationRecord $nav */
+        foreach($navs->all() as $nav) {
+            $data[$nav->uid] = [
+                'title' => $nav->title,
+                'handle' => $nav->handle,
+                'levels' => $nav->levels,
+                'adminOnly' => $nav->adminOnly,
+                'allowSources' => $nav->allowedSources
+            ];
+        }
+        return ['nav' => $data];
     }
 }
