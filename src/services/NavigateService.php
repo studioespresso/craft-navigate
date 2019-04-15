@@ -52,27 +52,33 @@ class NavigateService extends Component
         return new NavigationModel($record->getAttributes());
     }
 
-    public function getNavigationByHandle($handle)
+    public function getNavigationByHandle($handle, $fromCache = true)
     {
-        $cacheTags = new TagDependency([
-            'tags' => [
-                self::NAVIGATE_CACHE,
-                self::NAVIGATE_CACHE_NAV,
-                self::NAVIGATE_CACHE_NAV . '_' . $handle
-            ]
-        ]);
+        if (!$fromCache) {
+            $nav = NavigationRecord::findOne([
+                'handle' => $handle
+            ]);
+        } else {
+            $cacheTags = new TagDependency([
+                'tags' => [
+                    self::NAVIGATE_CACHE,
+                    self::NAVIGATE_CACHE_NAV,
+                    self::NAVIGATE_CACHE_NAV . '_' . $handle
+                ]
+            ]);
 
-        $nav = Craft::$app->getCache()->getOrSet(
-            self::NAVIGATE_CACHE_NAV . '_' . $handle,
-            function () use ($handle) {
-                return NavigationRecord::findOne([
-                    'handle' => $handle
-                ]);
-            },
-            null,
-            $cacheTags
-        );
+            $nav = Craft::$app->getCache()->getOrSet(
+                self::NAVIGATE_CACHE_NAV . '_' . $handle,
+                function () use ($handle) {
+                    return NavigationRecord::findOne([
+                        'handle' => $handle
+                    ]);
+                },
+                null,
+                $cacheTags
+            );
 
+        }
         return $nav;
     }
 
@@ -161,11 +167,28 @@ class NavigateService extends Component
         return true;
     }
 
-    public function clearAllCaches()
+    public function clearAllCaches($tags = [self::NAVIGATE_CACHE])
     {
         TagDependency::invalidate(
             Craft::$app->getCache(),
-            [self::NAVIGATE_CACHE]
+            $tags
         );
+    }
+
+    public function rebuildProjectConfig()
+    {
+        $navs = NavigationRecord::find();
+        $data = [];
+        /** @var NavigationRecord $nav */
+        foreach($navs->all() as $nav) {
+            $data[$nav->uid] = [
+                'title' => $nav->title,
+                'handle' => $nav->handle,
+                'levels' => $nav->levels,
+                'adminOnly' => $nav->adminOnly,
+                'allowSources' => $nav->allowedSources
+            ];
+        }
+        return ['nav' => $data];
     }
 }

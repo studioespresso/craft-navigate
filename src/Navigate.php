@@ -13,10 +13,12 @@ namespace studioespresso\navigate;
 use Craft;
 use craft\base\Plugin;
 use craft\events\ElementEvent;
+use craft\events\RebuildConfigEvent;
 use craft\events\RegisterCacheOptionsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\log\FileTarget;
 use craft\services\Elements;
+use craft\services\ProjectConfig;
 use craft\utilities\ClearCaches;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
@@ -85,6 +87,10 @@ class Navigate extends Plugin
             ->onAdd('navigate.nav.{uid}', [$this->navigate, 'handleAddNavigation'])
             ->onUpdate('navigate.nav.{uid}', [$this->navigate, 'handleAddNavigation'])
             ->onRemove('navigate.nav.{uid}', [$this->navigate, 'handleRemoveNavigation']);
+
+        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $event) {
+            $event->config['navigate'] = Navigate::getInstance()->navigate->rebuildProjectConfig();
+        });
     }
 
     private function _registerRoutes()
