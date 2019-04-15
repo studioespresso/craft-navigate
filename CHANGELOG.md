@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 2.2.0 - 2019-04-15
 ### Added
-- Added support for ``project-config/rebuild``
+- Added support for ``project-config/rebuild`` - plugin now requires Craft 3.1.20
 
 ## 2.1.3 - 2019-03-21
 ### Fixed
