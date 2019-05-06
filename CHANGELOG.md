@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.2.1 - 2019-05-06
+### Fixed
+- Fixed an issue with linking to an asset
+
 ## 2.2.0 - 2019-04-15
 ### Added
 - Added support for ``project-config/rebuild`` - plugin now requires Craft 3.1.20

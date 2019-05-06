@@ -118,11 +118,11 @@ class NodesService extends Component
                 $element = $this->_elements[$node->siteId][$node->elementId];
             } else {
                 if ($node->elementType == 'entry') {
-                    $query = new ElementQuery(Entry::class);
+                    $query = Entry::find();
                 } elseif ($node->elementType === 'asset') {
-                    $query = new ElementQuery(Asset::class);
+                    $query = Asset::find();
                 } elseif ($node->elementType === 'category') {
-                    $query = new ElementQuery(Category::class);
+                    $query = Category::find();
                 }
                 $query->siteId($node->siteId);
                 $query->id($node->elementId);
