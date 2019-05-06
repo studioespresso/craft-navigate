@@ -2,7 +2,7 @@
     "name": "studioespresso/craft-navigate",
     "description": "Navigation plugin for Craft 3",
     "type": "craft-plugin",
-    "version": "2.0.1",
+    "version": "2.2.0",
     "keywords": [
         "craft",
         "cms",
@@ -16,7 +16,7 @@
         "docs": "https://github.com/studioespresso/craft3-navigate/blob/master/README.md",
         "issues": "https://github.com/studioespresso/craft3-navigate/issues"
     },
-    "license": "MIT",
+    "license": "proprietary",
     "authors": [
         {
             "name": "Studio Espresso",
@@ -24,7 +24,7 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^3.1.0"
+        "craftcms/cms": "^3.1.20"
     },
     "autoload": {
         "psr-4": {
