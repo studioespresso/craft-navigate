@@ -12,6 +12,7 @@ namespace studioespresso\navigate\migrations;
 
 use Craft;
 use craft\db\Migration;
+use studioespresso\navigate\migrations\upgrades\amNav;
 use studioespresso\navigate\records\NavigationRecord;
 use studioespresso\navigate\records\NodeRecord;
 
@@ -38,6 +39,8 @@ class Install extends Migration
      * @var string The database driver to use
      */
     public $driver;
+
+    public $processedNodes;
 
     // Public Methods
     // =========================================================================
@@ -97,7 +100,7 @@ class Install extends Migration
     {
         $tablesCreated = false;
 
-    // navigate_navigaterecord table
+        // navigate_navigaterecord table
         $tableSchema = Craft::$app->db->schema->getTableSchema(NavigationRecord::tableName());
         if ($tableSchema === null) {
             $tablesCreated = true;
@@ -117,7 +120,7 @@ class Install extends Migration
 
                 ]
             );
-            
+
             $this->createTable(
                 NodeRecord::tableName(),
                 [
@@ -142,6 +145,12 @@ class Install extends Migration
                 ]
             );
         }
+
+        if (Craft::$app->getDb()->tableExists('{{%amnav_navs}}')) {
+            $amNavUpgrade = new amNav();
+            $amNavUpgrade->safeUp();
+        }
+
 
         return $tablesCreated;
     }
@@ -183,7 +192,7 @@ class Install extends Migration
      */
     protected function removeTables()
     {
-    // navigate_navigaterecord table
+        // navigate_navigaterecord table
         $this->dropTableIfExists(NavigationRecord::tableName());
         $this->dropTableIfExists(NodeRecord::tableName());
     }
