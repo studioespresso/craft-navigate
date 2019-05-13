@@ -14,7 +14,7 @@ To install the plugin, follow these instructions.
 
         cd /path/to/project
         composer require studioespresso/craft-navigate
-        ./craft install/plugin craft-navigate
+        ./craft install/plugin navigate
 
 ## Navigate Overview
 
