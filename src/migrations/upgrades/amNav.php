@@ -22,6 +22,7 @@ class amNav extends Migration
             ->from(['{{%amnav_navs}}'])
             ->all();
         foreach ($amNavs as $key => $amNav) {
+            echo "\n    > Migrating nav `{$amNav['handle']}` ...\n";
             $nav = Navigate::getInstance()->navigate->getNavigationByHandle($amNav['handle']);
             if (!$nav) {
                 $nav = new NavigationModel();
@@ -32,25 +33,31 @@ class amNav extends Migration
             $settings = Json::decode($amNav['settings']);
             $nav->levels = $settings['maxLevels'] ?? '';
             $nav->adminOnly = true;
-
             Navigate::getInstance()->navigate->saveNavigation($nav);
         }
 
         $navs = Navigate::getInstance()->navigate->getAllNavigations();
         foreach ($navs as $nav) {
+            echo "\n    > Migrating nodes for `{$nav['handle']}` ...\n";
+            $amNav = (new Query())
+                ->select(['*'])
+                ->from(['{{%amnav_navs}}'])
+                ->where(['handle' => $nav['handle']])
+                ->one();
             $amNavNodes = (new Query())
                 ->select(['*'])
                 ->from(['{{%amnav_nodes}}'])
-                ->where(['navId' => $nav['id']])
+                ->where(['navId' => $amNav['id']])
                 ->orderBy('parentId ASC, order ASC')
                 ->all();
             foreach ($amNavNodes as $amNavNode) {
                 try {
-
+                    echo "\n    > [{$nav['handle']}] Migrating node '{$amNavNode['name']}' ...\n";
                     $node = new NodeModel();
                     $node->name = $amNavNode['name'];
                     $node->enabled = $amNavNode['enabled'];
                     $node->navId = $nav->id;
+                    $node->parent = $amNavNode['parentId'];
                     $node->url = $amNavNode['url'];
                     $node->classes = $amNavNode['listClass'];
                     $node->blank = $amNavNode['blank'];
