@@ -182,6 +182,8 @@
             $bodyInput: null,
             $spinner: null,
             $nameInput: null,
+            $blankInput: null,
+            $classInput: null,
             site : null,
             nav: null,
 
@@ -208,6 +210,7 @@
 
                 this.$nameInput = $container.find('.node-name:first');
                 this.$urlInput = this.$container.find('.node-url:first');
+                this.$classInput = this.$container.find('.node-classes:first');
 
                 this.$cancelBtn = $container.find('.cancel:first');
                 this.addListener(this.$cancelBtn, 'click', 'cancel');
@@ -283,7 +286,8 @@
                     enabled: 'live',
                     parentId: 0,
                     name: this.$nameInput.val(),
-                    url: this.$urlInput.val()
+                    url: this.$urlInput.val(),
+                    classes: this.$classInput.val(),
                 };
 
 
@@ -303,13 +307,6 @@
                     Garnish.shake(this.$container);
                     return;
                 }
-
-                // var re = /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
-                // if(!re.test(data.url)) {
-                //     this.$urlInput.addClass('error');
-                //     Garnish.shake(this.$container);
-                //     return;
-                // }
 
 
                 var url = Craft.getActionUrl('navigate/nodes/add');
