@@ -1,3 +1,5 @@
+{% import "_includes/forms" as forms %}
+
 <script id="node__url" type="text/template">
     <div class="body">
         <div class="field" id="node__url-name">
@@ -16,6 +18,18 @@
                 <input class="text node-url fullwidth" type="text" id="url" name="url" autocomplete="off">
             </div>
         </div>
+        {{ forms.lightswitchField({
+            id:           'blank',
+            name:         'blank',
+            label:        'Open in a new window'|t('navigate'),
+        }) }}
+
+        {{ forms.textField({
+            id: 'lasses',
+            name: 'classes',
+            label: "Classes"|t('navigate'),
+            instructions: "These css classes will be applied to this node's list item"|t('navigate'),
+        }) }}
     </div>
     <footer class="footer">
         <div class="buttons right">
