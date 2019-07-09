@@ -295,9 +295,12 @@ class NodesService extends Component
 
         if (!$save) {
             Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
+            return false;
         }
+
+        $node = $this->getNodeById($record->id);
         $this->_clearCacheForNav($node);
-        return $record;
+        return $node;
     }
 
     public function move(NodeModel $node, $parent, $previousId)
