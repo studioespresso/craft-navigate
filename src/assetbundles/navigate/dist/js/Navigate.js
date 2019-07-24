@@ -42,26 +42,26 @@
                 if (this.currentElementType == 'entry') {
                     if (!this.entryModal) {
                         this.entryModal = this.createModal("craft\\elements\\Entry", '*');
-                    }
-                    else {
+                    } else {
                         this.entryModal.show();
                     }
                 } else if (this.currentElementType == 'asset') {
                     if (!this.assetModal) {
                         this.assetModal = this.createModal('craft\\elements\\Asset', '*');
-                    }
-                    else {
+                    } else {
                         this.assetModal.show();
                     }
                 } else if (this.currentElementType == 'category') {
                     if (!this.categoryModal) {
                         this.categoryModal = this.createModal('craft\\elements\\Category', '*');
-                    }
-                    else {
+                    } else {
                         this.categoryModal.show();
                     }
                 } else if (this.currentElementType == 'url') {
                     this.urlModal = this.createModal('url');
+                } else if (this.currentElementType == 'heading') {
+                    this.headingModal = this.createModal('heading');
+
                 }
             },
 
@@ -71,6 +71,9 @@
             createModal: function (elementType, elementSources) {
                 if (elementType === 'url') {
                     $modal = new Craft.NavigateUrlModal(this.structure, this.id, this.site);
+                    return $modal;
+                } else if (elementType === 'heading') {
+                    $modal = new Craft.NavigateHeadingModal(this.structure, this.id, this.site);
                     return $modal;
                 } else {
                     return Craft.createElementSelectorModal(elementType, {
@@ -99,11 +102,9 @@
                     // Unselect element in modal
                     if (elementType == 'Entry') {
                         this.entryModal.$body.find('.element[data-id="' + element.id + '"]').closest('tr').removeClass('sel');
-                    }
-                    else if (elementType == 'Category') {
+                    } else if (elementType == 'Category') {
                         this.categoryModal.$body.find('.element[data-id="' + element.id + '"]').closest('tr').removeClass('sel');
-                    }
-                    else if (elementType == 'Asset') {
+                    } else if (elementType == 'Asset') {
                         this.assetModal.$body.find('.element[data-id="' + element.id + '"]').closest('tr').removeClass('sel');
                     }
 
@@ -130,24 +131,22 @@
              * @param array  data
              * @param string nodeType
              */
-            saveNewNode: function(data, nodeType) {
+            saveNewNode: function (data, nodeType) {
                 // Make sure we can only save one node at a time
                 this.savingNode = true;
                 if (nodeType == 'manual') {
                     this.$manualLoader.removeClass('hidden');
-                }
-                else {
+                } else {
                     this.$addElementLoader.removeClass('hidden');
                 }
 
                 var url = Craft.getActionUrl('navigate/nodes/add');
-                Craft.postActionRequest(url, data, $.proxy(function(response, textStatus) {
+                Craft.postActionRequest(url, data, $.proxy(function (response, textStatus) {
                     if (textStatus == 'success') {
                         this.savingNode = false;
                         if (nodeType == 'manual') {
                             this.$manualLoader.addClass('hidden');
-                        }
-                        else {
+                        } else {
                             this.$addElementLoader.addClass('hidden');
                         }
 
@@ -165,8 +164,7 @@
                             this.$parentContainer.html(response.parentOptions);
 
                             Craft.cp.displayNotice(response.message);
-                        }
-                        else {
+                        } else {
                             Craft.cp.displayError(response.message);
                         }
                     }
@@ -184,7 +182,7 @@
             $nameInput: null,
             $blankInput: null,
             $classInput: null,
-            site : null,
+            site: null,
             nav: null,
 
             init: function (structure, navId, currentSite) {
@@ -223,7 +221,7 @@
 
             },
 
-            show: function() {
+            show: function () {
                 // Close other modals as needed
                 if (this.settings.closeOtherModals && Garnish.Modal.visibleModal && Garnish.Modal.visibleModal !== this) {
                     Garnish.Modal.visibleModal.hide();
@@ -239,9 +237,9 @@
 
                     this.$shade.velocity('fadeIn', {
                         duration: 50,
-                        complete: $.proxy(function() {
+                        complete: $.proxy(function () {
                             this.$container.velocity('fadeIn', {
-                                complete: $.proxy(function() {
+                                complete: $.proxy(function () {
                                     this.updateSizeAndPosition();
                                     this.$nameInput.trigger('focus');
                                     this.onFadeIn();
@@ -310,13 +308,13 @@
 
 
                 var url = Craft.getActionUrl('navigate/nodes/add');
-                Craft.postActionRequest(url, data, $.proxy(function(response, textStatus) {
+                Craft.postActionRequest(url, data, $.proxy(function (response, textStatus) {
                     if (textStatus == 'success') {
                         this.savingNode = false;
 
                         if (response.success) {
                             // Add node to structure!
-                            this.loading =  true;
+                            this.loading = true;
 
                             this.$spinner.show();
                             this.structure.addNode(response.nodeData, 'url');
@@ -325,13 +323,177 @@
 
                             // Display parent options
                             Craft.cp.displayNotice(response.message);
-                        }
-                        else {
+                        } else {
                             Craft.cp.displayError(response.message);
                         }
                     }
                 }, this));
-                
+
+            },
+
+
+            cancel: function () {
+                this.hide();
+
+                if (this.message) {
+                    this.message.modal = null;
+                }
+            }
+
+
+        }
+    )
+
+
+    Craft.NavigateHeadingModal = Garnish.Modal.extend(
+        {
+            body: null,
+            $subjectInput: null,
+            $bodyInput: null,
+            $spinner: null,
+            $nameInput: null,
+            $blankInput: null,
+            $classInput: null,
+            site: null,
+            nav: null,
+
+            init: function (structure, navId, currentSite) {
+                this.site = currentSite;
+                this.nav = navId;
+
+                this.structure = structure,
+                    this.body = $('#node__heading').html(),
+
+                    this.base(null, {
+                        resizable: false
+                    });
+
+                this.loadContainer(this.body);
+
+
+            },
+
+            loadContainer: function ($body) {
+                var $container = $('<form class="modal fitted" accept-charset="UTF-8">' + $body + '</form>').appendTo(Garnish.$bod);
+                this.setContainer($container);
+                this.show();
+
+                this.$nameInput = $container.find('.node-name:first');
+                this.$classInput = this.$container.find('.node-classes:first');
+
+                this.$cancelBtn = $container.find('.cancel:first');
+                this.addListener(this.$cancelBtn, 'click', 'cancel');
+
+                this.$submitBtn = $container.find('.submit:first');
+                this.addListener(this.$container, 'submit', 'addNode');
+
+                this.$spinner = this.$container.find('.spinner:first');
+
+
+            },
+
+            show: function () {
+                // Close other modals as needed
+                if (this.settings.closeOtherModals && Garnish.Modal.visibleModal && Garnish.Modal.visibleModal !== this) {
+                    Garnish.Modal.visibleModal.hide();
+                }
+
+                if (this.$container) {
+                    // Move it to the end of <body> so it gets the highest sub-z-index
+                    this.$shade.appendTo(Garnish.$bod);
+                    this.$container.appendTo(Garnish.$bod);
+
+                    this.$container.show();
+                    this.updateSizeAndPosition();
+
+                    this.$shade.velocity('fadeIn', {
+                        duration: 50,
+                        complete: $.proxy(function () {
+                            this.$container.velocity('fadeIn', {
+                                complete: $.proxy(function () {
+                                    this.updateSizeAndPosition();
+                                    this.$nameInput.trigger('focus');
+                                    this.onFadeIn();
+                                }, this)
+                            });
+                        }, this)
+                    });
+
+                    if (this.settings.hideOnShadeClick) {
+                        this.addListener(this.$shade, 'click', 'hide');
+                    }
+
+                    this.addListener(Garnish.$win, 'resize', 'updateSizeAndPosition');
+                }
+
+                this.enable();
+
+                if (this.settings.hideOnEsc) {
+                    Garnish.escManager.register(this, 'hide');
+                }
+
+                if (!this.visible) {
+                    this.visible = true;
+                    Garnish.Modal.visibleModal = this;
+
+                    this.trigger('show');
+                    this.settings.onShow();
+                }
+            },
+
+            addNode: function (event) {
+                event.preventDefault();
+
+                if (this.loading) {
+                    return;
+                }
+
+                var data = {
+                    navId: this.nav,
+                    siteId: this.site,
+                    type: 'heading',
+                    enabled: 'live',
+                    parentId: 0,
+                    name: this.$nameInput.val(),
+                    classes: this.$classInput.val(),
+                };
+
+
+                this.$nameInput.removeClass('error');
+
+
+                if (!data.name) {
+                    if (!data.name) {
+                        this.$nameInput.addClass('error');
+                    }
+
+                    Garnish.shake(this.$container);
+                    return;
+                }
+
+
+                var url = Craft.getActionUrl('navigate/nodes/add');
+                Craft.postActionRequest(url, data, $.proxy(function (response, textStatus) {
+                    if (textStatus == 'success') {
+                        this.savingNode = false;
+
+                        if (response.success) {
+                            // Add node to structure!
+                            this.loading = true;
+
+                            this.$spinner.show();
+                            this.structure.addNode(response.nodeData, 'url');
+                            this.$spinner.hide();
+                            this.hide();
+
+                            // Display parent options
+                            Craft.cp.displayNotice(response.message);
+                        } else {
+                            Craft.cp.displayError(response.message);
+                        }
+                    }
+                }, this));
+
             },
 
 
@@ -368,7 +530,7 @@
 
                 this.dragdrop = new Craft.NavigateDragDrop(this, this.levels);
 
-                this.$container.find('.settings').on('click', $.proxy(function(ev) {
+                this.$container.find('.settings').on('click', $.proxy(function (ev) {
                     this.getNodeEditor($(ev.currentTarget));
                 }, this));
 
@@ -378,7 +540,7 @@
 
             },
 
-            getNodeEditor: function($element) {
+            getNodeEditor: function ($element) {
                 new Craft.NavigateEditor($element);
             },
 
@@ -400,7 +562,7 @@
                     .replace(/%%id%%/ig, data.id)
                     .replace(/%%type%%/ig, nodeType)
                     .replace(/%%url%%/ig, nodeType == 'url' ? data.url : '')
-                    .replace(/%%elementType%%/ig, data.elementType ? data.elementType : '' )
+                    .replace(/%%elementType%%/ig, data.elementType ? data.elementType : '')
                     .replace(/%%type%%/ig, data.elementType ? data.elementType.toLowerCase() : "url")
                     .replace(/%%typeLabel%%/ig, data.elementType ? data.elementType : "url")
 
@@ -428,13 +590,13 @@
                 var $li = $('<li data-level="' + level + '"/>').appendTo($appendTo),
                     // indent = 8 + (level - 1) * 35 %}
                     indent = this.getIndent(level),
-                    $row = $('<div class="row" style="margin-left: -'+ indent + 'px; padding-left: ' + indent + 'px;" data-id="' + data.id + '">').appendTo($li);
+                    $row = $('<div class="row" style="margin-left: -' + indent + 'px; padding-left: ' + indent + 'px;" data-id="' + data.id + '">').appendTo($li);
 
                 $row.append($element);
 
                 this.dragdrop.addItems($li);
 
-                this.$container.find('.settings').on('click', $.proxy(function(ev) {
+                this.$container.find('.settings').on('click', $.proxy(function (ev) {
                     this.getNodeEditor($(ev.currentTarget));
                 }, this));
 
@@ -470,12 +632,12 @@
                 }
             },
 
-            deleteNode: function($element) {
+            deleteNode: function ($element) {
                 var nodeId = $element.data('id'),
                     url = Craft.getActionUrl('navigate/nodes/delete'),
-                    data = { nodeId: nodeId };
+                    data = {nodeId: nodeId};
 
-                Craft.postActionRequest(url, data, $.proxy(function(response, textStatus) {
+                Craft.postActionRequest(url, data, $.proxy(function (response, textStatus) {
                     if (textStatus == 'success' && response.success) {
                         Craft.cp.displayNotice(response.message);
                     }
@@ -496,7 +658,7 @@
 
             hud: null,
 
-            init: function($node) {
+            init: function ($node) {
                 this.$node = $node;
                 this.nodeId = $node.data('id');
 
@@ -509,13 +671,13 @@
                 Craft.postActionRequest('navigate/nodes/editor', data, $.proxy(this, 'showEditor'));
             },
 
-            showEditor: function(response, textStatus) {
+            showEditor: function (response, textStatus) {
 
                 if (textStatus == 'success') {
                     var $hudContents = $();
 
                     this.$form = $('<form/>');
-                    $('<input type="hidden" name="nodeId" value="'+this.nodeId+'">').appendTo(this.$form);
+                    $('<input type="hidden" name="nodeId" value="' + this.nodeId + '">').appendTo(this.$form);
                     this.$fieldsContainer = $('<div class="fields"/>').appendTo(this.$form);
 
                     this.$fieldsContainer.html(response.html)
@@ -526,8 +688,8 @@
                     this.$spinner = $('<div class="spinner left hidden"/>').appendTo($buttonsOuterContainer);
 
                     var $buttonsContainer = $('<div class="buttons right"/>').appendTo($buttonsOuterContainer);
-                    this.$cancelBtn = $('<div class="btn">'+Craft.t('navigate','Cancel')+'</div>').appendTo($buttonsContainer);
-                    this.$saveBtn = $('<input class="btn submit" type="submit" value="'+Craft.t('navigate','Save')+'"/>').appendTo($buttonsContainer);
+                    this.$cancelBtn = $('<div class="btn">' + Craft.t('navigate', 'Cancel') + '</div>').appendTo($buttonsContainer);
+                    this.$saveBtn = $('<input class="btn submit" type="submit" value="' + Craft.t('navigate', 'Save') + '"/>').appendTo($buttonsContainer);
 
                     $hudContents = $hudContents.add(this.$form);
 
@@ -536,28 +698,28 @@
                         closeOtherHUDs: false
                     });
 
-                    this.hud.on('hide', $.proxy(function() {
+                    this.hud.on('hide', $.proxy(function () {
                         delete this.hud;
                     }, this));
 
                     this.addListener(this.$saveBtn, 'click', 'save');
-                    this.addListener(this.$cancelBtn, 'click', function() {
+                    this.addListener(this.$cancelBtn, 'click', function () {
                         this.hud.hide()
                     });
                 }
             },
 
-            save: function(e) {
+            save: function (e) {
                 e.preventDefault();
 
                 this.$spinner.removeClass('hidden');
 
                 var data = this.$form.serialize(),
-                    $status    = this.$node.parent().find('.status');
-                    $blank    = this.$node.find('.blank');
+                    $status = this.$node.parent().find('.status');
+                $blank = this.$node.find('.blank');
 
-                    updateUrl = Craft.getActionUrl('navigate/nodes/update');
-                    Craft.postActionRequest(updateUrl, data, $.proxy(function(response, textStatus) {
+                updateUrl = Craft.getActionUrl('navigate/nodes/update');
+                Craft.postActionRequest(updateUrl, data, $.proxy(function (response, textStatus) {
                     this.$spinner.addClass('hidden');
 
                     if (textStatus == 'success') {
@@ -583,9 +745,7 @@
                             }
 
                             this.closeHud();
-                        }
-                        else
-                        {
+                        } else {
                             Garnish.shake(this.hud.$hud);
                         }
                     }
@@ -593,7 +753,7 @@
 
             },
 
-            closeHud: function() {
+            closeHud: function () {
                 this.hud.hide();
                 delete this.hud;
             }
@@ -602,7 +762,7 @@
 
     Craft.NavigateDragDrop = Craft.StructureDrag.extend(
         {
-            onDragStop: function() {
+            onDragStop: function () {
                 // Are we repositioning the draggee?
                 if (this._.$closestTarget && (this.$insertion.parent().length || this._.$closestTarget.hasClass('draghover'))) {
                     var $draggeeParent,
@@ -620,13 +780,11 @@
                         if ($.inArray(this.$draggee[0], $closestSiblings) === -1) {
                             this.$insertion.replaceWith(this.$draggee);
                             moved = true;
-                        }
-                        else {
+                        } else {
                             this.$insertion.remove();
                             moved = false;
                         }
-                    }
-                    else {
+                    } else {
                         var $ul = this._.$closestTargetLi.children('ul');
 
                         // Make sure this is a different parent than the draggee's
@@ -635,44 +793,36 @@
 
 
                                 $ul = $('<ul>').appendTo(this._.$closestTargetLi);
-                            }
-                            else if (this._.$closestTargetLi.hasClass('collapsed')) {
+                            } else if (this._.$closestTargetLi.hasClass('collapsed')) {
                             }
 
                             this.$draggee.appendTo($ul);
                             moved = true;
-                        }
-                        else {
+                        } else {
                             moved = false;
                         }
                     }
 
                     // Remove the class either way
                     this._.$closestTarget.removeClass('draghover');
-                    if (moved)
-                    {
+                    if (moved) {
                         // Now deal with the now-childless parent
-                        if ($draggeeParent)
-                        {
+                        if ($draggeeParent) {
                             this.structure._removeUl($draggeeParent);
                         }
 
                         // Has the level changed?
                         var newLevel = this.$draggee.parentsUntil(this.structure.$container, 'li').length + 1;
 
-                        if (newLevel != this.$draggee.data('level'))
-                        {
+                        if (newLevel != this.$draggee.data('level')) {
                             // Correct the helper's padding if moving to/from level 1
-                            if (this.$draggee.data('level') == 1)
-                            {
+                            if (this.$draggee.data('level') == 1) {
                                 var animateCss = {};
-                                animateCss['padding-'+Craft.left] = 38;
+                                animateCss['padding-' + Craft.left] = 38;
                                 this.$helperLi.velocity(animateCss, 'fast');
-                            }
-                            else if (newLevel == 1)
-                            {
+                            } else if (newLevel == 1) {
                                 var animateCss = {};
-                                animateCss['padding-'+Craft.left] = Craft.Structure.baseIndent;
+                                animateCss['padding-' + Craft.left] = Craft.Structure.baseIndent;
                                 this.$helperLi.velocity(animateCss, 'fast');
                             }
 
@@ -683,17 +833,15 @@
                         var $element = this.$draggee.find('.node__node');
 
                         var data = {
-                            navId:    this.structure.navId,
-                            nodeId:   $element.data('id'),
-                            prevId:   $element.closest('li').prev().find('.node__node').data('id'),
+                            navId: this.structure.navId,
+                            nodeId: $element.data('id'),
+                            prevId: $element.closest('li').prev().find('.node__node').data('id'),
                             parentId: this.$draggee.parent('ul').parent('li').find('.node__node').data('id')
                         };
 
                         var url = Craft.getActionUrl('navigate/nodes/move');
-                        Craft.postActionRequest(url, data, function(response, textStatus)
-                        {
-                            if (textStatus == 'success')
-                            {
+                        Craft.postActionRequest(url, data, function (response, textStatus) {
+                            if (textStatus == 'success') {
                                 Craft.cp.displayNotice(response.message);
                             }
                         });
@@ -703,7 +851,7 @@
                 // Animate things back into place
                 this.$draggee.velocity('stop').removeClass('hidden').velocity({
                     height: this.draggeeHeight
-                }, 'fast', $.proxy(function() {
+                }, 'fast', $.proxy(function () {
                     this.$draggee.css('height', 'auto');
                 }, this));
 
@@ -712,7 +860,7 @@
                 this.base();
             },
 
-            setLevel: function($li, level) {
+            setLevel: function ($li, level) {
                 $li.data('level', level);
 
                 var indent = this.structure.getIndent(level);

@@ -47,7 +47,8 @@ class NodesService extends Component
         'entry' => 'Entry',
         'url' => 'Url',
         'asset' => 'Asset',
-        'category' => 'Category'
+        'category' => 'Category',
+        'heading' => 'Heading',
     ];
 
     private $_nodes = [];

@@ -1,0 +1,32 @@
+{% import "_includes/forms" as forms %}
+
+<script id="node__heading" type="text/template">
+    <div class="body">
+        <div class="field" id="node__url-name">
+            <div class="heading">
+                <label class="required" for="name">{{ 'Name'|t('navigate') }}</label>
+            </div>
+            <div class="input ltr">
+                <input class="text node-name fullwidth" type="text" id="name" autocomplete="off" autofocus="autofocus">
+            </div>
+        </div>
+
+        <div class="field" id="node__url-url">
+            <div class="heading">
+                <label for="classes">{{ "Classes"|t('navigate') }}</label>
+                <div class="instructions"><p>{{ "These css classes will be applied to this item"|t('navigate') }}</p>
+                </div>
+            </div>
+            <div class="input ltr">
+                <input class="text node-classes fullwidth" type="text" id="classes" name="classes" autocomplete="off">
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="buttons right">
+            <input type="button" class="btn cancel" value="{{ 'Cancel'|t('navigate') }}">
+            <input type="submit" class="btn submit" value="{{ 'Add'|t('navigate') }}">
+        </div>
+    </footer>
+    <div class="spinner" style="display: none;"></div>
+</script>

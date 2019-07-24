@@ -68,6 +68,12 @@ class NodesController extends Controller
                 'classes' => $attributes['classes'],
             ]);
         }
+        if ($attributes['type'] === 'heading') {
+            $model->setAttributes([
+                'type' => $attributes['type'],
+                'classes' => $attributes['classes'],
+            ]);
+        }
 
         $model->setAttributes([
             'siteId' => $attributes['siteId'],
