@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.3.0 - 2019-07-25
+### Added
+- Menu headings can now be added, making it easier to work build larger multi-level or multi column menus ([#29](https://github.com/studioespresso/craft3-navigate/issues/29))
+- Full upgrade support for sites that used amNav on Craft 2
+
+### Fixed
+- Disabled nodes on level 1 or deeper are visible in the CP again
+
 ## 2.2.1 - 2019-05-06
 ### Fixed
 - Fixed an issue with linking to an asset
