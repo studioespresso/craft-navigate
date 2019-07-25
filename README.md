@@ -16,7 +16,6 @@ To install the plugin, follow these instructions.
         composer require studioespresso/craft-navigate
         ./craft install/plugin navigate
 
-## Navigate Overview
 
 ## Templating
 
@@ -82,5 +81,11 @@ The `render` function gives you the option to let the plugin build the HTML for 
 
 This will return HTML, with the classes you specified, based on how [Bootstrap](http://getbootstrap.com/docs/4.1/components/navbar/) does navigations
 
+## Headings
 
+Since 2.3.0, headings can be added to make it easier to build larger navigations with mulitple sections or columns. To make full use of this you check check ``node.type == "heading"`` and add the html you need in the condition. 
+
+These only work on multiple levels (eg: 3 headings on the top level, each with navigation items on deeper levels). 
+
+---
 Brought to you by [Studio Espresso](https://studioespresso.co)

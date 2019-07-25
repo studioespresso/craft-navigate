@@ -47,7 +47,8 @@ class NodesService extends Component
         'entry' => 'Entry',
         'url' => 'Url',
         'asset' => 'Asset',
-        'category' => 'Category'
+        'category' => 'Category',
+        'heading' => 'Heading',
     ];
 
     private $_nodes = [];
@@ -153,11 +154,14 @@ class NodesService extends Component
         return $node;
     }
 
-    public function getChildrenByNode(NodeModel $node)
+    public function getChildrenByNode(NodeModel $node, $includeDisabled = true)
     {
         $data = [];
         $query = NodeRecord::find();
-        $query->where(['navId' => $node->navId, 'siteId' => $node->siteId, 'parent' => $node->id, 'enabled' => 1]);
+        $query->where(['navId' => $node->navId, 'siteId' => $node->siteId, 'parent' => $node->id]);
+        if (!$includeDisabled) {
+            $query->andWhere(['enabled' => 1]);
+        }
         $query->orderBy('order');
         foreach ($query->all() as $record) {
             $model = new NodeModel();
@@ -295,9 +299,12 @@ class NodesService extends Component
 
         if (!$save) {
             Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
+            return false;
         }
+
+        $node = $this->getNodeById($record->id);
         $this->_clearCacheForNav($node);
-        return $record;
+        return $node;
     }
 
     public function move(NodeModel $node, $parent, $previousId)

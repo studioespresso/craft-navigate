@@ -24,15 +24,18 @@
     instructions: 'Show or hide in navigation.'|t('navigate')
 }) }}
 
+{% if node.type != 'heading' %}
+
 {{ forms.lightswitchField({
     id:           'blank',
     name:         'blank',
     label:        'Open in a new window'|t('navigate'),
     on:           node.blank,
 }) }}
+{% endif %}
 
 {{ forms.textField({
-    id: 'lasses',
+    id: 'classes',
     name: 'classes',
     label: "Classes"|t('navigate'),
     instructions: "These css classes will be applied to this node's list item"|t('navigate'),
