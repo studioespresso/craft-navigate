@@ -20,9 +20,10 @@
 {% endmacro %}
 
 {% macro navChildren(node) %}
-    {% if node.children|length %}
+    {% set children = node.children %}
+    {% if children|length %}
         <ul>
-            {% for child in node.children %}
+            {% for child in children %}
                 {{ macros.renderNode(child) }}
             {% endfor %}
         </ul>
