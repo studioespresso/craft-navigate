@@ -1,6 +1,6 @@
 {% import "_includes/forms" as forms %}
 
-<script id="node__url" type="text/template">
+<script id="node__heading" type="text/template">
     <div class="body">
         <div class="field" id="node__url-name">
             <div class="heading">
@@ -10,19 +10,11 @@
                 <input class="text node-name fullwidth" type="text" id="name" autocomplete="off" autofocus="autofocus">
             </div>
         </div>
-        <div class="field" id="node__url-url">
-            <div class="heading">
-                <label class="required" for="url">{{ 'URL'|t('navigate') }}</label>
-            </div>
-            <div class="input ltr">
-                <input class="text node-url fullwidth" type="text" id="url" name="url" autocomplete="off">
-            </div>
-        </div>
 
         <div class="field" id="node__url-url">
             <div class="heading">
                 <label for="classes">{{ "Classes"|t('navigate') }}</label>
-                <div class="instructions"><p>{{ "These css classes will be applied to this node's list item"|t('navigate') }}</p>
+                <div class="instructions"><p>{{ "These css classes will be applied to this item"|t('navigate') }}</p>
                 </div>
             </div>
             <div class="input ltr">
