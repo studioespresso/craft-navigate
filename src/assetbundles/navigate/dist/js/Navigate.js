@@ -482,7 +482,7 @@
                             this.loading = true;
 
                             this.$spinner.show();
-                            this.structure.addNode(response.nodeData, 'url');
+                            this.structure.addNode(response.nodeData, 'heading');
                             this.$spinner.hide();
                             this.hide();
 
@@ -564,7 +564,7 @@
                     .replace(/%%url%%/ig, nodeType == 'url' ? data.url : '')
                     .replace(/%%elementType%%/ig, data.elementType ? data.elementType : '')
                     .replace(/%%type%%/ig, data.elementType ? data.elementType.toLowerCase() : "url")
-                    .replace(/%%typeLabel%%/ig, data.elementType ? data.elementType : "url")
+                    .replace(/%%typeLabel%%/ig, data.elementType ? data.elementType : nodeType)
 
                 $node = $(nodeHtml);
 
