@@ -1,6 +1,9 @@
 {% import _self as macros %}
 {% macro renderNode(node, classes) %}
     {% import _self as macros %}
+    {% if node.type == 'heading' %}
+        <h3>{{ node.name }}</h3>
+    {% else %}
     <li class="{% if node.classes|length %}{{ node.classes }}{% endif %}{% if classes.listClass is defined %}{{ classes.listClass }}{% endif %}">
         <a  href="{{ node.url }}"
             {% if classes.linkClass is defined or node.active %}
@@ -8,14 +11,22 @@
             {% endif %}
             {% if node.blank %}target="_blank" rel="noopener"{% endif %}
         >{{ node.name }}</a>
-        {% if node.children|length %}
-            <ul>
-                {% for child in node.children %}
-                    {{ macros.renderNode(child) }}
-                {% endfor %}
-            </ul>
-        {% endif %}
+        {{ macros.navChildren(node) }}
     </li>
+    {% endif %}
+    {% if node.type == 'heading' %}
+        {{ macros.navChildren(node) }}
+    {% endif %}
+{% endmacro %}
+
+{% macro navChildren(node) %}
+    {% if node.children|length %}
+        <ul>
+            {% for child in node.children %}
+                {{ macros.renderNode(child) }}
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endmacro %}
 
 <div {% if classes.wrapperClass is defined %}class="{{ classes.wrapperClass }}"{% endif %}>
@@ -25,3 +36,4 @@
         {% endfor %}
     </ul>
 </div>
+
