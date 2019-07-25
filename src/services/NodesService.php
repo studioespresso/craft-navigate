@@ -154,11 +154,14 @@ class NodesService extends Component
         return $node;
     }
 
-    public function getChildrenByNode(NodeModel $node)
+    public function getChildrenByNode(NodeModel $node, $includeDisabled = true)
     {
         $data = [];
         $query = NodeRecord::find();
-        $query->where(['navId' => $node->navId, 'siteId' => $node->siteId, 'parent' => $node->id, 'enabled' => 1]);
+        $query->where(['navId' => $node->navId, 'siteId' => $node->siteId, 'parent' => $node->id]);
+        if (!$includeDisabled) {
+            $query->andWhere(['enabled' => 1]);
+        }
         $query->orderBy('order');
         foreach ($query->all() as $record) {
             $model = new NodeModel();

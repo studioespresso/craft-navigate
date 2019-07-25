@@ -37,10 +37,11 @@
                 <span class="node__type--{{ node.type == 'element' ? node.elementType : node.type }}">{{ node.type == 'element' ? node.elementType : node.type }}</span>
             </div>
         </div>
-        {% if node.getChildren|length %}
+        {% set children = node.getChildren(true) %}
+        {% if children|length %}
             {% set level = level + 1 %}
             <ul>
-                {% for child in node.getChildren() %}
+                {% for child in children %}
                     {{ macros.renderNode(navigation, child, level) }}
                 {% endfor %}
             </ul>

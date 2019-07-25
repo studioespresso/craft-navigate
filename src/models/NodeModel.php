@@ -91,8 +91,8 @@ class NodeModel extends Model
     }
 
 
-    public function getChildren() {
-        return Navigate::$plugin->nodes->getChildrenByNode($this);
+    public function getChildren($includeDisabled = false) {
+        return Navigate::$plugin->nodes->getChildrenByNode($this, $includeDisabled);
     }
 
     public function active() {
