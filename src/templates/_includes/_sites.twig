@@ -2,15 +2,23 @@
     {% set thisSite = site %}
     <div id="revision-btn" class="btn menubtn" data-icon="world">{{ thisSite.name }}</div>
     <div class="menu">
-        <ul class="padded">
-            {% for site in craft.app.sites.getEditableSites %}
-                <li>
-                    <a href="/admin/navigate/edit/{{ navigation.id }}/{{ site.handle }}"
-                       {% if site.handle == thisSite.handle %}class="sel"{% endif %}>
-                        {{ site.name }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
+        {% set siteGroups = craft.app.sites.getAllGroups() %}
+        {% for group in siteGroups %}
+            {% set groupSiteIds = group.getSiteIds()|intersect(craft.app.sites.getEditableSiteIds()) %}
+            {% if groupSiteIds %}
+                <h6>{{ group.name }}</h6>
+                {% for siteId in groupSiteIds %}
+                    <ul class="padded">
+                    {% set groupSite = craft.app.sites.getSiteByID(siteId) %}
+                    <li>
+                        <a href="/admin/navigate/edit/{{ navigation.id }}/{{ groupSite.handle }}"
+                           {% if groupSite.handle == thisSite.handle %}class="sel"{% endif %}>
+                            {{ groupSite.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
     </div>
 {% endif %}
