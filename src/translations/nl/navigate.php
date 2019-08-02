@@ -51,7 +51,7 @@ return [
     'Move' => 'Verplaatsen',
     'Delete' => 'Verwijderen',
     'Remove' => 'Verwijderen',
-    'Use to buttons below to start adding items to your navigation' => 'Gebruik de knoppen hieronder om items toe te voegen aan je navigatie',
+    'Use the buttons below to start adding items to your navigation' => 'Gebruik de knoppen hieronder om items toe te voegen aan je navigatie',
     '%%id%%' => '%%id%%',
     '%%label%%' => '%%label%%',
     '%%status%%' => '%%status%%',
