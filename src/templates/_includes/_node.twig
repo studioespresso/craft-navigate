@@ -10,9 +10,10 @@
                     {% if node.type == 'element' and node.elementType == 'entry'  %}
                         {% set nodeEntry = craft.entries.id(node.elementId).one() %}
                         {% if nodeEntry|length %}
-                            <a href="{{ craft.entries.id(node.elementId).one().getCpEditUrl() }}" target="_blank">
+                            <a href="{{ nodeEntry.getCpEditUrl() }}" target="_blank">
                                 <span class="title">{{ node.name }}</span>
                             </a>
+                            <smal>{{ parse_url(nodeEntry.getUrl()).path }}</smal>
                         {% else %}
                             <span class="title">{{ node.name }}</span>
                         {% endif %}
