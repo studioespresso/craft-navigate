@@ -34,8 +34,17 @@ class NavigateExtension extends AbstractExtension
         ];
     }
 
-    public function parseUrl($url) {
-        return parse_url($url);
+    /**
+     * @param $url
+     * @param null $part
+     * @return mixed
+     */
+    public function parseUrl($url, $part = null) {
+        $url = parse_url($url);
+        if($part) {
+            return $url[$part];
+        }
+        return $url;
     }
 
 }
