@@ -54,7 +54,7 @@ class Navigate extends Plugin
 {
     // Public Properties
     // =========================================================================
-    public $schemaVersion = '0.0.1';
+    public $schemaVersion = '2.4.0';
 
     // Traits
     // =========================================================================

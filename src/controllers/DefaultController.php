@@ -100,7 +100,7 @@ class DefaultController extends Controller
                 'sources' => Navigate::$plugin->nodes->types,
             ]);
         } else {
-            Navigate::$plugin->navigate->saveNavigation($model);
+            Navigate::getInstance()->navigate->saveNavigation($model);
             return $this->redirectToPostedUrl();
 
         }
@@ -138,6 +138,7 @@ class DefaultController extends Controller
     {
         $data = [];
         $data['sources'] = Navigate::$plugin->nodes->types;
+        $data['groups'] = $this->getSiteGroups();
         if ($navId) {
             $data['navigation'] = Navigate::$plugin->navigate->getNavigationById($navId);
         }
@@ -155,5 +156,14 @@ class DefaultController extends Controller
             return $this->asJson($returnData);
         };
 
+    }
+
+    private function getSiteGroups() {
+        $data = [];
+        foreach(Craft::$app->getSites()->getAllGroups() as $group) {
+            $data[$group->id] = $group->name;
+        }
+
+        return $data;
     }
 }

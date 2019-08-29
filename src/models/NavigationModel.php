@@ -51,6 +51,8 @@ class NavigationModel extends Model
 
     public $adminOnly;
 
+    public $enabledSiteGroups;
+
     public $dateCreated;
 
     public $dateUpdated;
@@ -75,7 +77,7 @@ class NavigationModel extends Model
     public function rules()
     {
         return [
-            [['title', 'handle', 'allowedSources'], 'required'],
+            [['title', 'handle', 'allowedSources', 'enabledSiteGroups'], 'required'],
             [['title', 'handle', 'allowedSources', 'levels', 'adminOnly'], 'safe'],
             ['handle', 'validateHandle'],
         ];

@@ -76,6 +76,17 @@
                 new Craft.HandleGenerator('#title', '#handle');
             {% endjs %}
         {% endif %}
+
+        {{ forms.checkboxSelectField({
+            label: 'Enable this navigation for these site groups'|t('navigate'),
+            instructions: '',
+            id: 'enabledSiteGroups',
+            name: 'data[enabledSiteGroups]',
+            options: groups,
+            values: (navigation.enabledSiteGroups ?? '*'),
+            showAllOption: true,
+        }) }}
+
         {{ forms.checkboxSelectField({
             label: 'Available Sources'|t('navigate'),
             instructions: 'Select the types of links would you like to be available in this navigation'|t('navigate'),
