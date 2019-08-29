@@ -13,7 +13,9 @@
                             <a href="{{ nodeEntry.getCpEditUrl() }}" target="_blank">
                                 <span class="title">{{ node.name }}</span>
                             </a>
-                            <smal>{{ parse_url(nodeEntry.getUrl()).path }}</smal>
+                            {% if nodeEntry.getUrl() %}
+                            <small>{{ parse_url(nodeEntry.getUrl(), 'path') }}</small>
+                            {% endif %}
                         {% else %}
                             <span class="title">{{ node.name }}</span>
                         {% endif %}
@@ -23,11 +25,15 @@
                             <a href="{{ nodeCategory.getCpEditUrl() }}" target="_blank">
                                 <span class="title">{{ node.name }}</span>
                             </a>
+                            {% if nodeCategory.getUrl() %}
+                            <small>{{ parse_url(nodeCategory.getUrl(), 'path') }}</small>
+                            {% endif %}
                         {% else %}
                             <span class="title">{{ node.name }}</span>
                         {% endif %}
                     {% else %}
                         <span class="title settings" data-id="{{ node.id }}">{{ node.name }}</span>
+                        <small>{{ node.url }}</small>
                     {% endif %}
                 </div>
             </div>
