@@ -16,6 +16,7 @@ use craft\models\Site;
 use craft\web\Controller;
 use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\Navigate;
+use yii\web\NotFoundHttpException;
 
 /**
  * Default Controller
@@ -53,7 +54,7 @@ class DefaultController extends Controller
     {
         $data = [];
         $data['settings'] = Navigate::$plugin->getSettings();
-        $data['navigations'] = Navigate::$plugin->navigate->getAllNavigations();
+        $data['navigations'] = Navigate::$plugin->navigate->getAllNavigationForUser();
         return $this->renderTemplate('navigate/_index', $data);
     }
 
@@ -92,6 +93,9 @@ class DefaultController extends Controller
             $navigation = Navigate::getInstance()->navigate->getNavigationById($navId);
             $sites = $this->getEditAbleSites($navigation);
             $firstSite = reset($sites);
+            if(!$firstSite) {
+                throw new NotFoundHttpException('Navigation not found', 404);
+            }
             $this->redirect("navigate/edit/{$navId}/{$firstSite->handle}");
         }
         if ($navId && $siteHandle) {

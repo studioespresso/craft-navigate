@@ -44,6 +44,33 @@ class NavigateService extends Component
         return NavigationRecord::find()->all();
     }
 
+    public function getAllNavigationForUser() {
+        $allNavigations = NavigationRecord::find()->all();
+        $currentUser = Craft::$app->getUser()->getIdentity();
+        $navs = array_filter($allNavigations, function ($nav) use($currentUser) {
+            if($nav->enabledSiteGroups === '*') {
+                return true;
+            } else {
+                $groups = json_decode($nav->enabledSiteGroups);
+                $permissionsForGroup = false;
+                foreach($groups as $group) {
+                    $sites = Craft::$app->getSites()->getSitesByGroupId($group);
+                    foreach($sites as $site) {
+                        if($currentUser->can("editSite:{$site->uid}")) {
+                            $permissionsForGroup = true;
+                        }
+                    }
+                }
+                if($permissionsForGroup) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        return $navs;
+    }
+
+
     /**
      * @param $id
      * @return NavigationModel
