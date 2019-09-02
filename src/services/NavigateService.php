@@ -44,6 +44,10 @@ class NavigateService extends Component
         return NavigationRecord::find()->all();
     }
 
+    /**
+     * @param $id
+     * @return NavigationModel
+     */
     public function getNavigationById($id)
     {
         $record = NavigationRecord::findOne([
@@ -182,7 +186,7 @@ class NavigateService extends Component
         $navs = NavigationRecord::find();
         $data = [];
         /** @var NavigationRecord $nav */
-        foreach($navs->all() as $nav) {
+        foreach ($navs->all() as $nav) {
             $data[$nav->uid] = [
                 'title' => $nav->title,
                 'handle' => $nav->handle,
@@ -194,4 +198,5 @@ class NavigateService extends Component
         }
         return ['nav' => $data];
     }
+
 }
