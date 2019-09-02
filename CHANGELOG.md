@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 2.4.0 - Unreleased
+## 2.4.0 - 2019-09-02
 ### Added
 - Node urls are now displayed on the overview to better differentiate between entries with the same name ([#34](https://github.com/studioespresso/craft3-navigate/issues/34)). 
+- Navigations now be enabled/disabled per sitegroup for a better multsite author experience
+
+### Improved
+- The sitegroup is now also listed in the sites dropdown
 
 ## 2.3.0 - 2019-07-25
 ### Added

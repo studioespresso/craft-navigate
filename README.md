@@ -1,7 +1,5 @@
 # Navigate for Craft CMS 3.x
 
-![Screenshot](https://www.studioespresso.co/resources/navigate/banner.png)
-
 ## Requirements
 
 This plugin requires Craft CMS 3.1.0 or later.
