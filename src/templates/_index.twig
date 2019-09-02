@@ -48,7 +48,7 @@
             {% for navigation in navigations %}
                 <tr data-id="{{ navigation.id }}" data-name="{{ navigation.title }}">
                     <th scope="row" data-title="Title"><a
-                                href="{{ url('navigate/edit/'~navigation.id ~ '/' ~ defaultSite.handle) }}">{{ navigation.title }}</a>
+                                href="{{ url('navigate/edit/'~navigation.id) }}">{{ navigation.title }}</a>
                     </th>
                     <td data-title="Handle"><code>{{ navigation.handle }}</code></td>
                     <td data-title="Settings">

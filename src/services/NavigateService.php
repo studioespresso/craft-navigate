@@ -44,6 +44,37 @@ class NavigateService extends Component
         return NavigationRecord::find()->all();
     }
 
+    public function getAllNavigationForUser() {
+        $allNavigations = NavigationRecord::find()->all();
+        $currentUser = Craft::$app->getUser()->getIdentity();
+        $navs = array_filter($allNavigations, function ($nav) use($currentUser) {
+            if($nav->enabledSiteGroups === '*') {
+                return true;
+            } else {
+                $groups = json_decode($nav->enabledSiteGroups);
+                $permissionsForGroup = false;
+                foreach($groups as $group) {
+                    $sites = Craft::$app->getSites()->getSitesByGroupId($group);
+                    foreach($sites as $site) {
+                        if($currentUser->can("editSite:{$site->uid}")) {
+                            $permissionsForGroup = true;
+                        }
+                    }
+                }
+                if($permissionsForGroup) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        return $navs;
+    }
+
+
+    /**
+     * @param $id
+     * @return NavigationModel
+     */
     public function getNavigationById($id)
     {
         $record = NavigationRecord::findOne([
@@ -125,6 +156,7 @@ class NavigateService extends Component
         $record->levels = $event->newValue['levels'];
         $record->adminOnly = $event->newValue['adminOnly'];
         $record->allowedSources = $event->newValue['allowSources'];
+        $record->enabledSiteGroups = $event->newValue['enabledSiteGroups'];
 
         if (!$record->save()) {
             Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
@@ -148,9 +180,9 @@ class NavigateService extends Component
         $record->title = $model->title;
         $record->handle = $model->handle;
         $record->levels = $model->levels;
+        $record->enabledSiteGroups = $model->enabledSiteGroups;
         $record->adminOnly = $model->adminOnly ? 1 : 0;
         $record->allowedSources = $model->allowedSources;
-
         if (!$record->validate()) {
             return false;
         }
@@ -161,7 +193,8 @@ class NavigateService extends Component
             'handle' => $record->handle,
             'levels' => $record->levels,
             'adminOnly' => $record->adminOnly,
-            'allowSources' => $record->allowedSources
+            'allowSources' => $record->allowedSources,
+            'enabledSiteGroups' => $record->enabledSiteGroups
         ]);
 
         return true;
@@ -180,15 +213,17 @@ class NavigateService extends Component
         $navs = NavigationRecord::find();
         $data = [];
         /** @var NavigationRecord $nav */
-        foreach($navs->all() as $nav) {
+        foreach ($navs->all() as $nav) {
             $data[$nav->uid] = [
                 'title' => $nav->title,
                 'handle' => $nav->handle,
                 'levels' => $nav->levels,
                 'adminOnly' => $nav->adminOnly,
-                'allowSources' => $nav->allowedSources
+                'allowSources' => $nav->allowedSources,
+                'enabledSiteGroups' => $nav->enabledSiteGroups
             ];
         }
         return ['nav' => $data];
     }
+
 }

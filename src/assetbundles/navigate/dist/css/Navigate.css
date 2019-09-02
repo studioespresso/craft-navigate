@@ -93,6 +93,11 @@ body.ltr .structure li {
     position: relative;
 }
 
+.node__node .label small {
+    color: #999;
+    font-size: 0.7rem;
+}
+
 /* Add padding to the editor hud */
 .hud .elementeditor .fields {
     padding: 24px;

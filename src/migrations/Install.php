@@ -110,6 +110,7 @@ class Install extends Migration
                     'id' => $this->primaryKey(),
                     'title' => $this->string(255)->notNull()->defaultValue(''),
                     'allowedSources' => $this->text(),
+                    'enabledSiteGroups' => $this->text(),
                     'levels' => $this->integer(1)->defaultValue(1),
                     'adminOnly' => $this->boolean()->defaultValue(false),
                     'handle' => $this->string(255)->notNull()->defaultValue(''),

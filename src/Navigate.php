@@ -23,6 +23,7 @@ use craft\utilities\ClearCaches;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use studioespresso\navigate\base\PluginTrait;
+use studioespresso\navigate\extensions\NavigateExtension;
 use studioespresso\navigate\models\Settings;
 use studioespresso\navigate\records\NodeRecord;
 use studioespresso\navigate\services\NavigateService;
@@ -53,7 +54,7 @@ class Navigate extends Plugin
 {
     // Public Properties
     // =========================================================================
-    public $schemaVersion = '0.0.1';
+    public $schemaVersion = '2.4.0';
 
     // Traits
     // =========================================================================
@@ -72,6 +73,12 @@ class Navigate extends Plugin
             "navigate" => NavigateService::class,
             "nodes" => NodesService::class
         ]);
+
+        if (Craft::$app->request->getIsCpRequest()) {
+            // Add in our Twig extension
+            $navigateExtension = new NavigateExtension();
+            Craft::$app->view->registerTwigExtension($navigateExtension);
+        }
 
         $this->_projectConfig();
         $this->_registerRoutes();
