@@ -1,8 +1,15 @@
-{% if craft.app.sites.getEditableSites()|length > 1 %}
+{% if sites|length > 1 %}
     {% set thisSite = site %}
     <div id="revision-btn" class="btn menubtn" data-icon="world">{{ thisSite.name }}</div>
     <div class="menu">
-        {% set siteGroups = craft.app.sites.getAllGroups() %}
+        {% if navigation.enabledSiteGroups == '*' %}
+            {% set siteGroups = craft.app.sites.getAllGroups() %}
+        {% else %}
+            {% set siteGroups = [] %}
+            {% for group in craft.app.sites.getAllGroups() if group.id in navigation.enabledSiteGroups|json_decode %}
+                {% set siteGroups = siteGroups|merge(siteGroups) %}
+            {% endfor %}
+        {% endif %}
         {% for group in siteGroups %}
             {% set groupSiteIds = group.getSiteIds()|intersect(craft.app.sites.getEditableSiteIds()) %}
             {% if groupSiteIds %}
