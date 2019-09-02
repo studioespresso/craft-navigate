@@ -160,7 +160,7 @@ class DefaultController extends Controller
 
     private function getEditAbleSites(NavigationModel $navigationModel)
     {
-        if($navigationModel->enabledSiteGroups != '*') {
+        if($navigationModel->enabledSiteGroups != '*' && $navigationModel->enabledSiteGroups != null) {
             $enabledForSiteGroups = json_decode($navigationModel->enabledSiteGroups);
             $enabledForSites = [];
             foreach($enabledForSiteGroups as $groupId) {
