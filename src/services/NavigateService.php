@@ -48,7 +48,7 @@ class NavigateService extends Component
         $allNavigations = NavigationRecord::find()->all();
         $currentUser = Craft::$app->getUser()->getIdentity();
         $navs = array_filter($allNavigations, function ($nav) use($currentUser) {
-            if($nav->enabledSiteGroups === '*') {
+            if($nav->enabledSiteGroups === '*' || $nav->enabledSiteGroups === null) {
                 return true;
             } else {
                 $groups = json_decode($nav->enabledSiteGroups);

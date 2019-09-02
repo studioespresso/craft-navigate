@@ -2,7 +2,7 @@
     {% set thisSite = site %}
     <div id="revision-btn" class="btn menubtn" data-icon="world">{{ thisSite.name }}</div>
     <div class="menu">
-        {% if navigation.enabledSiteGroups == '*' %}
+        {% if navigation.enabledSiteGroups == '*' or not navigation.enabledSiteGroups %}
             {% set siteGroups = craft.app.sites.getAllGroups() %}
         {% else %}
             {% set siteGroups = [] %}
