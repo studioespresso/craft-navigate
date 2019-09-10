@@ -169,14 +169,19 @@ class DefaultController extends Controller
         } else {
             $enabledForSites = Craft::$app->getSites()->getAllSites();
         }
-
         $currentUser = Craft::$app->getUser()->getIdentity();
-        $editableSites = array_filter($enabledForSites, function($site) use ($currentUser) {
-           if($currentUser->can("editSite:{$site->uid}")) {
-               return true;
-           }
-           return false;
-        });
+        if(count($enabledForSites) > 1) {
+            $editableSites = array_filter($enabledForSites, function($site) use ($currentUser) {
+                if($currentUser->can("editSite:{$site->uid}")) {
+                    return true;
+                }
+                return false;
+            });
+        } else {
+            if($currentUser->can('accessPlugin-navigate')) {
+                $editableSites = Craft::$app->getSites()->getAllSites();
+            }
+        }
 
         return $editableSites;
     }
