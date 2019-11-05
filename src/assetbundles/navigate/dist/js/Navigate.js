@@ -81,7 +81,7 @@
                             enabledForSite: null,
                             siteId: this.site
                         },
-                        showSiteMenu: false,
+                        showSiteMenu: true,
                         sources: elementSources,
                         multiSelect: true,
                         onSelect: $.proxy(this, 'onModalSelect')
