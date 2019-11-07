@@ -77,10 +77,7 @@
                     return $modal;
                 } else {
                     return Craft.createElementSelectorModal(elementType, {
-                        criteria: {
-                            enabledForSite: null,
-                            siteId: this.site
-                        },
+                        criteria: {},
                         showSiteMenu: true,
                         sources: elementSources,
                         multiSelect: true,
