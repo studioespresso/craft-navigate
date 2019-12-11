@@ -86,23 +86,37 @@ class NodeModel extends Model
     {
         return [
             [['type', 'navId', 'siteId', 'name'], 'required'],
-            [[ 'id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type', 'url', 'slug','siteId', 'order', 'parent', 'blank', 'classes', 'children'], 'safe'],
+            [['id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type', 'url', 'slug', 'siteId', 'order', 'parent', 'blank', 'classes', 'children'], 'safe'],
         ];
     }
 
 
-    public function getChildren($includeDisabled = false) {
+    public function getChildren($includeDisabled = false)
+    {
         return Navigate::$plugin->nodes->getChildrenByNode($this, $includeDisabled);
     }
 
-    public function active() {
-        if($this->url === Craft::$app->request->getAbsoluteUrl()) {
-            return true;
-        }
-        if(substr(Craft::$app->request->getPathInfo(), 0, strlen($this->slug)) === $this->slug) {
-            return true;
-        }
+    public function active()
+    {
+        switch ($this->type) {
+            case 'url':
+                if (substr(Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
+                    return true;
+                }
+                if (substr("/". Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
+                    return true;
+                }
 
+                break;
+            default:
+                if ($this->url === Craft::$app->request->getAbsoluteUrl()) {
+                    return true;
+                }
+                if (substr(Craft::$app->request->getPathInfo(), 0, strlen($this->slug)) === $this->slug) {
+                    return true;
+                }
+                break;
+        }
         return false;
     }
 }
