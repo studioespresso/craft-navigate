@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.4.4 - 2019-12-11
+### Added
+- The entries select modal now also show a sites menu you you can link entries from other sites ([#35](https://github.com/studioespresso/craft3-navigate/issues/35))
+
+### Fixed
+- Fixed the active state check for url type nodes ([#36](https://github.com/studioespresso/craft3-navigate/issues/36))
+
 ## 2.4.3 - 2019-09-10
 ### Fixed
 - Fixed an issues with navigation persmissions for installs with only 1 site
