@@ -137,8 +137,14 @@ class NodesService extends Component
             }
 
             if ($element && $element->enabled) {
-                d($element->getUrl());
-                $node->url = $element->getUrl();
+                if(Craft::$app->getRequest()->token) {
+                    $url = parse_url($element->getUrl());
+                    unset($url['query']);
+                    $url = $url['scheme']."://".$url['host'].$url['path'];
+                    $node->url = $url;
+                } else {
+                    $node->url = $element->getUrl();
+                }
                 $node->slug = $element->uri;
                 $this->_elements[$node->siteId][$node->elementId] = $element;
             } else {
