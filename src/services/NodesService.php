@@ -81,16 +81,22 @@ class NodesService extends Component
             ]
         ]);
 
-        $nodes = Craft::$app->getCache()->getOrSet(
-            self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $site,
-            function () use ($nav, $site) {
-                $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
-                $nodes = $this->parseNodesForRender($nodes, $nav);
-                return $nodes;
-            },
-            null,
-            $cacheTags
-        );
+        if (Craft::$app->getConfig()->getGeneral()->devMode) {
+            $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
+            $nodes = $this->parseNodesForRender($nodes, $nav);
+            return $nodes;
+        } else {
+            $nodes = Craft::$app->getCache()->getOrSet(
+                self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $site,
+                function () use ($nav, $site) {
+                    $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
+                    $nodes = $this->parseNodesForRender($nodes, $nav);
+                    return $nodes;
+                },
+                 0,
+                $cacheTags
+            );
+        }
 
         Craft::endProfile('getNodesForRender', __METHOD__);
         return $nodes;
@@ -131,7 +137,14 @@ class NodesService extends Component
             }
 
             if ($element && $element->enabled) {
-                $node->url = $element->getUrl();
+                if(Craft::$app->getRequest()->token) {
+                    $url = parse_url($element->getUrl());
+                    unset($url['query']);
+                    $url = $url['scheme']."://".$url['host'].$url['path'];
+                    $node->url = $url;
+                } else {
+                    $node->url = $element->getUrl();
+                }
                 $node->slug = $element->uri;
                 $this->_elements[$node->siteId][$node->elementId] = $element;
             } else {
