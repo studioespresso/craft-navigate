@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.5.0 - Unreleased
+### Fixed
+- Navigations are not cached when ``devMode`` is on.
+- Urls with ``token`` params are not cached ([#38](https://github.com/studioespresso/craft3-navigate/issues/38))
+- Nodes are linked based on their site id in the CP ([#40](https://github.com/studioespresso/craft3-navigate/issues/35))
+
+
 ## 2.4.4 - 2019-12-11
 ### Added
 - The entries select modal now also show a sites menu you you can link entries from other sites ([#35](https://github.com/studioespresso/craft3-navigate/issues/35))
