@@ -1,4 +1,4 @@
-{% macro renderNode(navigation, node, level) %}
+{% macro renderNode(navigation, node, level, site) %}
     {% import _self as macros %}
     {% set indent = 8 + (level - 1) * 35 %}
     <li data-level="{{ level }}">
@@ -8,7 +8,7 @@
                     <span class="node__id visuallyhidden"><strong>{{ node.id }}</strong></span>
                     <span class="status {{ node.enabled ? 'on': 'off' }}"></span>
                     {% if node.type == 'element' and node.elementType == 'entry'  %}
-                        {% set nodeEntry = craft.entries.id(node.elementId).one() %}
+                        {% set nodeEntry = craft.entries.siteId(site.id).id(node.elementId).one() %}
                         {% if nodeEntry|length %}
                             <a href="{{ nodeEntry.getCpEditUrl() }}" target="_blank">
                                 <span class="title">{{ node.name }}</span>
