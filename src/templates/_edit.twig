@@ -52,7 +52,7 @@
             <ul id="navigate__nav" class="navigate__nav structure">
                 {% set level = 1 %}
                 {% for node in nodes %}
-                    {{ macro.renderNode(navigation, node, level) }}
+                    {{ macro.renderNode(navigation, node, level, site) }}
                 {% endfor %}
             </ul>
         </div>

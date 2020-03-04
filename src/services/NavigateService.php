@@ -15,7 +15,6 @@ use craft\base\Component;
 use craft\events\ConfigEvent;
 use craft\helpers\StringHelper;
 use studioespresso\navigate\models\NavigationModel;
-use studioespresso\navigate\Navigate;
 use studioespresso\navigate\records\NavigationRecord;
 use yii\bootstrap\Nav;
 use yii\caching\TagDependency;
@@ -44,24 +43,25 @@ class NavigateService extends Component
         return NavigationRecord::find()->all();
     }
 
-    public function getAllNavigationForUser() {
+    public function getAllNavigationForUser()
+    {
         $allNavigations = NavigationRecord::find()->all();
         $currentUser = Craft::$app->getUser()->getIdentity();
-        $navs = array_filter($allNavigations, function ($nav) use($currentUser) {
-            if($nav->enabledSiteGroups === '*' || $nav->enabledSiteGroups === null) {
+        $navs = array_filter($allNavigations, function ($nav) use ($currentUser) {
+            if ($nav->enabledSiteGroups === '*' || $nav->enabledSiteGroups === null) {
                 return true;
             } else {
                 $groups = json_decode($nav->enabledSiteGroups);
                 $permissionsForGroup = false;
-                foreach($groups as $group) {
+                foreach ($groups as $group) {
                     $sites = Craft::$app->getSites()->getSitesByGroupId($group);
-                    foreach($sites as $site) {
-                        if($currentUser->can("editSite:{$site->uid}")) {
+                    foreach ($sites as $site) {
+                        if ($currentUser->can("editSite:{$site->uid}")) {
                             $permissionsForGroup = true;
                         }
                     }
                 }
-                if($permissionsForGroup) {
+                if ($permissionsForGroup) {
                     return true;
                 }
                 return false;
@@ -90,24 +90,29 @@ class NavigateService extends Component
                 'handle' => $handle
             ]);
         } else {
-            $cacheTags = new TagDependency([
-                'tags' => [
-                    self::NAVIGATE_CACHE,
-                    self::NAVIGATE_CACHE_NAV,
-                    self::NAVIGATE_CACHE_NAV . '_' . $handle
-                ]
-            ]);
+            if (Craft::$app->getConfig()->getGeneral()->devMode) {
+                return NavigationRecord::findOne([
+                    'handle' => $handle
+                ]);
+            } else {
+                $cacheTags = new TagDependency([
+                    'tags' => [
+                        self::NAVIGATE_CACHE,
+                        self::NAVIGATE_CACHE_NAV,
+                        self::NAVIGATE_CACHE_NAV . '_' . $handle
+                    ]]);
 
-            $nav = Craft::$app->getCache()->getOrSet(
-                self::NAVIGATE_CACHE_NAV . '_' . $handle,
-                function () use ($handle) {
-                    return NavigationRecord::findOne([
-                        'handle' => $handle
-                    ]);
-                },
-                null,
-                $cacheTags
-            );
+                $nav = Craft::$app->getCache()->getOrSet(
+                    self::NAVIGATE_CACHE_NAV . '_' . $handle,
+                    function () use ($handle) {
+                        return NavigationRecord::findOne([
+                            'handle' => $handle
+                        ]);
+                    },
+                    null,
+                    $cacheTags
+                );
+            }
 
         }
         return $nav;
