@@ -12,11 +12,13 @@ namespace studioespresso\navigate;
 
 use Craft;
 use craft\base\Plugin;
+use craft\events\DeleteElementEvent;
 use craft\events\ElementEvent;
 use craft\events\RebuildConfigEvent;
 use craft\events\RegisterCacheOptionsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
+use craft\helpers\ElementHelper;
 use craft\log\FileTarget;
 use craft\services\Elements;
 use craft\services\Fields;
@@ -87,8 +89,8 @@ class Navigate extends Plugin
         $this->_registerRoutes();
         $this->_registerVariables();
         $this->_registerCacheOptions();
+        $this->_registerField();
         $this->_elementListeners();
-
     }
 
     private function _projectConfig()
@@ -98,7 +100,7 @@ class Navigate extends Plugin
             ->onUpdate('navigate.nav.{uid}', [$this->navigate, 'handleAddNavigation'])
             ->onRemove('navigate.nav.{uid}', [$this->navigate, 'handleRemoveNavigation']);
 
-        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $event) {
+        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function (RebuildConfigEvent $event) {
             $event->config['navigate'] = Navigate::getInstance()->navigate->rebuildProjectConfig();
         });
     }
@@ -211,12 +213,16 @@ class Navigate extends Plugin
             }
         );
     }
+
     private function _elementListeners()
     {
         Event::on(
             Elements::class,
             Elements::EVENT_AFTER_SAVE_ELEMENT,
             function (ElementEvent $event) {
+                if (ElementHelper::isDraftOrRevision($event->element)) {
+                    return;
+                };
                 if ($event->element->id) {
                     $query = NodeRecord::find();
                     $query->where(['elementId' => $event->element->id]);
@@ -231,6 +237,9 @@ class Navigate extends Plugin
             Elements::class,
             Elements::EVENT_AFTER_DELETE_ELEMENT,
             function (ElementEvent $event) {
+                if (ElementHelper::isDraftOrRevision($event->element)) {
+                    return;
+                };
                 if ($event->element->id) {
                     $query = NodeRecord::find();
                     $query->where(['elementId' => $event->element->id]);
@@ -240,6 +249,18 @@ class Navigate extends Plugin
                 }
             }
         );
+
+//        Event::on(
+//            Elements::class,
+//            Elements::EVENT_BEFORE_DELETE_ELEMENT,
+//            function(DeleteElementEvent $event) {
+//                if($event->hardDelete) {
+//
+//                } else {
+//
+//                }
+//            }
+//        );
     }
 
 }
