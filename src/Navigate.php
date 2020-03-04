@@ -15,15 +15,18 @@ use craft\base\Plugin;
 use craft\events\ElementEvent;
 use craft\events\RebuildConfigEvent;
 use craft\events\RegisterCacheOptionsEvent;
+use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\log\FileTarget;
 use craft\services\Elements;
+use craft\services\Fields;
 use craft\services\ProjectConfig;
 use craft\utilities\ClearCaches;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use studioespresso\navigate\base\PluginTrait;
 use studioespresso\navigate\extensions\NavigateExtension;
+use studioespresso\navigate\fields\NavigateField;
 use studioespresso\navigate\models\Settings;
 use studioespresso\navigate\records\NodeRecord;
 use studioespresso\navigate\services\NavigateService;
@@ -198,6 +201,16 @@ class Navigate extends Plugin
         );
     }
 
+    private function _registerField()
+    {
+        Event::on(
+            Fields::class,
+            Fields::EVENT_REGISTER_FIELD_TYPES,
+            function (RegisterComponentTypesEvent $event) {
+                $event->types[] = NavigateField::class;
+            }
+        );
+    }
     private function _elementListeners()
     {
         Event::on(
