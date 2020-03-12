@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.5.1 - 2020-03-12
+### Fixed
+- Fixed an issue that causes navigations with multilple levels to crash in the CP ([#42](https://github.com/studioespresso/craft3-navigate/issues/42))
+
+
 ## 2.5.0 - 2020-03-04
 ### Added
 - Added a 'Navigation' field that lists all navigations, so you can customize navigations per entry when needed ([#41](https://github.com/studioespresso/craft3-navigate/issues/41))
