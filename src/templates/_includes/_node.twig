@@ -49,7 +49,7 @@
             {% set level = level + 1 %}
             <ul>
                 {% for child in children %}
-                    {{ macros.renderNode(navigation, child, level) }}
+                    {{ macros.renderNode(navigation, child, level, site) }}
                 {% endfor %}
             </ul>
         {% endif %}
