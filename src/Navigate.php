@@ -220,7 +220,7 @@ class Navigate extends Plugin
             Elements::class,
             Elements::EVENT_AFTER_SAVE_ELEMENT,
             function (ElementEvent $event) {
-                if (!in_array(substr(Craft::$app->getVersion(), 0, 4), ['3.0.', '3.1.'])) {
+                if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
                     if (ElementHelper::isDraftOrRevision($event->element)) {
                         return;
                     };
@@ -239,7 +239,7 @@ class Navigate extends Plugin
             Elements::class,
             Elements::EVENT_AFTER_DELETE_ELEMENT,
             function (ElementEvent $event) {
-                if (!in_array(substr(Craft::$app->getVersion(), 0, 4), ['3.0.', '3.1.'])) {
+                if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
                     if (ElementHelper::isDraftOrRevision($event->element)) {
                         return;
                     };
