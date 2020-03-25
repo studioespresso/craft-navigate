@@ -220,8 +220,10 @@ class Navigate extends Plugin
             Elements::class,
             Elements::EVENT_AFTER_SAVE_ELEMENT,
             function (ElementEvent $event) {
-                if (ElementHelper::isDraftOrRevision($event->element)) {
-                    return;
+                if (!in_array(substr(Craft::$app->getVersion(), 0, 4), ['3.0.', '3.1.'])) {
+                    if (ElementHelper::isDraftOrRevision($event->element)) {
+                        return;
+                    };
                 };
                 if ($event->element->id) {
                     $query = NodeRecord::find();
@@ -237,8 +239,10 @@ class Navigate extends Plugin
             Elements::class,
             Elements::EVENT_AFTER_DELETE_ELEMENT,
             function (ElementEvent $event) {
-                if (ElementHelper::isDraftOrRevision($event->element)) {
-                    return;
+                if (!in_array(substr(Craft::$app->getVersion(), 0, 4), ['3.0.', '3.1.'])) {
+                    if (ElementHelper::isDraftOrRevision($event->element)) {
+                        return;
+                    };
                 };
                 if ($event->element->id) {
                     $query = NodeRecord::find();
