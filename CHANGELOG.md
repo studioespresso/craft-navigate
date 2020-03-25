@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.5.2 - 2020-03-25
+### Fixed
+- Fixed an installation issue for Postgresql users ([#44](https://github.com/studioespresso/craft3-navigate/issues/44))
+- Fixed a crash on installs that run Craft versions before 3.2 ([#45](https://github.com/studioespresso/craft3-navigate/pull/45))
+
 ## 2.5.1 - 2020-03-12
 ### Fixed
 - Fixed an issue that causes navigations with multilple levels to crash in the CP ([#42](https://github.com/studioespresso/craft3-navigate/issues/42))
