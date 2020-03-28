@@ -29,6 +29,12 @@ class NavigateVariable
 {
     // Public Methods
     // =========================================================================
+    /**
+     * @param $navHandle
+     * @param null $siteId since 2.6.0
+     * @return mixed
+     * @throws \craft\errors\SiteNotFoundException
+     */
     public function raw($navHandle, $siteId = null)
     {
         if($siteId) {
@@ -39,10 +45,18 @@ class NavigateVariable
         } else {
             $siteId = Craft::$app->sites->getCurrentSite()->id;
         }
-        $nodes = Navigate::$plugin->nodes->getNodesForRender($navHandle, $siteId);
-        return $nodes;
+        return Navigate::$plugin->nodes->getNodesForRender($navHandle, $siteId);
     }
 
+    /**
+     * @param $navHandle
+     * @param array $options
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \craft\errors\SiteNotFoundException
+     * @throws \yii\base\Exception
+     */
     public function render($navHandle, array $options = [])
     {
         $nodes = $this->raw($navHandle);
@@ -50,7 +64,6 @@ class NavigateVariable
         Craft::$app->view->setTemplateMode('cp');
         $template = Craft::$app->view->renderTemplate('navigate/_render/_nav', ['nodes' => $nodes, 'classes' => $options ] );
         echo $template;
-
     }
 
 }

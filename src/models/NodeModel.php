@@ -92,6 +92,7 @@ class NodeModel extends Model
 
     /**
      * Added to make migrating from amNav easier
+     * @since 2.6.0
      * @return mixed
      * @throws \craft\errors\DeprecationException
      */
@@ -103,6 +104,7 @@ class NodeModel extends Model
 
     /**
      * Added to make migrating from amNav easier
+     * @since 2.6.0
      * @return mixed
      * @throws \craft\errors\DeprecationException
      */
