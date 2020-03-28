@@ -90,6 +90,28 @@ class NodeModel extends Model
         ];
     }
 
+    /**
+     * Added to make migrating from amNav easier
+     * @since 2.6.0
+     * @return mixed
+     * @throws \craft\errors\DeprecationException
+     */
+    public function listClass() {
+        Craft::$app->getDeprecator()->log(__CLASS__ . '_listClass', "The 'listClass' method has been renamed to 'classes'.");
+        return $this->classes;
+    }
+
+
+    /**
+     * Added to make migrating from amNav easier
+     * @since 2.6.0
+     * @return mixed
+     * @throws \craft\errors\DeprecationException
+     */
+    public function hasChildren() {
+        Craft::$app->getDeprecator()->log(__CLASS__ . '_hasChildren', "The 'hasChildren' method has been renamed to 'children'.");
+        return $this->children;
+    }
 
     public function getChildren($includeDisabled = false)
     {
