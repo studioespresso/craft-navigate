@@ -170,7 +170,7 @@ class DefaultController extends Controller
             $enabledForSites = Craft::$app->getSites()->getAllSites();
         }
         $currentUser = Craft::$app->getUser()->getIdentity();
-        if(count($enabledForSites) > 1) {
+        if(count($enabledForSites)) {
             $editableSites = array_filter($enabledForSites, function($site) use ($currentUser) {
                 if($currentUser->can("editSite:{$site->uid}")) {
                     return true;

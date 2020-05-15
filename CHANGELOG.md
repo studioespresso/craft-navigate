@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## 2.6.1 - 2020-05-15
+### Fixed
+- Fixed a small issue with the editable sites redirect when only 1 site was enabled
+
 ## 2.6.0 - 2020-03-28
 ### Added
 - ``navigate.getRaw`` now has the option to take a siteId as a second optional argument ([#47](https://github.com/studioespresso/craft3-navigate/issues/47))
