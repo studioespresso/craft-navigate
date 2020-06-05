@@ -28,7 +28,7 @@ For each node you will have access to:
 	{{ node.name }}
 	{{ node.url }}
 	{{ node.classes }}
-	{{ node.target }}
+	{{ node.blank }}
 	{{ node.children }}
 {% endfor %} 
 ```
