@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
+
+## 2.6.2 - 2020-06-25
+### Fixed
+- More persmission fixes for sites with 1 navigation 
+
 ## 2.6.1 - 2020-05-15
 ### Fixed
 - Fixed a small issue with the editable sites redirect when only 1 site was enabled
