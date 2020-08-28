@@ -85,5 +85,12 @@ Since 2.3.0, headings can be added to make it easier to build larger navigations
 
 These only work on multiple levels (eg: 3 headings on the top level, each with navigation items on deeper levels). 
 
+## Configuration
+
+### Disabling caching
+Out of the box, the plugin will cache the querries it makes when ``devMode`` is not enabled. 
+
+If you want to disable caching within the plugin entirely, you can do so by setting ``disableCaching`` to ``true`` in the plugin's configuration file. (see example [here](https://github.com/studioespresso/craft3-navigate/blob/master/src/config.php))
+
 ---
 Brought to you by [Studio Espresso](https://studioespresso.co)
