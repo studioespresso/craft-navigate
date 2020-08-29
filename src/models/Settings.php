@@ -40,6 +40,8 @@ class Settings extends Model
 
     public $anyoneCanAdd = false;
 
+    public $disableCaching = false;
+
     // Public Methods
     // =========================================================================
 
@@ -58,6 +60,7 @@ class Settings extends Model
         return [
             ['pluginLabel', 'string'],
             ['anyoneCanAdd', 'boolean'],
+            ['disableCaching', 'boolean'],
             ['pluginLabel', 'default', 'value' => 'Navigate'],
         ];
     }

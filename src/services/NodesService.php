@@ -72,20 +72,19 @@ class NodesService extends Component
             return false;
         }
 
-        $cacheTags = new TagDependency([
-            'tags' => [
-                self::NAVIGATE_CACHE,
-
-                self::NAVIGATE_CACHE_NODES,
-                self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $site
-            ]
-        ]);
-
-        if (Craft::$app->getConfig()->getGeneral()->devMode) {
+        if (Craft::$app->getConfig()->getGeneral()->devMode || Navigate::getInstance()->getSettings()->disableCaching) {
             $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
             $nodes = $this->parseNodesForRender($nodes, $nav);
             return $nodes;
         } else {
+            $cacheTags = new TagDependency([
+                'tags' => [
+                    self::NAVIGATE_CACHE,
+
+                    self::NAVIGATE_CACHE_NODES,
+                    self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $site
+                ]
+            ]);
             $nodes = Craft::$app->getCache()->getOrSet(
                 self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $site,
                 function () use ($nav, $site) {
@@ -93,7 +92,7 @@ class NodesService extends Component
                     $nodes = $this->parseNodesForRender($nodes, $nav);
                     return $nodes;
                 },
-                 0,
+                0,
                 $cacheTags
             );
         }
@@ -137,10 +136,10 @@ class NodesService extends Component
             }
 
             if ($element && $element->enabled) {
-                if(Craft::$app->getRequest()->token) {
+                if (Craft::$app->getRequest()->token) {
                     $url = parse_url($element->getUrl());
                     unset($url['query']);
-                    $url = $url['scheme']."://".$url['host'].$url['path'];
+                    $url = $url['scheme'] . "://" . $url['host'] . $url['path'];
                     $node->url = $url;
                 } else {
                     $node->url = $element->getUrl();
