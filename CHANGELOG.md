@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.7.0 - 2020-08-29
+### Added
+- Added the option to disable caching on the plugin side entirely. ([#43](https://github.com/studioespresso/craft3-navigate/issues/43))
 
 
 ## 2.6.2 - 2020-06-25
