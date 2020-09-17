@@ -12,6 +12,7 @@ namespace studioespresso\navigate;
 
 use Craft;
 use craft\base\Plugin;
+use craft\elements\MatrixBlock;
 use craft\events\DeleteElementEvent;
 use craft\events\ElementEvent;
 use craft\events\RebuildConfigEvent;
@@ -34,6 +35,7 @@ use studioespresso\navigate\records\NodeRecord;
 use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
 use studioespresso\navigate\variables\NavigateVariable;
+use verbb\supertable\elements\SuperTableBlockElement;
 use yii\base\Event;
 
 /**
@@ -221,9 +223,14 @@ class Navigate extends Plugin
             Elements::EVENT_AFTER_SAVE_ELEMENT,
             function (ElementEvent $event) {
                 if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
-                    if (ElementHelper::isDraftOrRevision($event->element)) {
-                        return;
-                    };
+                    if(
+                        get_class($event->element) != SuperTa::class AND
+                        get_class($event->element) != MatrixBlock::class
+                    ) {
+                        if (ElementHelper::isDraftOrRevision($event->element)) {
+                            return;
+                        };
+                    }
                 };
                 if ($event->element->id) {
                     $query = NodeRecord::find();
@@ -240,9 +247,14 @@ class Navigate extends Plugin
             Elements::EVENT_AFTER_DELETE_ELEMENT,
             function (ElementEvent $event) {
                 if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
-                    if (ElementHelper::isDraftOrRevision($event->element)) {
-                        return;
-                    };
+                    if(
+                        get_class($event->element) != SuperTableBlockElement::class AND
+                        get_class($event->element) != MatrixBlock::class
+                    ) {
+                        if (ElementHelper::isDraftOrRevision($event->element)) {
+                            return;
+                        };
+                    }
                 };
                 if ($event->element->id) {
                     $query = NodeRecord::find();
