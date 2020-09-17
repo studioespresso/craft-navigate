@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.7.1 - 2020-09-17
+### Fixed
+- Fixed an issue where removing SuperTable elements would crash on our after delete event.
+
+
 ## 2.7.0 - 2020-08-29
 ### Added
 - Added the option to disable caching on the plugin side entirely. ([#43](https://github.com/studioespresso/craft3-navigate/issues/43))
