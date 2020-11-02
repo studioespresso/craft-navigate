@@ -42,7 +42,7 @@ class NavigateAsset extends AssetBundle
     public function init()
     {
         // define the path that your publishable resources live
-        $this->sourcePath = "@studioespresso/navigate/assetbundles/navigate/dist";
+        $this->sourcePath = "@studioespresso/navigate/assetbundles/Navigate/dist";
 
         // define the dependencies
         $this->depends = [
