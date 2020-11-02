@@ -41,7 +41,7 @@ class NavigateExtension extends AbstractExtension
      */
     public function parseUrl($url, $part = null) {
         $url = parse_url($url);
-        if($part) {
+        if($url && $part) {
             return $url[$part];
         }
         return $url;
