@@ -2,7 +2,7 @@
     "name": "studioespresso/craft-navigate",
     "description": "Navigation plugin for Craft 3",
     "type": "craft-plugin",
-    "version": "2.7.3",
+    "version": "2.7.4",
     "keywords": [
         "craft",
         "cms",
@@ -20,7 +20,7 @@
     "authors": [
         {
             "name": "Studio Espresso",
-            "homepage": "https://studioespresso.co"
+            "homepage": "https://www.studioespresso.dev"
         }
     ],
     "require": {
