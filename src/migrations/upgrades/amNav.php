@@ -14,6 +14,7 @@ class amNav extends Migration
 {
 
     private $newNodes = [];
+
     public function safeUp()
     {
         if (!Craft::$app->getDb()->tableExists('{{%amnav_navs}}')) {
@@ -54,6 +55,10 @@ class amNav extends Migration
                 ->all();
             foreach ($amNavNodes as $amNavNode) {
                 try {
+                    $site = Craft::$app->getSites()->getSiteByHandle($locale);
+                    if (!$site) {
+                        continue;
+                    }
                     echo "\n    > [{$nav['handle']}] Migrating node '{$amNavNode['name']}' ...\n";
                     $node = new NodeModel();
                     $node->name = $amNavNode['name'];
@@ -65,7 +70,6 @@ class amNav extends Migration
                     $node->blank = $amNavNode['blank'];
                     $node->order = $amNavNode['order'];
                     $locale = $amNavNode['locale'];
-                    $site = Craft::$app->getSites()->getSiteByHandle($locale);
                     if ($site) {
                         $node->siteId = $site->id;
                     } else {

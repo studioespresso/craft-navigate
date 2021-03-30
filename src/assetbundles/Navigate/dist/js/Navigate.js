@@ -832,7 +832,7 @@
                         var data = {
                             navId: this.structure.navId,
                             nodeId: $element.data('id'),
-                            prevId: $element.closest('li').prev().find('.node__node').data('id'),
+                            prevId: $element.closest('li').first().prev().find('.node__node').data('id'),
                             parentId: this.$draggee.parent('ul').parent('li').find('.node__node').data('id')
                         };
 

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.7.5 - 2021-03-30
+### Fixed
+- Fixed a issue with dragging node with children to the top of a navigation tree ([#56](https://github.com/studioespresso/craft3-navigate/issues/56))
+
 ## 2.7.4 - 2021-01-14
 ### Fixed
 - Fixed an small issue with active states on similar urls
