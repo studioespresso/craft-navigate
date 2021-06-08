@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.7.7 - 2021-06-08
+### Fixed
+- Fixed an error that occured when changing the name of a heading
+- Fixed some issues in the amNav upgrade migration
+
+
 ## 2.7.6 - 2021-04-18
 ### Fixed
 - Fixed an issue with active states when the url included query parameters ([#54](https://github.com/studioespresso/craft3-navigate/issues/54))

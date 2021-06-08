@@ -142,8 +142,8 @@ class NodesController extends Controller
         $node->setAttributes([
             'name' => $data['name'],
             'enabled'  => $data['enabled'],
-            'blank'  => $data['blank'],
-            'classes'  => $data['classes'],
+            'blank'  => $data['blank'] ?? '',
+            'classes'  => $data['classes'] ?? '',
 
         ]);
 

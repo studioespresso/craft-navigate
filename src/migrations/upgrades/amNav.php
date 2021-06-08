@@ -26,7 +26,13 @@ class amNav extends Migration
             ->all();
         foreach ($amNavs as $key => $amNav) {
             echo "\n    > Migrating nav `{$amNav['handle']}` ...\n";
-            $nav = Navigate::$plugin->navigate->getNavigationByHandle($amNav['handle']);
+            $record = Navigate::$plugin->navigate->getNavigationByHandle($amNav['handle']);
+
+            if($record) {
+                $nav = new NavigationModel();
+                $nav->setAttributes($record->getAttributes());
+            }
+
             if (!$nav) {
                 $nav = new NavigationModel();
             }
@@ -55,6 +61,7 @@ class amNav extends Migration
                 ->all();
             foreach ($amNavNodes as $amNavNode) {
                 try {
+                    $locale = $amNavNode['locale'];
                     $site = Craft::$app->getSites()->getSiteByHandle($locale);
                     if (!$site) {
                         continue;
