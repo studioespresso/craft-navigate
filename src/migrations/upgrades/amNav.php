@@ -28,14 +28,13 @@ class amNav extends Migration
             echo "\n    > Migrating nav `{$amNav['handle']}` ...\n";
             $record = Navigate::$plugin->navigate->getNavigationByHandle($amNav['handle']);
 
-            if($record) {
+            if ($record) {
                 $nav = new NavigationModel();
                 $nav->setAttributes($record->getAttributes());
-            }
-
-            if (!$nav) {
+            } else {
                 $nav = new NavigationModel();
             }
+
             $nav->id = $amNav['id'];
             $nav->title = $amNav['name'];
             $nav->handle = $amNav['handle'];

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.7.8 - 2021-06-28
+### Fixed
+- Fixed amNav upgrade migration
+
 ## 2.7.7 - 2021-06-08
 ### Fixed
 - Fixed an error that occured when changing the name of a heading
