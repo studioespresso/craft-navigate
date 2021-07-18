@@ -87,10 +87,28 @@ These only work on multiple levels (eg: 3 headings on the top level, each with n
 
 ## Configuration
 
+You can create a file called ``navigate.php`` in the ``config`` directory (you can copy [this one](https://github.com/studioespresso/craft3-navigate/blob/master/src/config.php) to start) to manage these settings in your code. The ones listed here are not available through the CP.
+
 ### Disabling caching
 Out of the box, the plugin will cache the querries it makes when ``devMode`` is not enabled. 
 
 If you want to disable caching within the plugin entirely, you can do so by setting ``disableCaching`` to ``true`` in the plugin's configuration file. (see example [here](https://github.com/studioespresso/craft3-navigate/blob/master/src/config.php))
+
+###  CSS class option list
+
+Instead of the "Classes" field being a plain text field, you can also change it to a predefined dropdown with class that you want to make available for the user.
+The ``nodeClasses`` setting takes an array where that contains "Class to be applied" => "Label to be shown in the cp".
+
+
+````php
+"nodeClasses" => [
+    '' => '---',
+    'nav nav-primary' => "Primary",
+    'nav nav-highlight' => 'Highlight'
+]
+````
+
+Make sure to also include an empty option in case you don't want the the first item to be selected by default
 
 ---
 Brought to you by [Studio Espresso](https://studioespresso.co)
