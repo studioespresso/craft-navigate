@@ -34,13 +34,24 @@
 }) }}
 {% endif %}
 
-{{ forms.textField({
-    id: 'classes',
-    name: 'classes',
-    label: "Classes"|t('navigate'),
-    instructions: "These css classes will be applied to this node's list item"|t('navigate'),
-    value: node.classes,
-}) }}
+{% if craft.navigate.getSettings().nodeClasses|length %}
+    {% set options = craft.navigate.getSettings().nodeClasses %}
+    {{ forms.selectField({
+        id: 'classes',
+        name: 'classes',
+        label: "Style"|t('navigate'),
+        options: options,
+        value: node.classes,
+    }) }}
+{% else %}
+    {{ forms.textField({
+        id: 'classes',
+        name: 'classes',
+        label: "Classes"|t('navigate'),
+        instructions: "These css classes will be applied to this node's list item"|t('navigate'),
+        value: node.classes,
+    }) }}
+{% endif %}
 
 <style>
     .hud .elementeditor--navigate .main {
