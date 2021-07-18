@@ -259,24 +259,33 @@ class Navigate extends Plugin
                 if ($event->element->id) {
                     $query = NodeRecord::find();
                     $query->where(['elementId' => $event->element->id]);
-                    if ($query->all()) {
+                    $record = $query->one();
+                    if ($record) {
+                        $record->setAttribute('enabled', false);
+                        $record->save();
                         Navigate::getInstance()->navigate->clearAllCaches();
                     }
                 }
             }
         );
 
-//        Event::on(
-//            Elements::class,
-//            Elements::EVENT_BEFORE_DELETE_ELEMENT,
-//            function(DeleteElementEvent $event) {
-//                if($event->hardDelete) {
-//
-//                } else {
-//
-//                }
-//            }
-//        );
+
+        Event::on(
+            Elements::class,
+            Elements::EVENT_AFTER_RESTORE_ELEMENT,
+            function (ElementEvent $event) {
+                if ($event->element->id) {
+                    $query = NodeRecord::find();
+                    $query->where(['elementId' => $event->element->id]);
+                    $record = $query->one();
+                    if ($record) {
+                        $record->setAttribute('enabled', true);
+                        $record->save();
+                        Navigate::getInstance()->navigate->clearAllCaches();
+                    }
+                }
+            });
+
     }
 
 }

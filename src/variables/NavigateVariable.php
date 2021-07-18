@@ -37,15 +37,20 @@ class NavigateVariable
      */
     public function raw($navHandle, $siteId = null)
     {
-        if($siteId) {
+        if ($siteId) {
             $site = Craft::$app->getSites()->getSiteById($siteId);
-            if(!$site) {
+            if (!$site) {
                 $siteId = Craft::$app->sites->getCurrentSite()->id;
             }
         } else {
             $siteId = Craft::$app->sites->getCurrentSite()->id;
         }
         return Navigate::$plugin->nodes->getNodesForRender($navHandle, $siteId);
+    }
+
+    public function getSettings()
+    {
+        return Navigate::getInstance()->getSettings();
     }
 
     /**
@@ -64,7 +69,7 @@ class NavigateVariable
         $nodes = $this->raw($navHandle);
 
         Craft::$app->view->setTemplateMode('cp');
-        $template = Craft::$app->view->renderTemplate('navigate/_render/_nav', ['nodes' => $nodes, 'classes' => $options ] );
+        $template = Craft::$app->view->renderTemplate('navigate/_render/_nav', ['nodes' => $nodes, 'classes' => $options]);
         echo $template;
     }
 

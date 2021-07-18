@@ -42,6 +42,8 @@ class Settings extends Model
 
     public $disableCaching = false;
 
+    public $nodeClasses = [];
+
     // Public Methods
     // =========================================================================
 
@@ -61,7 +63,14 @@ class Settings extends Model
             ['pluginLabel', 'string'],
             ['anyoneCanAdd', 'boolean'],
             ['disableCaching', 'boolean'],
+            ['nodeClasses','checkIsArray'],
             ['pluginLabel', 'default', 'value' => 'Navigate'],
         ];
+    }
+
+    public function checkIsArray(){
+        if(!is_array($this->nodeClasses)){
+            $this->addError('nodeClasses','nodeClasses is not array!');
+        }
     }
 }

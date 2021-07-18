@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.8.0 - 2021-07-18
+### Added
+- The Node classes field now be filled with predefined values, more information can be found in the [readme](https://github.com/studioespresso/craft3-navigate/tree/master#css-class-option-list) ([#57](https://github.com/studioespresso/craft3-navigate/issues/57)).
+- Navigation items are now automatically disabled when the related element is deleted, and enabled when the element should be restored ([#39](https://github.com/studioespresso/craft3-navigate/issues/39)).
+
 ## 2.7.8 - 2021-06-28
 ### Fixed
 - Fixed amNav upgrade migration
