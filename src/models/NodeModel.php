@@ -134,7 +134,8 @@ class NodeModel extends Model
                 if ($this->url === Craft::$app->request->getAbsoluteUrl()) {
                     return true;
                 }
-                if(str_contains(Craft::$app->request->getAbsoluteUrl(), '?')) {
+                
+                if(strpos(Craft::$app->request->getAbsoluteUrl(), '?')) {
                     if(explode('?', Craft::$app->request->getAbsoluteUrl())[0] === $this->url) {
                         return true;
                     }
