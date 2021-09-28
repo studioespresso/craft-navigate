@@ -179,7 +179,7 @@ class DefaultController extends Controller
             });
         } elseif(count($enabledForSites)) {
             if($currentUser->can('accessPlugin-navigate')) {
-                $editableSites = Craft::$app->getSites()->getAllSites();
+                $editableSites = $enabledForSites;
             }
         } else {
             if($currentUser->can('accessPlugin-navigate')) {
