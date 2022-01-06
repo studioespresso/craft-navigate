@@ -111,4 +111,4 @@ The ``nodeClasses`` setting takes an array where that contains "Class to be appl
 Make sure to also include an empty option in case you don't want the the first item to be selected by default
 
 ---
-Brought to you by [Studio Espresso](https://studioespresso.co)
+Brought to you by [Studio Espresso](https://www.studioespresso.dev/)
