@@ -11,6 +11,7 @@
 namespace studioespresso\navigate;
 
 use Craft;
+use craft\base\Model;
 use craft\base\Plugin;
 use craft\elements\MatrixBlock;
 use craft\events\DeleteElementEvent;
@@ -61,7 +62,7 @@ class Navigate extends Plugin
 {
     // Public Properties
     // =========================================================================
-    public $schemaVersion = '2.4.0';
+    public string $schemaVersion = '2.4.0';
 
     // Traits
     // =========================================================================
@@ -69,7 +70,7 @@ class Navigate extends Plugin
 
     // Public Methods
     // =========================================================================
-    public function init()
+    public function init(): void
     {
         parent::init();
         self::$plugin = $this;
@@ -95,7 +96,7 @@ class Navigate extends Plugin
         $this->_elementListeners();
     }
 
-    private function _projectConfig()
+    private function _projectConfig(): void
     {
         Craft::$app->projectConfig
             ->onAdd('navigate.nav.{uid}', [$this->navigate, 'handleAddNavigation'])
@@ -107,7 +108,7 @@ class Navigate extends Plugin
         });
     }
 
-    private function _registerRoutes()
+    private function _registerRoutes(): void
     {
         // Register our CP routes
         Event::on(
@@ -126,7 +127,7 @@ class Navigate extends Plugin
         );
     }
 
-    public function getCpNavItem()
+    public function getCpNavItem(): array
     {
         $ret = [
             'label' => $this->getSettings()->pluginLabel ? $this->getSettings()->pluginLabel : 'Navigate',
@@ -155,7 +156,7 @@ class Navigate extends Plugin
 
     // Protected Methods
     // =========================================================================
-    protected function createSettingsModel()
+    protected function createSettingsModel(): Model
     {
         return new Settings();
     }
@@ -172,7 +173,7 @@ class Navigate extends Plugin
 
     // Private Methods
     // =========================================================================
-    private function _registerVariables()
+    private function _registerVariables(): void
     {
         // Register our variables
         Event::on(
@@ -186,7 +187,7 @@ class Navigate extends Plugin
         );
     }
 
-    private function _registerCacheOptions()
+    private function _registerCacheOptions(): void
     {
         Event::on(
             ClearCaches::class,
@@ -205,7 +206,7 @@ class Navigate extends Plugin
         );
     }
 
-    private function _registerField()
+    private function _registerField(): void
     {
         Event::on(
             Fields::class,
@@ -216,7 +217,7 @@ class Navigate extends Plugin
         );
     }
 
-    private function _elementListeners()
+    private function _elementListeners(): void
     {
         Event::on(
             Elements::class,
@@ -287,5 +288,4 @@ class Navigate extends Plugin
             });
 
     }
-
 }
