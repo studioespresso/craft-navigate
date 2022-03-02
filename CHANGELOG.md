@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.0.0-beta.1 - 2022-03-02
+### Added
+* Craft CMS 4 compatibility
+
 ## 2.8.1 - 2021-09-28
 ### Fixed
 - Fixed an issue where the sites for which a nav was enabled wasn't checked against the sites a user could edit
