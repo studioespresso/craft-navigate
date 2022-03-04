@@ -147,4 +147,31 @@ class NodeModel extends Model
         }
         return false;
     }
+
+    public function current()
+    {
+        switch ($this->type) {
+            case 'url':
+                if (substr(Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
+                    return true;
+                }
+                if (substr("/". Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
+                    return true;
+                }
+
+                break;
+            default:
+                if ($this->url === Craft::$app->request->getAbsoluteUrl()) {
+                    return true;
+                }
+                
+                if(strpos(Craft::$app->request->getAbsoluteUrl(), '?')) {
+                    if(explode('?', Craft::$app->request->getAbsoluteUrl())[0] === $this->url) {
+                        return true;
+                    }
+                }
+                break;
+        }
+        return false;
+    }    
 }
