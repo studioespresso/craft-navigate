@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.9.0
+### Added
+- Added "current" property to check wether or not a node's url is an exact match to the current url ([#61](https://github.com/studioespresso/craft3-navigate/pull/61), thanks [@stevecomrie](https://github.com/stevecomrie))
+- Better checks for ``allowAdminChanges`` to prevent config changes in environments where project config is read only. ([#59](https://github.com/studioespresso/craft3-navigate/issues/59))
+
 ## 2.8.1 - 2021-09-28
 ### Fixed
 - Fixed an issue where the sites for which a nav was enabled wasn't checked against the sites a user could edit
