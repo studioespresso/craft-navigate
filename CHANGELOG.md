@@ -4,10 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 2.9.0
+## 3.0.0 - 2022-05-01
+### Added
+- Craft 4 🚀
+
+## 2.9.0 - 2022-03-13
 ### Added
 - Added "current" property to check wether or not a node's url is an exact match to the current url ([#61](https://github.com/studioespresso/craft3-navigate/pull/61), thanks [@stevecomrie](https://github.com/stevecomrie))
 - Better checks for ``allowAdminChanges`` to prevent config changes in environments where project config is read only. ([#59](https://github.com/studioespresso/craft3-navigate/issues/59))
+
+## 3.0.0-beta.1 - 2022-03-02
+### Added
+- Craft CMS 4 compatibility
 
 ## 2.8.1 - 2021-09-28
 ### Fixed

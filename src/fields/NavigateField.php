@@ -24,7 +24,7 @@ class NavigateField extends Dropdown
     // Public Properties
     // =========================================================================
 
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -55,7 +55,7 @@ class NavigateField extends Dropdown
     /**
      * @inheritdoc
      */
-    public function getSettingsHtml()
+    public function getSettingsHtml():? string
     {
         return false;
     }
