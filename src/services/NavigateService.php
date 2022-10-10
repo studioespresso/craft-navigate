@@ -192,15 +192,19 @@ class NavigateService extends Component
             return false;
         }
 
-        $path = "navigate.nav.{$record->uid}";
-        Craft::$app->projectConfig->set($path, [
-            'title' => $record->title,
-            'handle' => $record->handle,
-            'levels' => $record->levels,
-            'adminOnly' => $record->adminOnly,
-            'allowSources' => $record->allowedSources,
-            'enabledSiteGroups' => $record->enabledSiteGroups
-        ]);
+        if (Craft::$app->getConfig()->general->allowAdminChanges) {
+            $path = "navigate.nav.{$record->uid}";
+            Craft::$app->projectConfig->set($path, [
+                'title' => $record->title,
+                'handle' => $record->handle,
+                'levels' => $record->levels,
+                'adminOnly' => $record->adminOnly,
+                'allowSources' => $record->allowedSources,
+                'enabledSiteGroups' => $record->enabledSiteGroups
+            ]);
+        } else {
+            $record->save();
+        }
 
         return true;
     }

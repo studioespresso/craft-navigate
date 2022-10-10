@@ -21,7 +21,7 @@
 {% set createUrl = url('navigate/add') %}
 
 {% block actionButton %}
-    {% if ((not currentUser.admin and settings.anyoneCanAdd) or currentUser.admin) and craft.app.config.general.allowAdminChanges %}
+    {% if ((not currentUser.admin and settings.anyoneCanAdd) or currentUser.admin) and (craft.app.config.general.allowAdminChanges or settings.allowWhenReadOnly) %}
         <div id="button-container">
             <div class="btngroup submit">
                 <a class="btn submit add icon" href="{{ createUrl }}">
@@ -40,8 +40,10 @@
             <tr>
                 <th scope="col">{{ 'Name'|t('navigate') }}</th>
                 <th scope="col">{{ 'Handle'|t('navigate') }}</th>
-                <th scope="col">{{ 'Settings'|t('navigate') }}</th>
-                <th scope="col">{{ 'Remove'|t('navigate') }}</th>
+                {% if ((not currentUser.admin and settings.anyoneCanAdd) or currentUser.admin) and craft.app.config.general.allowAdminChanges %}
+                    <th scope="col">{{ 'Settings'|t('navigate') }}</th>
+                    <th scope="col">{{ 'Remove'|t('navigate') }}</th>
+                {% endif %}
             </tr>
             </thead>
             <tbody>
@@ -51,18 +53,18 @@
                                 href="{{ url('navigate/edit/'~navigation.id) }}">{{ navigation.title }}</a>
                     </th>
                     <td data-title="Handle"><code>{{ navigation.handle }}</code></td>
-                    <td data-title="Settings">
                         {% if (not navigation.adminOnly or currentUser.admin) and craft.app.config.general.allowAdminChanges %}
+                    <td data-title="Settings">
 
                             <a href="{{ url('navigate/settings/'~navigation.id) }}" role="button"><span
                                         data-icon="settings"></span></a>
-                        {% endif %}
                     </td>
+                        {% endif %}
+                        {% if ((not currentUser.admin and settings.anyoneCanAdd) or currentUser.admin) and craft.app.config.general.allowAdminChanges %}
                     <td class="thin">
-                        {% if (not currentUser.admin and settings.anyoneCanAdd) or currentUser.admin %}
                             <a class="delete icon" title="Delete" role="button"></a>
-                        {% endif %}
                     </td>
+                        {% endif %}
                 </tr>
             {% endfor %}
             </tbody>
