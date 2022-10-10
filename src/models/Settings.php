@@ -42,6 +42,8 @@ class Settings extends Model
 
     public $disableCaching = false;
 
+    public $allowWhenReadOnly = false;
+
     public $nodeClasses = [];
 
     // Public Methods
@@ -62,6 +64,7 @@ class Settings extends Model
         return [
             ['pluginLabel', 'string'],
             ['anyoneCanAdd', 'boolean'],
+            ['allowWhenReadOnly', 'boolean'],
             ['disableCaching', 'boolean'],
             ['nodeClasses','checkIsArray'],
             ['pluginLabel', 'default', 'value' => 'Navigate'],

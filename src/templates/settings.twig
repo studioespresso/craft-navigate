@@ -14,3 +14,10 @@
     name: 'anyoneCanAdd',
     on: settings['anyoneCanAdd']
 }) }}
+
+{{ forms.lightswitchField({
+    label: 'Navigations can be created on read-only environments'|t('navigate'),
+    id: 'allowWhenReadOnly',
+    name: 'allowWhenReadOnly',
+    on: settings['allowWhenReadOnly']
+}) }}
