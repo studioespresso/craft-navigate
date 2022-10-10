@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 3.0.2 - Unreleased
+## 3.0.2 - 2022-10-10
 ### Added
 - Added settings to allow new navigations to be created in read-only mode [#66](https://github.com/studioespresso/craft3-navigate/issues/66)
 
