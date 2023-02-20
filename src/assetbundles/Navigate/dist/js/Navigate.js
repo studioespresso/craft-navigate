@@ -19,7 +19,6 @@
             $parentContainer: $('.node__parent'),
             $newWindowElement: $('.navigate .field input[name="blank"]'),
             $addElementButton: $('#navigate-nodeTypes').children(),
-
             $addElementLoader: $('.navigate .buttons .spinner'),
 
             init: function (id, entrySources, nav, site, levels) {
@@ -27,11 +26,14 @@
                 this.site = site;
                 this.entrySources = '*';
                 this.levels = levels;
-                this.structure = new Craft.NavigateStructure(this.id, '#navigate__nav', '.navigate__nav', settings, this.levels);
+                // this.structure = new Craft.NavigateStructure(this.id, '#navigate__nav', '.navigate__nav', settings, this.levels);
+                window.structure = new Craft.NavigateStructure(this.id, '#navigate__nav', '.navigate__nav', settings, this.levels);
 
                 this.addListener(this.$addElementButton, 'activate', 'showModal');
                 this.addListener(this.$manualForm, 'submit', 'onManualSubmit');
                 this.addListener(this.$displayIdsButton, 'click', 'showNodeIds');
+
+
             },
 
             /**
@@ -39,42 +41,28 @@
              */
             showModal: function (ev) {
                 this.currentElementType = $(ev.currentTarget).data('type');
-                if (this.currentElementType == 'entry') {
+                const elementType = this.currentElementType.charAt(0).toUpperCase() + this.currentElementType.slice(1);
+                const navId = $(ev.currentTarget).data('nav');
+                if (elementType === 'Entry' || elementType === 'Asset' || elementType === 'Category') {
+                    this.entryModal = this.createModal("craft\\elements\\" + elementType, '*');
                     if (!this.entryModal) {
-                        this.entryModal = this.createModal("craft\\elements\\Entry", '*');
-                    } else {
                         this.entryModal.show();
                     }
-                } else if (this.currentElementType == 'asset') {
-                    if (!this.assetModal) {
-                        this.assetModal = this.createModal('craft\\elements\\Asset', '*');
-                    } else {
-                        this.assetModal.show();
-                    }
-                } else if (this.currentElementType == 'category') {
-                    if (!this.categoryModal) {
-                        this.categoryModal = this.createModal('craft\\elements\\Category', '*');
-                    } else {
-                        this.categoryModal.show();
-                    }
-                } else if (this.currentElementType == 'url') {
-                    this.urlModal = this.createModal('url');
-                } else if (this.currentElementType == 'heading') {
-                    this.headingModal = this.createModal('heading');
-
+                } else {
+                    this.urlModal = this.createModal(elementType, null, navId, this.site);
                 }
             },
 
             /**
              * Create ElementSelectorModal.
              */
-            createModal: function (elementType, elementSources) {
-                if (elementType === 'url') {
-                    $modal = new Craft.NavigateUrlModal(this.structure, this.id, this.site);
-                    return $modal;
-                } else if (elementType === 'heading') {
-                    $modal = new Craft.NavigateHeadingModal(this.structure, this.id, this.site);
-                    return $modal;
+            createModal: function (elementType, elementSources, navId, siteId) {
+                if (elementType === 'Url' || elementType === 'Heading') {
+                    const slideout = new Craft.CpScreenSlideout('navigate/nodes/add-slide-out?type=' + elementType + '&nav=' + navId + '&site=' + siteId);
+                    slideout.open();
+                    slideout.on('submit', function (e) {
+                         window.structure.addNode(e.response.data, elementType);
+                    })
                 } else {
                     return Craft.createElementSelectorModal(elementType, {
                         criteria: {},
@@ -97,13 +85,13 @@
                     var element = elements[i];
 
                     // Unselect element in modal
-                    if (elementType == 'Entry') {
-                        this.entryModal.$body.find('.element[data-id="' + element.id + '"]').closest('tr').removeClass('sel');
-                    } else if (elementType == 'Category') {
-                        this.categoryModal.$body.find('.element[data-id="' + element.id + '"]').closest('tr').removeClass('sel');
-                    } else if (elementType == 'Asset') {
-                        this.assetModal.$body.find('.element[data-id="' + element.id + '"]').closest('tr').removeClass('sel');
-                    }
+                    this.entryModal.$body.find('.element[data-id="' + element.id + '"]').closest('tr').removeClass('sel');
+                    // if (elementType == 'Entry') {
+                    // } else if (elementType == 'Category') {
+                    //     this.categoryModal.$body.find('.element[data-id="' + element.id + '"]').closest('tr').removeClass('sel');
+                    // } else if (elementType == 'Asset') {
+                    //     this.assetModal.$body.find('.element[data-id="' + element.id + '"]').closest('tr').removeClass('sel');
+                    // }
 
                     var data = {
                         navId: this.id,
@@ -155,7 +143,7 @@
                             }
 
                             // Add node to structure!
-                            this.structure.addNode(response.nodeData, 'element');
+                            window.structure.addNode(response.nodeData, 'element');
 
                             // Display parent options
                             this.$parentContainer.html(response.parentOptions);
@@ -538,7 +526,7 @@
             },
 
             getNodeEditor: function ($element) {
-                new Craft.NavigateEditor($element);
+                new Craft.NavigateSlideOutEditor($element);
             },
 
 
@@ -642,120 +630,35 @@
             }
         });
 
-    Craft.NavigateEditor = Garnish.Base.extend(
-        {
-            $node: null,
-            nodeId: null,
 
-            $form: null,
-            $fieldsContainer: null,
-            $cancelBtn: null,
-            $saveBtn: null,
-            $spinner: null,
-
-            hud: null,
-
-            init: function ($node) {
-                this.$node = $node;
-                this.nodeId = $node.data('id');
-
-                this.$node.addClass('loading');
-
-                var data = {
-                    nodeId: this.nodeId
-                };
-
-                Craft.postActionRequest('navigate/nodes/editor', data, $.proxy(this, 'showEditor'));
-            },
-
-            showEditor: function (response, textStatus) {
-
-                if (textStatus == 'success') {
-                    var $hudContents = $();
-
-                    this.$form = $('<form/>');
-                    $('<input type="hidden" name="nodeId" value="' + this.nodeId + '">').appendTo(this.$form);
-                    this.$fieldsContainer = $('<div class="fields"/>').appendTo(this.$form);
-
-                    this.$fieldsContainer.html(response.html)
-                    Craft.initUiElements(this.$fieldsContainer);
-
-                    var $buttonsOuterContainer = $('<div class="footer"/>').appendTo(this.$form);
-
-                    this.$spinner = $('<div class="spinner left hidden"/>').appendTo($buttonsOuterContainer);
-
-                    var $buttonsContainer = $('<div class="buttons right"/>').appendTo($buttonsOuterContainer);
-                    this.$cancelBtn = $('<div class="btn">' + Craft.t('navigate', 'Cancel') + '</div>').appendTo($buttonsContainer);
-                    this.$saveBtn = $('<input class="btn submit" type="submit" value="' + Craft.t('navigate', 'Save') + '"/>').appendTo($buttonsContainer);
-
-                    $hudContents = $hudContents.add(this.$form);
-
-                    this.hud = new Garnish.HUD(this.$node, $hudContents, {
-                        bodyClass: 'body elementeditor elementeditor--navigate',
-                        closeOtherHUDs: false
-                    });
-
-                    this.hud.on('hide', $.proxy(function () {
-                        delete this.hud;
-                    }, this));
-
-                    this.addListener(this.$saveBtn, 'click', 'save');
-                    this.addListener(this.$cancelBtn, 'click', function () {
-                        this.hud.hide()
-                    });
+    Craft.NavigateSlideOutEditor = Garnish.Base.extend({
+        // Called when a new widget is created
+        init: function (element) {
+            // Find the trigger element
+            const slideout = new Craft.CpScreenSlideout('navigate/nodes/edit-slide-out?node=' + element.data('id'));
+            slideout.open();
+            slideout.on('submit', function (e) {
+                // Update name
+                element.parent().data('label', e.response.data.name);
+                element.parent().find('.title').text(e.response.data.name);
+                // Update status
+                if (e.response.data.enabled) {
+                    element.parent().find('.status').addClass('live');
+                    element.parent().find('.status').removeClass('expired');
+                } else {
+                    element.parent().find('.status').addClass('expired');
+                    element.parent().find('.status').removeClass('live');
                 }
-            },
+                // Update new window icon
+                if (e.response.data.blank) {
+                    element.find('.blank').removeClass('visuallyhidden');
+                } else {
+                    element.find('.blank').addClass('visuallyhidden');
+                }
+            })
 
-            save: function (e) {
-                e.preventDefault();
-
-                this.$spinner.removeClass('hidden');
-
-                var data = this.$form.serialize(),
-                    $status = this.$node.parent().find('.status');
-                $blank = this.$node.find('.blank');
-
-                updateUrl = Craft.getActionUrl('navigate/nodes/update');
-                Craft.postActionRequest(updateUrl, data, $.proxy(function (response, textStatus) {
-                    this.$spinner.addClass('hidden');
-
-                    if (textStatus == 'success') {
-                        if (textStatus == 'success' && response.success) {
-                            Craft.cp.displayNotice(response.message);
-
-                            // Update name
-                            this.$node.parent().data('label', response.nodeData.name);
-                            this.$node.parent().find('.title').text(response.nodeData.name);
-                            // Update status
-                            if (response.nodeData.enabled) {
-                                $status.addClass('live');
-                                $status.removeClass('expired');
-                            } else {
-                                $status.addClass('expired');
-                                $status.removeClass('live');
-                            }
-                            // Update new window icon
-                            if (response.nodeData.blank) {
-                                $blank.removeClass('visuallyhidden');
-                            } else {
-                                $blank.addClass('visuallyhidden');
-                            }
-
-                            this.closeHud();
-                        } else {
-                            Garnish.shake(this.hud.$hud);
-                        }
-                    }
-                }, this));
-
-            },
-
-            closeHud: function () {
-                this.hud.hide();
-                delete this.hud;
-            }
-        });
-
+        },
+    });
 
     Craft.NavigateDragDrop = Craft.StructureDrag.extend(
         {
@@ -875,5 +778,6 @@
             }
 
         });
+
 
 })(jQuery);

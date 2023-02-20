@@ -214,7 +214,7 @@ class NodesService extends Component
         return $data;
     }
 
-    public function getNodeById($id = null)
+    public function getNodeById($id = null) : NodeModel|bool
     {
         $query = NodeRecord::findOne([
             'id' => $id

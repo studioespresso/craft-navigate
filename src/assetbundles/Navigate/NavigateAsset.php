@@ -53,6 +53,7 @@ class NavigateAsset extends AssetBundle
         // when this asset bundle is registered
         $this->js = [
             'js/Navigate.js',
+            'js/SlideOut.js',
         ];
 
         $this->css = [

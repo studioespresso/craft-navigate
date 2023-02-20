@@ -1,0 +1,86 @@
+{% import "_includes/forms" as forms %}
+{% if navigation is defined %}
+    {{ forms.hidden({
+        name:'fields[navId]',
+        value: navigation.id
+    }) }}
+{% endif %}
+
+{% if site is defined %}
+    {{ forms.hidden({
+        name:'fields[siteId]',
+        value: site.id
+    }) }}
+{% endif %}
+
+{% if node.id %}
+    {{ forms.hidden({
+        name:'nodeId',
+        value: node.id
+    }) }}
+{% endif %}
+
+{{ forms.hidden({
+    name:'fields[type]',
+    value: node.type
+}) }}
+
+
+{{ forms.textField({
+    id: 'name',
+    name: 'fields[name]',
+    label: "Name"|t('navigate'),
+    value: node.name,
+}) }}
+
+{% if node.type == 'Url' or node.type == 'url' %}
+    {{ forms.textField({
+        id: 'url',
+        name: 'fields[url]',
+        label: "URL"|t('navigate'),
+        value: node.url,
+    }) }}
+{% endif %}
+
+{{ forms.lightswitchField({
+    id:           'enabled',
+    name:         'fields[enabled]',
+    label:        'Enabled'|t('navigate'),
+    on:           node.enabled,
+    instructions: 'Show or hide in navigation.'|t('navigate')
+}) }}
+
+{% if node.type != 'Heading' %}
+    {{ forms.lightswitchField({
+        id:           'blank',
+        name:         'fields[blank]',
+        label:        'Open in a new window'|t('navigate'),
+        on:           node.blank,
+    }) }}
+{% endif %}
+
+{% if craft.navigate.getSettings().nodeClasses|length %}
+    {% set options = craft.navigate.getSettings().nodeClasses %}
+    {{ forms.selectField({
+        id: 'classes',
+        name: 'fields[classes]',
+        label: "Style"|t('navigate'),
+        options: options,
+        instructions: "These css classes will be applied to this node's list item"|t('navigate'),
+        value: node.classes,
+    }) }}
+{% else %}
+    {{ forms.textField({
+        id: 'classes',
+        name: 'fields[classes]',
+        label: "Classes"|t('navigate'),
+        instructions: "These css classes will be applied to this node's list item"|t('navigate'),
+        value: node.classes,
+    }) }}
+{% endif %}
+
+<style>
+    .hud .elementeditor--navigate .main {
+        padding: 0;
+    }
+</style>
