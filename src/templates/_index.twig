@@ -43,12 +43,12 @@
         menu: {
             showItems: false,
             menuBtnTitle: 'Settings'|t('app'),
-            label: 'Settings',
+            label: 'Edit settings',
             url: url('navigate/settings/' ~ nav.id)
         },
     }]) %}
 {% endfor %}
-
+{% set actions = [] %}
 {% set columns = [
     { name: '__slot:title', title: "Name" },
     { name: '__slot:handle', title: "Handle" },
@@ -56,18 +56,26 @@
 
 {% if craft.app.config.general.allowAdminChanges %}
     {% set columns = columns|merge([
-        { name: '__slot:menu', title: "Actions" }
+        { name: '__slot:menu', title: "Settings" }
     ]) %}
+
+    {% set actions = [
+        { label: "Duplicate", action: 'controller/delete' },
+    ] %}
+
 {% endif %}
 
 {% js %}
     new Craft.VueAdminTable({
-        columns: {{ columns|json_encode|raw }},
         container: '#navigate-vue-admin-table',
+        columns: {{ columns|json_encode|raw }},
+        tableData: {{ tableData|json_encode|raw }},
         deleteAction: 'navigate/default/delete',
         deleteConfirmationMessage: Craft.t('app', "Are you sure you want to delete “{name}” and all its included items?"),
         emptyMessage: Craft.t('app', 'No navigations exist yet.'),
-        tableData: {{ tableData|json_encode|raw }},
+        checkboxes: {{ craft.app.config.general.allowAdminChanges ? 1 : 0 }},
+        allowMultipleSelections: false,
+        actions: {{ actions|json_encode|raw }},
     });
 {% endjs %}
 
