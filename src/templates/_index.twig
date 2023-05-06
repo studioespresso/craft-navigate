@@ -22,21 +22,18 @@
 {% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
 
 {% block actionButton %}
-    {% if ((not currentUser.admin and settings.anyoneCanAdd) or currentUser.admin) and (craft.app.config.general.allowAdminChanges or settings.allowWhenReadOnly) %}
+    {% if craft.app.config.general.allowAdminChanges %}
         <a href="{{ url('navigate/add') }}" class="btn submit add icon">{{ 'New navigation'|t('navigate') }}</a>
     {% endif %}
 {% endblock %}
 
-{# The content of the CP Section #}
 {% block content %}
-
     <div id="navigate-vue-admin-table"></div>
 {% endblock %}
 
 {% set tableData = [] %}
 {% for nav in navigations %}
 
-    {% set isSingle = false %}
     {% set menuItems = [] %}
     {% set tableData = tableData|merge([{
         id: nav.id,
@@ -47,28 +44,30 @@
             showItems: false,
             menuBtnTitle: 'Settings'|t('app'),
             label: 'Settings',
-            url: isSingle ? '' : ''
-        }
-
+            url: url('navigate/settings/' ~ nav.id)
+        },
     }]) %}
 {% endfor %}
 
+{% set columns = [
+    { name: '__slot:title', title: "Name" },
+    { name: '__slot:handle', title: "Handle" },
+] %}
 
+{% if craft.app.config.general.allowAdminChanges %}
+    {% set columns = columns|merge([
+        { name: '__slot:menu', title: "Actions" }
+    ]) %}
+{% endif %}
 
 {% js %}
-    var columns = [
-    { name: '__slot:title', title: Craft.t('app', 'Name') },
-    { name: '__slot:handle', title: Craft.t('app', 'Handle') },
-    { name: '__slot:menu', title: Craft.t('app', 'Edit settings') }
-    ];
-
     new Craft.VueAdminTable({
-    columns: columns,
-    container: '#navigate-vue-admin-table',
-    deleteAction: 'navigate/default/delete',
-    deleteConfirmationMessage: Craft.t('app', "Are you sure you want to delete “{name}” and all its included items?"),
-    emptyMessage: Craft.t('app', 'No navigations exist yet.'),
-    tableData: {{ tableData|json_encode|raw }}
+        columns: {{ columns|json_encode|raw }},
+        container: '#navigate-vue-admin-table',
+        deleteAction: 'navigate/default/delete',
+        deleteConfirmationMessage: Craft.t('app', "Are you sure you want to delete “{name}” and all its included items?"),
+        emptyMessage: Craft.t('app', 'No navigations exist yet.'),
+        tableData: {{ tableData|json_encode|raw }},
     });
 {% endjs %}
 
