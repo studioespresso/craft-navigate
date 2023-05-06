@@ -79,11 +79,11 @@ class DefaultController extends Controller
                 'errors' => $model->getErrors(),
                 'sources' => Navigate::$plugin->nodes->types,
             ]);
-        } else {
-            Navigate::getInstance()->navigate->saveNavigation($model);
-            return $this->redirectToPostedUrl();
-
         }
+
+        $redirect = Craft::$app->getRequest()->getValidatedBodyParam('redirect');
+        Navigate::getInstance()->navigate->saveNavigation($model);
+        return $this->asSuccess("'{$model->title}' saved", [], $redirect);
 
     }
 
@@ -93,7 +93,7 @@ class DefaultController extends Controller
             $navigation = Navigate::getInstance()->navigate->getNavigationById($navId);
             $sites = $this->getEditAbleSites($navigation);
             $firstSite = reset($sites);
-            if(!$firstSite) {
+            if (!$firstSite) {
                 throw new NotFoundHttpException('Navigation not found', 404);
             }
             $this->redirect("navigate/edit/{$navId}/{$firstSite->handle}");
@@ -139,7 +139,6 @@ class DefaultController extends Controller
     {
         $this->requirePostRequest();
         $this->requireAcceptsJson();
-
         if (Navigate::$plugin->navigate->deleteNavigationById(Craft::$app->request->post('id'))) {
             // Return data
             $returnData['success'] = true;
@@ -160,29 +159,29 @@ class DefaultController extends Controller
 
     private function getEditAbleSites(NavigationModel $navigationModel)
     {
-        if($navigationModel->enabledSiteGroups != '*' && $navigationModel->enabledSiteGroups != null) {
+        if ($navigationModel->enabledSiteGroups != '*' && $navigationModel->enabledSiteGroups != null) {
             $enabledForSiteGroups = json_decode($navigationModel->enabledSiteGroups);
             $enabledForSites = [];
-            foreach($enabledForSiteGroups as $groupId) {
+            foreach ($enabledForSiteGroups as $groupId) {
                 $enabledForSites = array_merge($enabledForSites, Craft::$app->getSites()->getSitesByGroupId($groupId));
             }
         } else {
             $enabledForSites = Craft::$app->getSites()->getAllSites();
         }
         $currentUser = Craft::$app->getUser()->getIdentity();
-        if(count($enabledForSites) > 1) {
+        if (count($enabledForSites) > 1) {
             $editableSites = array_filter($enabledForSites, function ($site) use ($currentUser) {
                 if ($currentUser->can("editSite:{$site->uid}")) {
                     return true;
                 }
                 return false;
             });
-        } elseif(count($enabledForSites)) {
-            if($currentUser->can('accessPlugin-navigate')) {
+        } elseif (count($enabledForSites)) {
+            if ($currentUser->can('accessPlugin-navigate')) {
                 $editableSites = $enabledForSites;
             }
         } else {
-            if($currentUser->can('accessPlugin-navigate')) {
+            if ($currentUser->can('accessPlugin-navigate')) {
                 $editableSites = Craft::$app->getSites()->getAllSites();
             }
         }
