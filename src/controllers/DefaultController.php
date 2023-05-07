@@ -54,7 +54,7 @@ class DefaultController extends Controller
     {
         $data = [];
         $data['settings'] = Navigate::$plugin->getSettings();
-        $data['navigations'] = Navigate::$plugin->navigate->getAllNavigationForUser();
+        $data['navigations'] = Navigate::getInstance()->navigate->getAllNavigationForUser();
         return $this->renderTemplate('navigate/_index', $data);
     }
 
