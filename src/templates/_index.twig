@@ -72,6 +72,7 @@
         tableData: {{ tableData|json_encode|raw }},
         deleteAction: 'navigate/default/delete',
         deleteConfirmationMessage: Craft.t('app', "Are you sure you want to delete “{name}” and all its included items?"),
+        deleteSuccessMessage: Craft.t('navigate', "“{name}” deleted"),
         emptyMessage: Craft.t('app', 'No navigations exist yet.'),
         checkboxes: {{ craft.app.config.general.allowAdminChanges ? 1 : 0 }},
         allowMultipleSelections: false,

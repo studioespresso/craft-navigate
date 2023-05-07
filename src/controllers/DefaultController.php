@@ -140,11 +140,8 @@ class DefaultController extends Controller
         $this->requirePostRequest();
         $this->requireAcceptsJson();
         if (Navigate::$plugin->navigate->deleteNavigationById(Craft::$app->request->post('id'))) {
-            // Return data
-            $returnData['success'] = true;
-            return $this->asJson($returnData);
-        };
-
+            return $this->asJson(['success' => true]);
+        }
     }
 
     private function getSiteGroups()
