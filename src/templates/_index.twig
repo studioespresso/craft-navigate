@@ -33,8 +33,6 @@
 
 {% set tableData = [] %}
 {% for nav in navigations %}
-
-    {% set menuItems = [] %}
     {% set tableData = tableData|merge([{
         id: nav.id,
         title: nav.title|t('site'),
@@ -59,9 +57,9 @@
         { name: '__slot:menu', title: "Settings" }
     ]) %}
 
-    {% set actions = [
-        { label: "Duplicate", action: 'controller/delete' },
-    ] %}
+{#    {% set actions = [#}
+{#        { label: "Duplicate", action: 'controller/delete' },#}
+{#    ] %}#}
 
 {% endif %}
 
