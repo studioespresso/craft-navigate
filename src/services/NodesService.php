@@ -4,7 +4,7 @@
  *
  * Navigation plugin for Craft 3
  *
- * @link      https://studioespresso.co
+ * @link      https://studioespresso.dev
  * @copyright Copyright (c) 2018 Studio Espresso
  */
 
@@ -214,7 +214,7 @@ class NodesService extends Component
         return $data;
     }
 
-    public function getNodeById($id = null)
+    public function getNodeById($id = null): NodeModel|bool
     {
         $query = NodeRecord::findOne([
             'id' => $id
@@ -395,7 +395,7 @@ class NodesService extends Component
         return $result;
     }
 
-    private function _clearCacheForNav(NodeModel $node)
+    private function _clearCacheForNav(NodeModel $node): void
     {
         $nav = Navigate::getInstance()->navigate->getNavigationById($node->navId);
         TagDependency::invalidate(
@@ -404,13 +404,12 @@ class NodesService extends Component
         );
 
         // If putyourlightson/craft-blitz is installed & activacted, clear that cache too
-        if (Craft::$app->getPlugins()->isPluginEnabled('blitz')) {
+        if (Craft::$app->getPlugins()->isPluginEnabled('blitz') && class_exists("putyourlightson\blitz\Blitz")) {
             if (version_compare(Blitz::$plugin->getVersion(), "2.0.1") >= 0) {
                 Blitz::$plugin->flushCache->flushAll();
                 Blitz::$plugin->clearCache->clearAll();
             }
         }
-        return;
     }
 
 }

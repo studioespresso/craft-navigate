@@ -4,7 +4,7 @@
  *
  * Navigation plugin for Craft 3
  *
- * @link      https://studioespresso.co
+ * @link      https://studioespresso.dev
  * @copyright Copyright (c) 2018 Studio Espresso
  */
 
@@ -53,6 +53,7 @@ class NavigateAsset extends AssetBundle
         // when this asset bundle is registered
         $this->js = [
             'js/Navigate.js',
+            'js/SlideOut.js',
         ];
 
         $this->css = [

@@ -4,7 +4,7 @@
  *
  * Navigation plugin for Craft 3
  *
- * @link      https://studioespresso.co
+ * @link      https://studioespresso.dev
  * @copyright Copyright (c) 2018 Studio Espresso
  */
 

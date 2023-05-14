@@ -7,7 +7,7 @@
  *
  * @author    Studio Espresso
  * @copyright Copyright (c) 2018 Studio Espresso
- * @link      https://studioespresso.co
+ * @link      https://studioespresso.dev
  * @package   Navigate
  * @since     0.0.1
  */
@@ -61,13 +61,12 @@
             <div class="btngroup" id="navigate-nodeTypes">
                 {% for nodeType in nodeTypes %}
                     <div class="btn{% if loop.first %} add icon{% endif %}"
+                         data-nav="{{ navigation.id }}"
                          data-type="{{ nodeType.handle }}">{{ nodeType.title|t('navigate') }}</div>
                 {% endfor %}
             </div>
         </div>
         {% include 'navigate/_includes/_node_template' %}
-        {% include 'navigate/_includes/_url' %}
-        {% include 'navigate/_includes/_heading' %}
     </div>
 
 {% endblock %}

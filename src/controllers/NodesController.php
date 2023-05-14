@@ -4,13 +4,14 @@
  *
  * Navigation plugin for Craft 3
  *
- * @link      https://studioespresso.co
+ * @link      https://studioespresso.dev
  * @copyright Copyright (c) 2018 Studio Espresso
  */
 
 namespace studioespresso\navigate\controllers;
 
 use Craft;
+use craft\web\assets\cp\CpAsset;
 use craft\web\Controller;
 use studioespresso\navigate\models\NodeModel;
 use studioespresso\navigate\Navigate;
@@ -46,7 +47,7 @@ class NodesController extends Controller
 
 
         if (!Craft::$app->request->getRequiredBodyParam('navId')) {
-            throw new NotFoundHttpException('Navigation not foud', 404);
+            throw new NotFoundHttpException('Navigation not found', 404);
         }
 
         $attributes = Craft::$app->request->getBodyParams();
@@ -102,14 +103,15 @@ class NodesController extends Controller
 
     }
 
-    public function actionDelete() {
+    public function actionDelete()
+    {
         $this->requireAcceptsJson();
         $this->requirePostRequest();
 
         $nodeId = Craft::$app->request->getRequiredBodyParam('nodeId');
         $node = Navigate::$plugin->nodes->getNodeById($nodeId);
 
-        if(Navigate::$plugin->nodes->deleteNode($node)) {
+        if (Navigate::$plugin->nodes->deleteNode($node)) {
             // Return data
             $returnData['success'] = true;
             $returnData['message'] = Craft::t('navigate', 'Node removed');
@@ -133,7 +135,7 @@ class NodesController extends Controller
 
         $data = Craft::$app->request->getBodyParams();
 
-        if($node->type === 'url') {
+        if ($node->type === 'url') {
             $node->setAttributes([
                 'url' => $data['url'],
             ]);
@@ -141,9 +143,9 @@ class NodesController extends Controller
 
         $node->setAttributes([
             'name' => $data['name'],
-            'enabled'  => $data['enabled'],
-            'blank'  => $data['blank'] ?? '',
-            'classes'  => $data['classes'] ?? '',
+            'enabled' => $data['enabled'],
+            'blank' => $data['blank'] ?? '',
+            'classes' => $data['classes'] ?? '',
 
         ]);
 
@@ -213,6 +215,120 @@ class NodesController extends Controller
         header('Location: ' . $url, true, 200);
         exit;
 
+    }
+
+    public function actionAddSlideOut()
+    {
+
+        // The slideout submits back to this action
+        // so check if it's a post and respond with a success
+        if ($this->request->isPost) {
+
+            if (!Craft::$app->request->getRequiredBodyParam('fields[navId]')) {
+                throw new NotFoundHttpException('Navigation not found', 404);
+            }
+
+            $data = Craft::$app->request->getBodyParams();
+            $node = new NodeModel();
+
+            if ($data['fields']['type'] === 'Url') {
+                $node->setAttributes([
+                    'type' => $data['fields']['type'],
+                    'url' => $data['fields']['url'],
+                    'classes' => $data['fields']['classes'],
+                ]);
+            }
+            if ($data['fields']['type'] === 'Heading') {
+                $node->setAttributes([
+                    'type' => $data['fields']['type'],
+                    'classes' => $data['fields']['classes'],
+                ]);
+            }
+
+            $node->setAttributes([
+                'siteId' => $data['fields']['siteId'],
+                'navId' => $data['fields']['navId'],
+                'parent' => isset($data['fields']['parent']) ? $data['fields']['parent'] : null,
+                'name' => $data['fields']['name'],
+                'blank' => isset($data['fields']['blank']) ? $data['fields']['blank'] == 'true' : false,
+                'enabled' => true,
+            ]);
+
+            if (!$node->validate()) {
+                dd($node->getErrors());
+                return $this->asFailure(Craft::t('navigate', 'Oops, something went wrong here'), $node->toArray());
+
+            }
+
+            $node = Navigate::$plugin->nodes->save($node);
+            if ($node !== false) {
+                return $this->asSuccess(Craft::t('navigate', 'Node added.'), $node->toArray());
+            }
+        }
+
+        $type = Craft::$app->getRequest()->getRequiredQueryParam('type');
+        $siteId = Craft::$app->getRequest()->getRequiredQueryParam('site');
+        $site = Craft::$app->getSites()->getSiteById($siteId);
+
+        $navId = Craft::$app->getRequest()->getRequiredQueryParam('nav');
+        $navigation = Navigate::getInstance()->navigate->getNavigationById($navId);
+
+        $node = new NodeModel();
+        $node->type = $type;
+        return $this->asCpScreen()
+            ->action('navigate/nodes/add-slide-out')
+            ->title('Add new navigation item')
+            // Render the content template
+            ->contentTemplate(
+                'navigate/_slidedout.twig', [
+                    'node' => $node,
+                    'navigation' => $navigation,
+                    'site' => $site,
+                ]
+            );
+    }
+
+    public function actionEditSlideOut()
+    {
+        if ($this->request->isPost) {
+            $nodeId = Craft::$app->request->getRequiredBodyParam('nodeId');
+            $node = Navigate::$plugin->nodes->getNodeById($nodeId);
+
+            if (!$node) {
+                throw new NotFoundHttpException('Node not found', 404);
+            }
+
+            $data = Craft::$app->request->getBodyParams();
+
+            if ($node->type === 'url') {
+                $node->setAttributes([
+                    'url' => $data['fields']['url'],
+                ]);
+            }
+
+            $node->setAttributes([
+                'name' => $data['fields']['name'],
+                'enabled' => $data['fields']['enabled'],
+                'blank' => $data['fields']['blank'] ?? '',
+                'classes' => $data['fields']['classes'] ?? '',
+
+            ]);
+            Navigate::$plugin->nodes->save($node);
+            return $this->asSuccess(Craft::t('navigate', 'Node saved.'), $node->toArray());
+
+
+        }
+
+        $nodeId = Craft::$app->getRequest()->getRequiredQueryParam('node');
+        $nodeModel = Navigate::getInstance()->nodes->getNodeById($nodeId);
+
+        return $this->asCpScreen()
+            ->action('navigate/nodes/edit-slide-out')
+            ->title('Slideout Content')
+            // Render the content template
+            ->contentTemplate(
+                'navigate/_slidedout.twig', ['node' => $nodeModel]
+            );
     }
 
 }
