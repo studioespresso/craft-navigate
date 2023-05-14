@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## 3.1.0 - xxx
+## 3.1.0 - 2023-05-14
 ### Added
 - Editing navigation nodes now uses Craft's SlideOut panel instead of a popup
 - Navigations overview is now based on Craft's VueAdminTable instead of twig
