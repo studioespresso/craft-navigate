@@ -36,8 +36,8 @@
                         <small>{{ node.url }}</small>
                     {% endif %}
                 </div>
+                <a class="move icon" title="{{ 'Move'|t('navigate') }}" data-id="{{ node.id }}"></a>
             </div>
-            <a class="move icon" title="{{ 'Move'|t('navigate') }}" data-id="{{ node.id }}"></a>
             <a class="settings icon" title="{{ 'Settings'|t('navigate') }}" data-id="{{ node.id }}"></a>
             <a class="delete icon" title="{{ 'Delete'|t('navigate') }}"></a>
             <div class="node__type">
