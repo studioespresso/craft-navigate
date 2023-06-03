@@ -8,7 +8,7 @@
             {% set siteGroups = [] %}
             {% for group in craft.app.sites.getAllGroups() %}
                 {% if group.id in navigation.enabledSiteGroups|json_decode %}
-                    {% set siteGroups = siteGroups|merge(siteGroups) %}
+                    {% set siteGroups = siteGroups|merge([group]) %}
                 {% endif %}
             {% endfor %}
         {% endif %}
