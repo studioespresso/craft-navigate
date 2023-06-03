@@ -6,8 +6,10 @@
             {% set siteGroups = craft.app.sites.getAllGroups() %}
         {% else %}
             {% set siteGroups = [] %}
-            {% for group in craft.app.sites.getAllGroups() if group.id in navigation.enabledSiteGroups|json_decode %}
-                {% set siteGroups = siteGroups|merge(siteGroups) %}
+            {% for group in craft.app.sites.getAllGroups() %}
+                {% if group.id in navigation.enabledSiteGroups|json_decode %}
+                    {% set siteGroups = siteGroups|merge([group]) %}
+                {% endif %}
             {% endfor %}
         {% endif %}
         {% for group in siteGroups %}
