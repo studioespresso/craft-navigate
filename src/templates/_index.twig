@@ -22,7 +22,7 @@
 {% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
 
 {% block actionButton %}
-    {% if craft.app.config.general.allowAdminChanges %}
+    {% if craft.app.config.general.allowAdminChanges or settings.allowWhenReadOnly  %}
         <a href="{{ url('navigate/add') }}" class="btn submit add icon">{{ 'New navigation'|t('navigate') }}</a>
     {% endif %}
 {% endblock %}
