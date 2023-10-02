@@ -10,7 +10,6 @@
 
 namespace studioespresso\navigate\extensions;
 
-use Craft;
 use Twig\Extension\AbstractExtension;
 
 /**
@@ -39,12 +38,12 @@ class NavigateExtension extends AbstractExtension
      * @param null $part
      * @return mixed
      */
-    public function parseUrl($url, $part = null) {
+    public function parseUrl($url, $part = null)
+    {
         $url = parse_url($url);
-        if($url && $part) {
+        if ($url && $part) {
             return $url[$part];
         }
         return $url;
     }
-
 }

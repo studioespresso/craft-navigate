@@ -12,7 +12,6 @@ use studioespresso\navigate\Navigate;
 
 class amNav extends Migration
 {
-
     private $newNodes = [];
 
     public function safeUp()
@@ -87,15 +86,15 @@ class amNav extends Migration
                         $node->type = 'element';
                         $node->elementType = 'entry';
                         $node->elementId = $amNavNode['elementId'];
-                    } else if ($amNavNode['elementType'] === 'Category') {
+                    } elseif ($amNavNode['elementType'] === 'Category') {
                         $node->type = 'element';
                         $node->elementType = 'category';
                         $node->elementId = $amNavNode['elementId'];
-                    } else if ($amNavNode['elementType'] === 'Asset') {
+                    } elseif ($amNavNode['elementType'] === 'Asset') {
                         $node->type = 'element';
                         $node->elementType = 'asset';
                         $node->elementId = $amNavNode['elementId'];
-                    } else if ($amNavNode['url']) {
+                    } elseif ($amNavNode['url']) {
                         $node->type = 'url';
                         $node->url = $amNavNode['url'];
                     }
@@ -109,7 +108,6 @@ class amNav extends Migration
                     } else {
                         echo "\n    > [{$nav['handle']}] ERROR: Unable to save node `{$amNavNode['name']}' ...\n";
                     }
-
                 } catch (\Throwable $e) {
                 }
             }
