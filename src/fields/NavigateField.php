@@ -57,6 +57,6 @@ class NavigateField extends Dropdown
      */
     public function getSettingsHtml():? string
     {
-        return false;
+        return '';
     }
 }
