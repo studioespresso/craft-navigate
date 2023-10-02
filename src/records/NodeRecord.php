@@ -32,6 +32,19 @@ class NodeRecord extends ActiveRecord
 {
     // Public Static Methods
     // =========================================================================
+    public $id;
+    public $name;
+    public $siteId;
+    public $navId;
+    public $type;
+    public $order;
+    public $elementType;
+    public $elementId;
+    public $parent;
+    public $url;
+    public $classes;
+    public $blank;
+    public $enabled;
 
      /**
      * Declares the name of the database table associated with this AR class.

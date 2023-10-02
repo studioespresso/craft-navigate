@@ -32,7 +32,12 @@ class NavigationRecord extends ActiveRecord
 {
     // Public Static Methods
     // =========================================================================
-
+    public $handle;
+    public $title;
+    public $levels;
+    public $adminOnly;
+    public $allowedSources;
+    public $enabledSiteGroups;
      /**
      * Declares the name of the database table associated with this AR class.
      * By default this method returns the class name as the table name by calling [[Inflector::camel2id()]]
