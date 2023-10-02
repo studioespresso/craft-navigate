@@ -110,7 +110,7 @@ class NodesController extends Controller
 
         $nodeId = Craft::$app->request->getRequiredBodyParam('nodeId');
         $node = Navigate::$plugin->nodes->getNodeById($nodeId);
-
+        $returnData = [];
         if (Navigate::$plugin->nodes->deleteNode($node)) {
             // Return data
             $returnData['success'] = true;

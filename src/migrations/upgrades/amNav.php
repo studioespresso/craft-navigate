@@ -111,7 +111,6 @@ class amNav extends Migration
                     }
 
                 } catch (\Throwable $e) {
-                    Craft::error("Error migratining $node->name");
                 }
             }
 

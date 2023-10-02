@@ -37,6 +37,7 @@ use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
 use studioespresso\navigate\variables\NavigateVariable;
 use verbb\supertable\elements\SuperTableBlockElement;
+use verbb\supertable\SuperTable;
 use yii\base\Event;
 
 /**
@@ -225,7 +226,7 @@ class Navigate extends Plugin
             function (ElementEvent $event) {
                 if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
                     if(
-                        get_class($event->element) != SuperTa::class AND
+                        get_class($event->element) != SuperTable::class AND
                         get_class($event->element) != MatrixBlock::class
                     ) {
                         if (ElementHelper::isDraftOrRevision($event->element)) {
