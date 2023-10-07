@@ -1,10 +1,8 @@
-# Navigate for Craft CMS 3.x
+# Navigate for Craft CMS
 
 ## Requirements
 
-This plugin requires Craft CMS 3.1.0 or later.
-
-A version compatible with Craft 3.0.0 can be found [here](https://github.com/studioespresso/craft3-navigate/tree/Craft_3.0.x)
+This plugin works with Craft CMS 3.x, 4.x and 5.x
 
 ## Installation
 
@@ -64,21 +62,6 @@ Here's an example of how to show a navigation and it's possible children using a
 </div>
 ```
 
-### craft.navigate.render
-
-The `render` function gives you the option to let the plugin build the HTML for you. You can add the following options:
-
-```twig
-{{ craft.navigate.render('navHandle', {
-    wrapperClass : 'navbar',
-    ulClass: 'navbar-nav',
-    listClass: 'nav-item',
-    linkClass: 'nav-link'
-}) }}
-```
-
-This will return HTML, with the classes you specified, based on how [Bootstrap](http://getbootstrap.com/docs/4.1/components/navbar/) does navigations
-
 ## Headings
 
 Since 2.3.0, headings can be added to make it easier to build larger navigations with mulitple sections or columns. To make full use of this you check check ``node.type == "heading"`` and add the html you need in the condition. 
@@ -111,4 +94,4 @@ The ``nodeClasses`` setting takes an array where that contains "Class to be appl
 Make sure to also include an empty option in case you don't want the the first item to be selected by default
 
 ---
-Brought to you by [Studio Espresso](https://www.studioespresso.dev/)
+Brought to you by [Studio Espresso](https://www.studioespresso.co/)
