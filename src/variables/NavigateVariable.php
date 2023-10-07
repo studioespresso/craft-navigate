@@ -52,25 +52,4 @@ class NavigateVariable
     {
         return Navigate::getInstance()->getSettings();
     }
-
-    /**
-     * @param $navHandle
-     * @param array $options
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \craft\errors\SiteNotFoundException
-     * @throws \yii\base\Exception
-     * @deprecated This function will be removed in the next major release
-     */
-    public function render($navHandle, array $options = [])
-    {
-        Craft::$app->getDeprecator()->log(__CLASS__ . 'render', "The `render` template function has been deprecated and will be removed on the next major release. Please change your template to use the `raw` function.");
-        $nodes = $this->raw($navHandle);
-
-        Craft::$app->view->setTemplateMode('cp');
-        $template = Craft::$app->view->renderTemplate('navigate/_render/_nav', ['nodes' => $nodes, 'classes' => $options]);
-        echo $template;
-    }
-
 }
