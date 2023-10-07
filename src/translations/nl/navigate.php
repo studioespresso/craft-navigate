@@ -63,5 +63,6 @@ return [
     'Node removed' => 'Node verwijderd',
     'Node saved.' => 'Node beweerd.',
     'Order updated' => 'Volgorde aangepast',
+    'Enable this navigation for these site groups' => 'Maak deze navigatie beschikbaar voor volgende site groepen',
     '...' => '...',
 ];
