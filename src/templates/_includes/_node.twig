@@ -7,8 +7,15 @@
                 <div class="label">
                     <span class="node__id visuallyhidden"><strong>{{ node.id }}</strong></span>
                     <span class="status {{ node.enabled ? 'on': 'off' }}"></span>
-                    {% if node.type == 'element' and node.elementType == 'entry'  %}
-                        {% set nodeEntry = craft.entries.siteId(site.id).id(node.elementId).one() %}
+                    {% if node.type == 'element' %}
+                        {% switch node.elementType %}
+                            {% case 'entry' %}
+                                {% set nodeEntry = craft.entries.siteId(site.id).id(node.elementId).one() %}
+                            {% case 'asset' %}
+                                {% set nodeEntry = craft.assets.siteId(site.id).id(node.elementId).one() %}
+                            {% case 'category' %}
+                                {% set nodeEntry = craft.categories.siteId(site.id).id(node.elementId).one() %}
+                        {% endswitch %}
                         {% if nodeEntry|length %}
                             <a href="{{ nodeEntry.getCpEditUrl() }}" target="_blank">
                                 <span class="title">{{ node.name }}</span>
@@ -19,18 +26,11 @@
                         {% else %}
                             <span class="title">{{ node.name }}</span>
                         {% endif %}
-                    {% elseif node.type == 'element' and node.elementType == 'category'  %}
-                        {% set nodeCategory = craft.categories.id(node.elementId).one() %}
-                        {% if nodeCategory|length %}
-                            <a href="{{ nodeCategory.getCpEditUrl() }}" target="_blank">
-                                <span class="title">{{ node.name }}</span>
-                            </a>
-                            {% if nodeCategory.getUrl() %}
-                            <small>{{ parse_url(nodeCategory.getUrl(), 'path') }}</small>
-                            {% endif %}
-                        {% else %}
-                            <span class="title">{{ node.name }}</span>
-                        {% endif %}
+                    {% elseif node.type == 'Url' %}
+                        <a href="{{ node.url }}" target="_blank">
+                            <span class="title settings" data-id="{{ node.id }}">{{ node.name }}</span>
+                        </a>
+                        <small>{{ node.url }}</small>
                     {% else %}
                         <span class="title settings" data-id="{{ node.id }}">{{ node.name }}</span>
                         <small>{{ node.url }}</small>
