@@ -90,5 +90,15 @@
                 <span>{{ navigation.levels }}</span>
             </div>
         </div>
+        {% if craft.app.config.general.allowAdminChanges %}
+        <div class="field" id="slug-field">
+            <div class="heading">
+                <label id="handle-label" for="handle">{{ "Documentation"|t('navigate') }}</label>
+            </div>
+            <div class="input ltr">
+                <span>{{ "Click <a href='https://github.com/studioespresso/craft-navigate' target='_blank'>here</a> for templating and configuration options"|t('navigate')|raw }}</span>
+            </div>
+        </div>
+        {% endif %}
     </div>
 {% endblock %}

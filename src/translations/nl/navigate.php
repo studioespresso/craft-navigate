@@ -65,4 +65,6 @@ return [
     'Order updated' => 'Volgorde aangepast',
     'Enable this navigation for these site groups' => 'Maak deze navigatie beschikbaar voor volgende site groepen',
     '...' => '...',
+    'Documentation' => 'Documentatie',
+    "Click <a href='https://github.com/studioespresso/craft-navigate' target='_blank'>here</a> for templating and configuration options" => "Klik <a href='https://github.com/studioespresso/craft-navigate' target='_blank'>hier</a> om template en configuratie opties te bekijken"
 ];
