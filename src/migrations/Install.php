@@ -147,12 +147,6 @@ class Install extends Migration
             );
         }
 
-        if (Craft::$app->getDb()->tableExists('{{%amnav_navs}}')) {
-            $amNavUpgrade = new amNav();
-            $amNavUpgrade->safeUp();
-        }
-
-
         return $tablesCreated;
     }
 
