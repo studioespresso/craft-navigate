@@ -24,12 +24,21 @@
         }
     ],
     "require": {
-        "craftcms/cms": "5.0.x-dev as 5.0.0-alph"
+        "craftcms/cms": "5.0.x-dev as 5.0.0-alpha.1"
+    },
+    "require-dev": {
+        "craftcms/ecs": "dev-main",
+        "craftcms/phpstan": "dev-main"
     },
     "autoload": {
         "psr-4": {
           "studioespresso\\navigate\\": "src/"
         }
+    },
+    "scripts": {
+        "check-cs": "ecs check --ansi",
+        "fix-cs": "ecs check --ansi --fix",
+        "phpstan": "phpstan --memory-limit=1G"
     },
     "extra": {
         "name": "Navigate",
@@ -42,5 +51,11 @@
             "nodes": "studioespresso\\navigate\\services\\NodesService"
         },
         "class": "studioespresso\\navigate\\Navigate"
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true,
+            "craftcms/plugin-installer": true
+        }
     }
 }

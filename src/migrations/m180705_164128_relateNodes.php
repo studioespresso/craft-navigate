@@ -24,7 +24,7 @@ class m180705_164128_relateNodes extends Migration
                 NodeRecord::tableName(),
                 'id',
                 'CASCADE'
-            )]);
+            ), ]);
     }
 
     /**
