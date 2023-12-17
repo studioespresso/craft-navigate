@@ -13,7 +13,6 @@ namespace studioespresso\navigate;
 use Craft;
 use craft\base\Model;
 use craft\base\Plugin;
-use craft\elements\MatrixBlock;
 use craft\events\ElementEvent;
 use craft\events\RebuildConfigEvent;
 use craft\events\RegisterCacheOptionsEvent;
@@ -222,10 +221,8 @@ class Navigate extends Plugin
             Elements::EVENT_AFTER_SAVE_ELEMENT,
             function(ElementEvent $event) {
                 if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
-                    if (
-                        get_class($event->element) != SuperTa::class and
-                        get_class($event->element) != MatrixBlock::class
-                    ) {
+                    /** @phpstan-ignore-next-line */
+                    if (get_class($event->element) != SuperTableBlockElement::class) {
                         if (ElementHelper::isDraftOrRevision($event->element)) {
                             return;
                         };
@@ -246,10 +243,8 @@ class Navigate extends Plugin
             Elements::EVENT_AFTER_DELETE_ELEMENT,
             function(ElementEvent $event) {
                 if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
-                    if (
-                        get_class($event->element) != SuperTableBlockElement::class and
-                        get_class($event->element) != MatrixBlock::class
-                    ) {
+                    /** @phpstan-ignore-next-line */
+                    if (get_class($event->element) != SuperTableBlockElement::class) {
                         if (ElementHelper::isDraftOrRevision($event->element)) {
                             return;
                         };

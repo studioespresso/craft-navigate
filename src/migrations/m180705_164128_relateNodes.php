@@ -15,16 +15,14 @@ class m180705_164128_relateNodes extends Migration
      */
     public function safeUp()
     {
-        $this->update(NodeRecord::tableName(), [
-            // $name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
-            'parent' => $this->addForeignKey(
-                $this->db->getForeignKeyName(NodeRecord::tableName(), 'parent'),
-                NodeRecord::tableName(),
-                'parent',
-                NodeRecord::tableName(),
-                'id',
-                'CASCADE'
-            ), ]);
+        $this->addForeignKey(
+            $this->db->getForeignKeyName(NodeRecord::tableName(), 'parent'),
+            NodeRecord::tableName(),
+            'parent',
+            NodeRecord::tableName(),
+            'id',
+            'CASCADE'
+        );
     }
 
     /**

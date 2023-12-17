@@ -121,6 +121,7 @@ class NodesService extends Component
             if (isset($this->_elements[$node->siteId][$node->elementId])) {
                 $element = $this->_elements[$node->siteId][$node->elementId];
             } else {
+                $query = false;
                 if ($node->elementType == 'entry') {
                     $query = Entry::find();
                 } elseif ($node->elementType === 'asset') {
@@ -180,7 +181,7 @@ class NodesService extends Component
         return $data;
     }
 
-    public function getNodesByNavIdAndSiteById($navId = null, $siteId, $refresh = false, $excludeDisabled = false)
+    public function getNodesByNavIdAndSiteById($navId = null, $siteId = null, $refresh = false, $excludeDisabled = false)
     {
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => null]);
@@ -197,7 +198,7 @@ class NodesService extends Component
         return $data;
     }
 
-    public function getNodesStructureByNavIdAndSiteById($navId = null, $siteId)
+    public function getNodesStructureByNavIdAndSiteById($navId = null, $siteId = null)
     {
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId]);
