@@ -1,0 +1,101 @@
+{% import "_includes/forms" as forms %}
+
+    {% if navigation is defined and navigation.id is defined %}
+        <input type="hidden" name="data[id]" value="{{ navigation.id }}">
+    {% endif %}
+<div class="field" id="name-field">
+    <div class="heading">
+        <label id="name-label" class="required" for="title">{{ 'Title'|t('navigate') }}</label>
+        <div class="instructions"><p>{{ 'What this navigation will be called in the CP.'|t('navigate') }}</p>
+        </div>
+    </div>
+    <div class="input ltr {% if errors is defined and errors.title is defined %}errors{% endif %}">
+        <input class="text fullwidth" type="text" id="title" name="data[title]"
+               {% if navigation is defined %}value="{{ navigation.title }}"{% endif %} autofocus=""
+               autocomplete="off" required="required">
+    </div>
+    {% if errors is defined and errors.title is defined %}
+        <ul class="errors">
+            {% for error in errors.title %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+<div class="field" id="handle-field">
+    <div class="heading">
+        <label id="handle-label" class="required" for="handle">{{ 'Handle'|t('navigate') }}</label>
+        <div class="instructions"><p>{{ 'How you’ll refer to this field in the templates.'|t('navigate') }}</p>
+        </div>
+    </div>
+    <div class="input ltr {% if errors is defined and errors.handle is defined %}errors{% endif %}">
+        <input class="text code fullwidth" type="text" id="handle" name="data[handle]"
+               {% if navigation is defined %}value="{{ navigation.handle }}"{% endif %} maxlength="64"
+               autocomplete="off" required="required">
+    </div>
+    {% if errors is defined and errors.handle is defined %}
+        <ul class="errors">
+            {% for error in errors.handle %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% if navigation is not defined or not navigation.handle|length %}
+    {% js %}
+        new Craft.HandleGenerator('#title', '#handle');
+    {% endjs %}
+{% endif %}
+
+    {{ forms.checkboxSelectField({
+        label: 'Enable this navigation for these site groups'|t('navigate'),
+        instructions: '',
+        id: 'enabledSiteGroups',
+        name: 'data[enabledSiteGroups]',
+        options: groups,
+        values: (navigation.enabledSiteGroups ?? '*'),
+        showAllOption: true,
+    }) }}
+
+    {{ forms.checkboxSelectField({
+        label: 'Available Sources'|t('navigate'),
+        instructions: 'Select the types of links would you like to be available in this navigation'|t('navigate'),
+        id: 'allowedSources',
+        name: 'data[allowedSources]',
+        options: sources,
+        values: (navigation is defined ? navigation.allowedSources : '*'),
+        showAllOption: true,
+    }) }}
+    {% if errors is defined and errors.allowedSources is defined %}
+        <ul class="errors">
+            {% for error in errors.allowedSources %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+<div class="field" id="handle-field">
+    <div class="heading">
+        <label id="handle-label" class="required" for="levels">{{ 'Maximum levels'|t('navigate') }}</label>
+        <div class="instructions">
+            <p>{{ 'Maximum levels of sub navigations, defaults to 1 if empty'|t('navigate') }}</p>
+        </div>
+    </div>
+    <div class="input ltr {% if errors is defined and errors.handle is defined %}errors{% endif %}">
+        <input class="text code" type="number" id="levels" min="1" max="5" name="data[levels]"
+               value="{% if navigation is defined %}{{ navigation.levels }}{% else %}1{% endif %}"
+               autocomplete="off" required="required">
+    </div>
+    {% if errors is defined and errors.levels is defined %}
+        <ul class="errors">
+            {% for error in errors.levels %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{{ forms.lightswitchField({
+    label: 'Restrict access to settings to admin users only'|t('navigate'),
+    id: 'adminOnly',
+    name: 'data[adminOnly]',
+    on: (navigation is defined ? navigation.adminOnly: '1'),
+}) }}

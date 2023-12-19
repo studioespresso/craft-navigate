@@ -11,8 +11,12 @@
 namespace studioespresso\navigate\controllers;
 
 use Craft;
+use craft\elements\User;
+use craft\helpers\Cp;
 use craft\helpers\Json;
+use craft\helpers\UrlHelper;
 use craft\web\Controller;
+use craft\web\CpScreenResponseBehavior;
 use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\Navigate;
 use yii\web\NotFoundHttpException;
@@ -56,11 +60,6 @@ class DefaultController extends Controller
         return $this->renderTemplate('navigate/_index', $data);
     }
 
-    public function actionAdd()
-    {
-        return $this->renderTemplate('navigate/_settings');
-    }
-
     public function actionSave()
     {
         $this->requirePostRequest();
@@ -95,6 +94,8 @@ class DefaultController extends Controller
             }
             $this->redirect("navigate/edit/{$navId}/{$firstSite->handle}");
         }
+
+
         if ($navId && $siteHandle) {
             $navigation = Navigate::$plugin->navigate->getNavigationById($navId);
             $sites = Craft::$app->sites->getEditableSites();
@@ -104,32 +105,66 @@ class DefaultController extends Controller
 
             $jsOptions = implode("','", [
                 $navId,
-                Json::encode($nodeTypes, JSON_UNESCAPED_UNICODE),
+                Json::encode($nodeTypes),
                 $navId,
                 $site->id,
                 $navigation->levels,
             ]);
+
+            $settings = Navigate::getInstance()->getSettings();
+            $currentSite = Craft::$app->getSites()->getSiteByHandle($this->request->getRequiredQueryParam('site'));
+
             Craft::$app->getView()->registerJs("new Craft.Navigate('" . $jsOptions . "');");
 
-            return $this->renderTemplate('navigate/_edit', [
-                'nodes' => Navigate::$plugin->nodes->getNodesByNavIdAndSiteById($navId, $site->id),
-                'nodeTypes' => $nodeTypes,
-                'navigation' => $navigation,
-                'sites' => $this->getEditAbleSites($navigation),
-                'site' => $site,
-            ]);
+            return $this->asCpScreen()
+                ->title($navigation->title ?? "New navigation")
+                ->addCrumb(Craft::t('navigate', "Navigations"), 'navigate')
+                ->crumbs([
+                    [
+                        'label' => $settings->pluginLabel,
+                        'url' => UrlHelper::cpUrl('navigate'),
+                    ],
+                    [
+                        'label' => $currentSite->name,
+                        'menu' => [
+                            'label' => Craft::t('site', 'Select site'),
+                            'items' => Cp::siteMenuItems($sites, $currentSite),
+                        ]
+                    ]
+                ])
+                ->metaSidebarTemplate('navigate/_edit/_sidebar', [
+                    'navigation' => $navigation,
+                ])
+                ->contentTemplate('navigate/_edit/_content', [
+                    'nodes' => Navigate::$plugin->nodes->getNodesByNavIdAndSiteById($navId, $currentSite->id),
+                    'nodeTypes' => $nodeTypes,
+                    'navigation' => $navigation,
+                    'site' => $currentSite,
+                    'sites' => $this->getEditAbleSites($navigation),
+                ]);
         }
     }
 
     public function actionSettings($navId = null)
     {
-        $data = [];
-        $data['sources'] = Navigate::$plugin->nodes->types;
-        $data['groups'] = $this->getSiteGroups();
+
+        $data = [
+            'sources' => Navigate::$plugin->nodes->types,
+            'groups' => $this->getSiteGroups()
+        ];
         if ($navId) {
-            $data['navigation'] = Navigate::$plugin->navigate->getNavigationById($navId);
+            $navigation = Navigate::$plugin->navigate->getNavigationById($navId);
+            $data['navigation'] = $navigation;
         }
-        return $this->renderTemplate('navigate/_settings', $data);
+
+        $settings = Navigate::$plugin->getSettings();
+
+        return $this->asCpScreen()
+            ->title($navId ? $navigation->title : Craft::t('navigate', 'New navigation'))
+            ->addCrumb(Craft::t('navigate', $settings->pluginLabel), 'navigate')
+            ->action('navigate/default/save')
+            ->redirectUrl(UrlHelper::cpUrl('navigate'))
+            ->contentTemplate('navigate/_add/_content', $data);
     }
 
     public function actionDelete()
@@ -166,7 +201,7 @@ class DefaultController extends Controller
         $editableSites = [];
         $currentUser = Craft::$app->getUser()->getIdentity();
         if (count($enabledForSites) > 1) {
-            $editableSites = array_filter($enabledForSites, function($site) use ($currentUser) {
+            $editableSites = array_filter($enabledForSites, function ($site) use ($currentUser) {
                 if ($currentUser->can("editSite:{$site->uid}")) {
                     return true;
                 }
