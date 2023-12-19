@@ -2,7 +2,7 @@
     "name": "studioespresso/craft-navigate",
     "description": "Navigation plugin for Craft 3",
     "type": "craft-plugin",
-    "version": "5.0.0-alpha.3",
+    "version": "5.0.0-alpha.4",
     "keywords": [
         "craft",
         "cms",
@@ -24,7 +24,7 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^5.0.0-alpha.1"
+        "craftcms/cms": "^5.0.0-alpha"
     },
     "require-dev": {
         "craftcms/ecs": "dev-main",
