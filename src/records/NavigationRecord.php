@@ -45,6 +45,7 @@ class NavigationRecord extends ActiveRecord
     *
     * @return string the table name
     */
+
     public static function tableName()
     {
         return '{{%navigate_navigations}}';

@@ -34,7 +34,9 @@ use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
 use studioespresso\navigate\variables\NavigateVariable;
 use verbb\supertable\elements\SuperTableBlockElement;
+use verbb\supertable\SuperTable;
 use yii\base\Event;
+
 
 /**
  * Craft plugins are very much like little applications in and of themselves. We’ve made
@@ -117,7 +119,6 @@ class Navigate extends Plugin
                 $event->rules['navigate/save'] = 'navigate/default/save';
                 $event->rules['navigate/delete'] = 'navigate/default/delete';
                 $event->rules['navigate/<action>/<navId:\d+>'] = 'navigate/default/<action>';
-                $event->rules['navigate/<action>/<navId:\d+>/<siteHandle:{handle}>'] = 'navigate/default/<action>';
                 $event->rules['navigate/settings/<navId:\d+>'] = 'navigate/default/settings';
                 $event->rules['navigate/nodes/<action>'] = 'navigate/nodes/<action>';
             }
@@ -223,6 +224,7 @@ class Navigate extends Plugin
                 if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
                     /** @phpstan-ignore-next-line */
                     if (get_class($event->element) != SuperTableBlockElement::class) {
+
                         if (ElementHelper::isDraftOrRevision($event->element)) {
                             return;
                         };
@@ -245,6 +247,7 @@ class Navigate extends Plugin
                 if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
                     /** @phpstan-ignore-next-line */
                     if (get_class($event->element) != SuperTableBlockElement::class) {
+
                         if (ElementHelper::isDraftOrRevision($event->element)) {
                             return;
                         };

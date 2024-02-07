@@ -71,7 +71,7 @@ class NodesService extends Component
         }
 
         if (Craft::$app->getConfig()->getGeneral()->devMode || Navigate::getInstance()->getSettings()->disableCaching) {
-            $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
+            $nodes = $this->getNodesByNavIdAndSiteById($site, $nav->id, true, true);
             $nodes = $this->parseNodesForRender($nodes, $nav);
             return $nodes;
         } else {
@@ -126,7 +126,7 @@ class NodesService extends Component
                     $query = Entry::find();
                 } elseif ($node->elementType === 'asset') {
                     $query = Asset::find();
-                } elseif ($node->elementType === 'category') {
+                } else {
                     $query = Category::find();
                 }
                 $query->siteId($node->siteId);
@@ -182,6 +182,7 @@ class NodesService extends Component
     }
 
     public function getNodesByNavIdAndSiteById($navId = null, $siteId = null, $refresh = false, $excludeDisabled = false)
+
     {
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => null]);
@@ -332,7 +333,7 @@ class NodesService extends Component
             $currentOrder++;
         }
 
-        $nodes = $this->getNodesStructureByNavIdAndSiteById($record->navId, $record->siteId);
+        $nodes = $this->getNodesStructureByNavIdAndSiteById($record->siteId, $record->navId);
         foreach ($nodes as $node) {
             if ($parent == $node->parent) {
                 if ($previousId && $previousId == $node->id) {
