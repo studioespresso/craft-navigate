@@ -11,7 +11,6 @@
 namespace studioespresso\navigate\controllers;
 
 use Craft;
-use craft\web\assets\cp\CpAsset;
 use craft\web\Controller;
 use studioespresso\navigate\models\NodeModel;
 use studioespresso\navigate\Navigate;
@@ -39,7 +38,6 @@ use yii\web\NotFoundHttpException;
  */
 class NodesController extends Controller
 {
-
     public function actionAdd()
     {
         $this->requirePostRequest();
@@ -58,7 +56,7 @@ class NodesController extends Controller
             $model->setAttributes([
                 'type' => $attributes['type'],
                 'elementType' => $attributes['elementType'],
-                'elementId' => $attributes['elementId']
+                'elementId' => $attributes['elementId'],
             ]);
         }
 
@@ -100,7 +98,6 @@ class NodesController extends Controller
 
             return $this->asJson($returnData);
         }
-
     }
 
     public function actionDelete()
@@ -159,7 +156,6 @@ class NodesController extends Controller
         }
 
         return $this->asJson($payload);
-
     }
 
     public function actionMove()
@@ -187,7 +183,6 @@ class NodesController extends Controller
 
             return $this->asJson($returnData);
         }
-
     }
 
     public function actionEditor()
@@ -214,7 +209,6 @@ class NodesController extends Controller
         $url = Navigate::$plugin->nodes->getNodeUrl($node);
         header('Location: ' . $url, true, 200);
         exit;
-
     }
 
     public function actionAddSlideOut()
@@ -223,7 +217,6 @@ class NodesController extends Controller
         // The slideout submits back to this action
         // so check if it's a post and respond with a success
         if ($this->request->isPost) {
-
             if (!Craft::$app->request->getRequiredBodyParam('fields[navId]')) {
                 throw new NotFoundHttpException('Navigation not found', 404);
             }
@@ -257,7 +250,6 @@ class NodesController extends Controller
             if (!$node->validate()) {
                 dd($node->getErrors());
                 return $this->asFailure(Craft::t('navigate', 'Oops, something went wrong here'), $node->toArray());
-
             }
 
             $node = Navigate::$plugin->nodes->save($node);
@@ -315,8 +307,6 @@ class NodesController extends Controller
             ]);
             Navigate::$plugin->nodes->save($node);
             return $this->asSuccess(Craft::t('navigate', 'Node saved.'), $node->toArray());
-
-
         }
 
         $nodeId = Craft::$app->getRequest()->getRequiredQueryParam('node');
@@ -330,5 +320,4 @@ class NodesController extends Controller
                 'navigate/_slidedout.twig', ['node' => $nodeModel]
             );
     }
-
 }
