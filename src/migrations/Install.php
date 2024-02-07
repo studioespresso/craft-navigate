@@ -174,6 +174,7 @@ class Install extends Migration
             'id',
             'CASCADE'
         );
+
     }
 
     /**

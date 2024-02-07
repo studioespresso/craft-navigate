@@ -66,14 +66,13 @@ class Settings extends Model
             ['anyoneCanAdd', 'boolean'],
             ['allowWhenReadOnly', 'boolean'],
             ['disableCaching', 'boolean'],
-            ['nodeClasses', 'checkIsArray'],
+            ['nodeClasses','checkIsArray'],
             ['pluginLabel', 'default', 'value' => 'Navigate'],
         ];
     }
 
-    public function checkIsArray()
-    {
-        if (!is_array($this->nodeClasses)) {
+    public function checkIsArray(){
+        if(!is_array($this->nodeClasses)){
             $this->addError('nodeClasses','nodeClasses is not array!');
         }
     }

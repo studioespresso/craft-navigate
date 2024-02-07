@@ -14,6 +14,7 @@ use Craft;
 use craft\base\Component;
 use craft\elements\Asset;
 use craft\elements\Category;
+use craft\elements\db\ElementQuery;
 use craft\elements\Entry;
 use putyourlightson\blitz\Blitz;
 use studioespresso\navigate\models\NavigationModel;
@@ -38,8 +39,9 @@ use yii\web\NotFoundHttpException;
  */
 class NodesService extends Component
 {
-    public const NAVIGATE_CACHE = "navigate_cache";
-    public const NAVIGATE_CACHE_NODES = "navigate_cache_nodes";
+
+    const NAVIGATE_CACHE = "navigate_cache";
+    const NAVIGATE_CACHE_NODES = "navigate_cache_nodes";
 
     public $types = [
         'entry' => 'Entry',
@@ -80,12 +82,12 @@ class NodesService extends Component
                     self::NAVIGATE_CACHE,
 
                     self::NAVIGATE_CACHE_NODES,
-                    self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $site,
-                ],
+                    self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $site
+                ]
             ]);
             $nodes = Craft::$app->getCache()->getOrSet(
                 self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $site,
-                function() use ($nav, $site) {
+                function () use ($nav, $site) {
                     $nodes = $this->getNodesByNavIdAndSiteById($site, $nav->id, true, true);
                     $nodes = $this->parseNodesForRender($nodes, $nav);
                     return $nodes;
@@ -121,6 +123,7 @@ class NodesService extends Component
             if (isset($this->_elements[$node->siteId][$node->elementId])) {
                 $element = $this->_elements[$node->siteId][$node->elementId];
             } else {
+
                 if ($node->elementType == 'entry') {
                     $query = Entry::find();
                 } elseif ($node->elementType === 'asset') {
@@ -147,6 +150,7 @@ class NodesService extends Component
             } else {
                 return false;
             }
+
         } elseif ($node->type === 'url') {
             $url = Craft::parseEnv($node->url);
             $node->url = Craft::$app->view->renderObjectTemplate($url, Craft::$app->getConfig()->general);
@@ -214,7 +218,7 @@ class NodesService extends Component
     public function getNodeById($id = null): NodeModel|bool
     {
         $query = NodeRecord::findOne([
-            'id' => $id,
+            'id' => $id
         ]);
         if ($query) {
             $model = new NodeModel();
@@ -260,10 +264,10 @@ class NodesService extends Component
     {
         if (isset($node->id)) {
             if (NodeRecord::deleteAll([
-                'id' => $node->id,
+                'id' => $node->id
             ])) {
                 NodeRecord::deleteAll([
-                    'parent' => $node->id,
+                    'parent' => $node->id
                 ]);
             };
         } else {
@@ -276,11 +280,12 @@ class NodesService extends Component
 
     public function save(NodeModel $node)
     {
+
         $isNew = !$node->id;
 
         if (isset($node->id)) {
             $record = NodeRecord::findOne([
-                'id' => $node->id,
+                'id' => $node->id
             ]);
         } else {
             $record = new NodeRecord();
@@ -369,7 +374,7 @@ class NodesService extends Component
             [
                 'navId' => $nav,
                 'siteId' => $site,
-                'parent' => $parent,
+                'parent' => $parent
             ]);
         $query->orderBy('order DESC');
         $query->limit(1);
@@ -379,6 +384,7 @@ class NodesService extends Component
             return (int)$result->order + 1;
         }
         return 0;
+
     }
 
     private function updateNode(NodeModel $node, $order)
@@ -406,4 +412,5 @@ class NodesService extends Component
             }
         }
     }
+
 }

@@ -16,6 +16,7 @@ use craft\events\ConfigEvent;
 use craft\helpers\StringHelper;
 use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\records\NavigationRecord;
+use yii\bootstrap\Nav;
 use yii\caching\TagDependency;
 
 /**
@@ -33,8 +34,9 @@ use yii\caching\TagDependency;
  */
 class NavigateService extends Component
 {
-    public const NAVIGATE_CACHE = "navigate_cache";
-    public const NAVIGATE_CACHE_NAV = "navigate_cache_nav";
+
+    const NAVIGATE_CACHE = "navigate_cache";
+    const NAVIGATE_CACHE_NAV = "navigate_cache_nav";
 
     public function getAllNavigations()
     {
@@ -45,8 +47,8 @@ class NavigateService extends Component
     {
         $allNavigations = NavigationRecord::find()->all();
         $currentUser = Craft::$app->getUser()->getIdentity();
-
         $navs = array_filter($allNavigations, function ($nav) use ($currentUser) {
+
             if ($nav->enabledSiteGroups === '*' || $nav->enabledSiteGroups === null) {
                 return true;
             } else {
@@ -77,7 +79,7 @@ class NavigateService extends Component
     public function getNavigationById($id)
     {
         $record = NavigationRecord::findOne([
-            'id' => $id,
+            'id' => $id
         ]);
         return new NavigationModel($record->getAttributes());
     }
@@ -86,32 +88,33 @@ class NavigateService extends Component
     {
         if (!$fromCache) {
             $nav = NavigationRecord::findOne([
-                'handle' => $handle,
+                'handle' => $handle
             ]);
         } else {
             if (Craft::$app->getConfig()->getGeneral()->devMode) {
                 return NavigationRecord::findOne([
-                    'handle' => $handle,
+                    'handle' => $handle
                 ]);
             } else {
                 $cacheTags = new TagDependency([
                     'tags' => [
                         self::NAVIGATE_CACHE,
                         self::NAVIGATE_CACHE_NAV,
-                        self::NAVIGATE_CACHE_NAV . '_' . $handle,
-                    ], ]);
+                        self::NAVIGATE_CACHE_NAV . '_' . $handle
+                    ]]);
 
                 $nav = Craft::$app->getCache()->getOrSet(
                     self::NAVIGATE_CACHE_NAV . '_' . $handle,
-                    function() use ($handle) {
+                    function () use ($handle) {
                         return NavigationRecord::findOne([
-                            'handle' => $handle,
+                            'handle' => $handle
                         ]);
                     },
                     null,
                     $cacheTags
                 );
             }
+
         }
         return $nav;
     }
@@ -119,7 +122,7 @@ class NavigateService extends Component
     public function deleteNavigationById($id)
     {
         $record = NavigationRecord::findOne([
-            'id' => $id,
+            'id' => $id
         ]);
         if ($record) {
             Craft::$app->projectConfig->remove("navigate.nav.{$record->uid}");
@@ -130,7 +133,7 @@ class NavigateService extends Component
     public function handleRemoveNavigation(ConfigEvent $event)
     {
         $record = NavigationRecord::findOne([
-            'uid' => $event->tokenMatches[0],
+            'uid' => $event->tokenMatches[0]
         ]);
         if (!$record) {
             return false;
@@ -139,7 +142,7 @@ class NavigateService extends Component
 
         if ($record->delete()) {
             TagDependency::invalidate(Craft::$app->getCache(), [
-                self::NAVIGATE_CACHE_NAV . '_' . $record->handle,
+                self::NAVIGATE_CACHE_NAV . '_' . $record->handle
             ]);
             return 1;
         };
@@ -148,7 +151,7 @@ class NavigateService extends Component
     public function handleAddNavigation(ConfigEvent $event)
     {
         $record = NavigationRecord::findOne([
-            'uid' => $event->tokenMatches[0],
+            'uid' => $event->tokenMatches[0]
         ]);
 
         if (!$record) {
@@ -172,7 +175,7 @@ class NavigateService extends Component
         $record = false;
         if (isset($model->id)) {
             $record = NavigationRecord::findOne([
-                'id' => $model->id,
+                'id' => $model->id
             ]);
         }
 
@@ -199,7 +202,7 @@ class NavigateService extends Component
                 'levels' => $record->levels,
                 'adminOnly' => $record->adminOnly,
                 'allowSources' => $record->allowedSources,
-                'enabledSiteGroups' => $record->enabledSiteGroups,
+                'enabledSiteGroups' => $record->enabledSiteGroups
             ]);
         } else {
             $record->save();
@@ -228,9 +231,10 @@ class NavigateService extends Component
                 'levels' => $nav->levels,
                 'adminOnly' => $nav->adminOnly,
                 'allowSources' => $nav->allowedSources,
-                'enabledSiteGroups' => $nav->enabledSiteGroups,
+                'enabledSiteGroups' => $nav->enabledSiteGroups
             ];
         }
         return ['nav' => $data];
     }
+
 }

@@ -2,6 +2,7 @@
 
 namespace studioespresso\navigate\migrations;
 
+use Craft;
 use craft\db\Migration;
 use studioespresso\navigate\records\NavigationRecord;
 
@@ -16,6 +17,7 @@ class m190829_193907_addEnabledSiteGroupsOption extends Migration
     public function safeUp()
     {
         $this->addColumn(NavigationRecord::tableName(), 'enabledSiteGroups', $this->text()->after('allowedSources'));
+
     }
 
     /**

@@ -96,8 +96,7 @@ class NodeModel extends Model
      * @return mixed
      * @throws \craft\errors\DeprecationException
      */
-    public function listClass()
-    {
+    public function listClass() {
         Craft::$app->getDeprecator()->log(__CLASS__ . '_listClass', "The 'listClass' method has been renamed to 'classes'.");
         return $this->classes;
     }
@@ -109,8 +108,7 @@ class NodeModel extends Model
      * @return mixed
      * @throws \craft\errors\DeprecationException
      */
-    public function hasChildren()
-    {
+    public function hasChildren() {
         Craft::$app->getDeprecator()->log(__CLASS__ . '_hasChildren', "The 'hasChildren' method has been renamed to 'children'.");
         return $this->children;
     }
@@ -127,7 +125,7 @@ class NodeModel extends Model
                 if (substr(Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
                     return true;
                 }
-                if (substr("/" . Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
+                if (substr("/". Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
                     return true;
                 }
 
@@ -137,8 +135,8 @@ class NodeModel extends Model
                     return true;
                 }
                 
-                if (strpos(Craft::$app->request->getAbsoluteUrl(), '?')) {
-                    if (explode('?', Craft::$app->request->getAbsoluteUrl())[0] === $this->url) {
+                if(strpos(Craft::$app->request->getAbsoluteUrl(), '?')) {
+                    if(explode('?', Craft::$app->request->getAbsoluteUrl())[0] === $this->url) {
                         return true;
                     }
                 }
@@ -157,7 +155,7 @@ class NodeModel extends Model
                 if (substr(Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
                     return true;
                 }
-                if (substr("/" . Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
+                if (substr("/". Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
                     return true;
                 }
 
@@ -167,13 +165,13 @@ class NodeModel extends Model
                     return true;
                 }
                 
-                if (strpos(Craft::$app->request->getAbsoluteUrl(), '?')) {
-                    if (explode('?', Craft::$app->request->getAbsoluteUrl())[0] === $this->url) {
+                if(strpos(Craft::$app->request->getAbsoluteUrl(), '?')) {
+                    if(explode('?', Craft::$app->request->getAbsoluteUrl())[0] === $this->url) {
                         return true;
                     }
                 }
                 break;
         }
         return false;
-    }
+    }    
 }

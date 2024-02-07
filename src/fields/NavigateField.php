@@ -34,10 +34,11 @@ class NavigateField extends Dropdown
         foreach ($navigations as $nav) {
             $options[] = [
                 'label' => $nav->title,
-                'value' => $nav->handle,
+                'value' => $nav->handle
             ];
         }
         $this->options = $options;
+
     }
 
     /**
@@ -54,7 +55,7 @@ class NavigateField extends Dropdown
     /**
      * @inheritdoc
      */
-    public function getSettingsHtml(): ? string
+    public function getSettingsHtml():? string
     {
         return false;
     }

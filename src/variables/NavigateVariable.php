@@ -72,4 +72,5 @@ class NavigateVariable
         $template = Craft::$app->view->renderTemplate('navigate/_render/_nav', ['nodes' => $nodes, 'classes' => $options]);
         echo $template;
     }
+
 }
