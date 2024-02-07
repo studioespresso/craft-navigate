@@ -84,41 +84,34 @@ class DefaultController extends Controller
         return $this->asSuccess("'{$model->title}' saved", [], $redirect);
     }
 
-    public function actionEdit($navId = null, $siteHandle = null)
+    public function actionEdit($navId = null)
     {
-        if (!$siteHandle) {
-            $navigation = Navigate::getInstance()->navigate->getNavigationById($navId);
-            $sites = $this->getEditAbleSites($navigation);
-            $firstSite = reset($sites);
-            if (!$firstSite) {
-                throw new NotFoundHttpException('Navigation not found', 404);
-            }
-            $this->redirect("navigate/edit/{$navId}/{$firstSite->handle}");
+        $siteParam = $this->request->getQueryParam('site');
+        $site = Craft::$app->getSites()->getPrimarySite();
+
+        if($siteParam) {
+            $site = Craft::$app->sites->getSiteByHandle($siteParam);
         }
-        if ($navId && $siteHandle) {
-            $navigation = Navigate::$plugin->navigate->getNavigationById($navId);
-            $sites = Craft::$app->sites->getEditableSites();
-            $site = Craft::$app->sites->getSiteByHandle($siteHandle);
 
-            $nodeTypes = Navigate::$plugin->nodes->getNodeTypes($navigation);
+        $navigation = Navigate::$plugin->navigate->getNavigationById($navId);
+        $nodeTypes = Navigate::$plugin->nodes->getNodeTypes($navigation);
 
-            $jsOptions = implode("','", [
-                $navId,
-                Json::encode($nodeTypes, JSON_UNESCAPED_UNICODE),
-                $navId,
-                $site->id,
-                $navigation->levels,
-            ]);
-            Craft::$app->getView()->registerJs("new Craft.Navigate('" . $jsOptions . "');");
+        $jsOptions = implode("','", [
+            $navId,
+            Json::encode($nodeTypes, JSON_UNESCAPED_UNICODE),
+            $navId,
+            $site->id,
+            $navigation->levels,
+        ]);
+        Craft::$app->getView()->registerJs("new Craft.Navigate('" . $jsOptions . "');");
 
-            return $this->renderTemplate('navigate/_edit', [
-                'nodes' => Navigate::$plugin->nodes->getNodesByNavIdAndSiteById($navId, $site->id),
-                'nodeTypes' => $nodeTypes,
-                'navigation' => $navigation,
-                'sites' => $this->getEditAbleSites($navigation),
-                'site' => $site,
-            ]);
-        }
+        return $this->renderTemplate('navigate/_edit', [
+            'nodes' => Navigate::$plugin->nodes->getNodesByNavIdAndSiteById($navId, $site->id),
+            'nodeTypes' => $nodeTypes,
+            'navigation' => $navigation,
+            'sites' => $this->getEditAbleSites($navigation),
+            'site' => $site,
+        ]);
     }
 
     public function actionSettings($navId = null)
@@ -165,7 +158,7 @@ class DefaultController extends Controller
         $editableSites = [];
         $currentUser = Craft::$app->getUser()->getIdentity();
         if (count($enabledForSites) > 1) {
-            $editableSites = array_filter($enabledForSites, function($site) use ($currentUser) {
+            $editableSites = array_filter($enabledForSites, function ($site) use ($currentUser) {
                 if ($currentUser->can("editSite:{$site->uid}")) {
                     return true;
                 }
