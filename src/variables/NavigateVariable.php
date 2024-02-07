@@ -52,5 +52,4 @@ class NavigateVariable
     {
         return Navigate::getInstance()->getSettings();
     }
-
 }

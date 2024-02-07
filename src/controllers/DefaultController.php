@@ -11,15 +11,12 @@
 namespace studioespresso\navigate\controllers;
 
 use Craft;
-use craft\elements\User;
 use craft\helpers\Cp;
 use craft\helpers\Json;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
-use craft\web\CpScreenResponseBehavior;
 use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\Navigate;
-use yii\web\NotFoundHttpException;
 
 /**
  * Default Controller
@@ -85,7 +82,6 @@ class DefaultController extends Controller
 
     public function actionEdit($navId = null)
     {
-
         if ($navId) {
             $navigation = Navigate::$plugin->navigate->getNavigationById($navId);
             $sites = Craft::$app->sites->getEditableSites();
@@ -127,8 +123,8 @@ class DefaultController extends Controller
                         'menu' => [
                             'label' => Craft::t('site', 'Select site'),
                             'items' => Cp::siteMenuItems($sites, $site),
-                        ]
-                    ]
+                        ],
+                    ],
                 ])
                 ->metaSidebarTemplate('navigate/_edit/_sidebar', [
                     'navigation' => $navigation,
@@ -141,15 +137,13 @@ class DefaultController extends Controller
                     'sites' => $this->getEditAbleSites($navigation),
                 ]);
         }
-
     }
 
     public function actionSettings($navId = null)
     {
-
         $data = [
             'sources' => Navigate::$plugin->nodes->types,
-            'groups' => $this->getSiteGroups()
+            'groups' => $this->getSiteGroups(),
         ];
         if ($navId) {
             $navigation = Navigate::$plugin->navigate->getNavigationById($navId);
@@ -200,7 +194,7 @@ class DefaultController extends Controller
         $editableSites = [];
         $currentUser = Craft::$app->getUser()->getIdentity();
         if (count($enabledForSites) > 1) {
-            $editableSites = array_filter($enabledForSites, function ($site) use ($currentUser) {
+            $editableSites = array_filter($enabledForSites, function($site) use ($currentUser) {
                 if ($currentUser->can("editSite:{$site->uid}")) {
                     return true;
                 }

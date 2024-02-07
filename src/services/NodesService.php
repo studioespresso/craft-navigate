@@ -182,7 +182,6 @@ class NodesService extends Component
     }
 
     public function getNodesByNavIdAndSiteById($navId = null, $siteId = null, $refresh = false, $excludeDisabled = false)
-
     {
         $query = NodeRecord::find();
         $query->where(['navId' => $navId, 'siteId' => $siteId, 'parent' => null]);

@@ -34,9 +34,7 @@ use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
 use studioespresso\navigate\variables\NavigateVariable;
 use verbb\supertable\elements\SuperTableBlockElement;
-use verbb\supertable\SuperTable;
 use yii\base\Event;
-
 
 /**
  * Craft plugins are very much like little applications in and of themselves. We’ve made
@@ -224,7 +222,6 @@ class Navigate extends Plugin
                 if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
                     /** @phpstan-ignore-next-line */
                     if (get_class($event->element) != SuperTableBlockElement::class) {
-
                         if (ElementHelper::isDraftOrRevision($event->element)) {
                             return;
                         };
@@ -247,7 +244,6 @@ class Navigate extends Plugin
                 if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
                     /** @phpstan-ignore-next-line */
                     if (get_class($event->element) != SuperTableBlockElement::class) {
-
                         if (ElementHelper::isDraftOrRevision($event->element)) {
                             return;
                         };
