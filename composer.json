@@ -51,5 +51,11 @@
             "nodes": "studioespresso\\navigate\\services\\NodesService"
         },
         "class": "studioespresso\\navigate\\Navigate"
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true,
+            "craftcms/plugin-installer": true
+        }
     }
 }
