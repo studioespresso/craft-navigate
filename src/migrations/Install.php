@@ -167,7 +167,7 @@ class Install extends Migration
 
         // $name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
         $this->addForeignKey(
-            $this->db->getForeignKeyName(),
+            $this->db->getForeignKeyName('{{%navigate_nodes}}', 'siteId'),
             '{{%navigate_nodes}}',
             'siteId',
             '{{%sites}}',

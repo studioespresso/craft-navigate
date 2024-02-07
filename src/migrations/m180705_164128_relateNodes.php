@@ -16,7 +16,7 @@ class m180705_164128_relateNodes extends Migration
     public function safeUp()
     {
         $this->addForeignKey(
-            $this->db->getForeignKeyName(),
+            $this->db->getForeignKeyName(NodeRecord::tableName(), 'parent'),
             NodeRecord::tableName(),
             'parent',
             NodeRecord::tableName(),

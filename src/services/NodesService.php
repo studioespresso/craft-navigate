@@ -317,9 +317,7 @@ class NodesService extends Component
 
     public function move(NodeModel $node, $parent, $previousId)
     {
-        /**
-         * @var NodeRecord$record
-         */
+        /** @var NodeRecord $object */
         $record = NodeRecord::findOne(['id' => $node->id]);
         if (!$record) {
             return false;
@@ -375,9 +373,6 @@ class NodesService extends Component
             ]);
         $query->orderBy('order DESC');
         $query->limit(1);
-        /**
-         * @var NodeRecord|null $result
-         */
         $result = $query->one();
 
         if ($result) {

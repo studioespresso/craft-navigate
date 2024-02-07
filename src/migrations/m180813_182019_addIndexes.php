@@ -18,14 +18,22 @@ class m180813_182019_addIndexes extends Migration
     {
         // seomatic_metabundles table
         $this->createIndex(
-            $this->db->getIndexName(),
+            $this->db->getIndexName(
+                NavigationRecord::tableName(),
+                'handle',
+                false
+            ),
             NavigationRecord::tableName(),
             'handle',
             false
         );
 
         $this->createIndex(
-            $this->db->getIndexName(),
+            $this->db->getIndexName(
+                NodeRecord::tableName(),
+                'id',
+                false
+            ),
             NodeRecord::tableName(),
             'id',
             false
