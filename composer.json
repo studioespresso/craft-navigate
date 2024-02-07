@@ -26,6 +26,15 @@
     "require": {
         "craftcms/cms": "^4.0.0-RC1"
     },
+    "require-dev": {
+        "craftcms/ecs": "dev-main",
+        "craftcms/phpstan": "dev-main"
+    },
+    "scripts": {
+        "check-cs": "ecs check --ansi",
+        "fix-cs": "ecs check --ansi --fix",
+        "phpstan": "phpstan --memory-limit=1G"
+    },
     "autoload": {
         "psr-4": {
           "studioespresso\\navigate\\": "src/"
