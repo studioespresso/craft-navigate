@@ -88,13 +88,11 @@ class DefaultController extends Controller
 
             $site = Craft::$app->getSites()->getPrimarySite();
 
-
             $siteParam = $this->request->getQueryParam('site');
             if ($siteParam) {
                 $site = Craft::$app->sites->getSiteByHandle($siteParam);
             }
 
-            $navigation = Navigate::$plugin->navigate->getNavigationById($navId);
             $nodeTypes = Navigate::$plugin->nodes->getNodeTypes($navigation);
 
 
