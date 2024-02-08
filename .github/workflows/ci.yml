@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - develop-v5
 permissions:
   contents: read
 concurrency:
