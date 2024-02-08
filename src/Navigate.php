@@ -223,6 +223,7 @@ class Navigate extends Plugin
             function(ElementEvent $event) {
                 if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
                     if (
+                        /** @phpstan-ignore-next-line */
                         get_class($event->element) != SuperTable::class and
                         get_class($event->element) != MatrixBlock::class
                     ) {
@@ -247,6 +248,7 @@ class Navigate extends Plugin
             function(ElementEvent $event) {
                 if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
                     if (
+                        /** @phpstan-ignore-next-line */
                         get_class($event->element) != SuperTableBlockElement::class and
                         get_class($event->element) != MatrixBlock::class
                     ) {

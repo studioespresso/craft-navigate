@@ -15,7 +15,6 @@ use craft\helpers\Json;
 use craft\web\Controller;
 use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\Navigate;
-use yii\web\NotFoundHttpException;
 
 /**
  * Default Controller
@@ -89,7 +88,7 @@ class DefaultController extends Controller
         $siteParam = $this->request->getQueryParam('site');
         $site = Craft::$app->getSites()->getPrimarySite();
 
-        if($siteParam) {
+        if ($siteParam) {
             $site = Craft::$app->sites->getSiteByHandle($siteParam);
         }
 
@@ -158,7 +157,7 @@ class DefaultController extends Controller
         $editableSites = [];
         $currentUser = Craft::$app->getUser()->getIdentity();
         if (count($enabledForSites) > 1) {
-            $editableSites = array_filter($enabledForSites, function ($site) use ($currentUser) {
+            $editableSites = array_filter($enabledForSites, function($site) use ($currentUser) {
                 if ($currentUser->can("editSite:{$site->uid}")) {
                     return true;
                 }
