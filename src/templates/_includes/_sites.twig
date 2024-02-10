@@ -20,7 +20,7 @@
                     <ul class="padded">
                     {% set groupSite = craft.app.sites.getSiteByID(siteId) %}
                     <li>
-                        <a href="{{ cpUrl('navigate/edit/'~  navigation.id ~ '/' ~  groupSite.handle) }}/"
+                        <a href="{{ cpUrl('navigate/edit/'~  navigation.id, { site: groupSite.handle}) }}"
                            {% if groupSite.handle == thisSite.handle %}class="sel"{% endif %}>
                             {{ groupSite.name }}
                         </a>
