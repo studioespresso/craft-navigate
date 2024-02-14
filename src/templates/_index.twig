@@ -41,20 +41,20 @@
         menu: {
             showItems: false,
             menuBtnTitle: 'Settings'|t('app'),
-            label: 'Edit settings',
+            label: 'Edit settings'|t('navigate'),
             url: url('navigate/settings/' ~ nav.id)
         },
     }]) %}
 {% endfor %}
 {% set actions = [] %}
 {% set columns = [
-    { name: '__slot:title', title: "Name" },
-    { name: '__slot:handle', title: "Handle" },
+    { name: '__slot:title', title: "Name"|t('app') },
+    { name: '__slot:handle', title: "Handle"|t('app') },
 ] %}
 
 {% if craft.app.config.general.allowAdminChanges %}
     {% set columns = columns|merge([
-        { name: '__slot:menu', title: "Settings" }
+        { name: '__slot:menu', title: "Settings"|t('app') }
     ]) %}
 
 {#    {% set actions = [#}

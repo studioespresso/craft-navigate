@@ -1,8 +1,8 @@
 {
     "name": "studioespresso/craft-navigate",
-    "description": "Navigation plugin for Craft 3",
+    "description": "Navigation plugin for Craft CMS",
     "type": "craft-plugin",
-    "version": "5.0.0",
+    "version": "5.0.1",
     "keywords": [
         "craft",
         "cms",
@@ -13,8 +13,8 @@
         "menus"
     ],
     "support": {
-        "docs": "https://github.com/studioespresso/craft3-navigate/blob/master/README.md",
-        "issues": "https://github.com/studioespresso/craft3-navigate/issues"
+        "docs": "https://github.com/studioespresso/craft-navigate/blob/v5/README.md",
+        "issues": "https://github.com/studioespresso/craft-navigate/issues"
     },
     "license": "proprietary",
     "authors": [
@@ -45,7 +45,7 @@
         "handle": "navigate",
         "hasCpSettings": true,
         "hasCpSection": true,
-        "changelogUrl": "https://raw.githubusercontent.com/studioespresso/craft3-navigate/master/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/studioespresso/craft-navigate/v5/CHANGELOG.md",
         "components": {
             "navigate": "studioespresso\\navigate\\services\\NavigateService",
             "nodes": "studioespresso\\navigate\\services\\NodesService"

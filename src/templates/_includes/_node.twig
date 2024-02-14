@@ -27,7 +27,7 @@
                             <span class="title">{{ node.name }}</span>
                         {% endif %}
                     {% elseif node.type == 'Url' %}
-                        <a href="{{ node.url }}" target="_blank">
+                        <a href="{{ node.url }}" rel="noopener" target="_blank">
                             <span class="title settings" data-id="{{ node.id }}">{{ node.name }}</span>
                         </a>
                         <small>{{ node.url }}</small>
