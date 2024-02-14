@@ -32,6 +32,10 @@ return [
     'URL' => 'Link',
     'Classes' => 'Classes',
     'Title' => 'Titel',
+    'Heading' => 'Hoofding',
+    'Category' => 'Categorie',
+    'Asset' => 'Bestand',
+    'Edit settings' => 'Instellingen wijzigen',
     'What this navigation will be called in the CP.' => 'Naam van deze navigatie in het CP.',
     'Handle' => 'Handle',
     'How you’ll refer to this field in the templates.' => 'Naam van deze navigatie in de templates',
@@ -66,5 +70,5 @@ return [
     'Enable this navigation for these site groups' => 'Maak deze navigatie beschikbaar voor volgende site groepen',
     '...' => '...',
     'Documentation' => 'Documentatie',
-    "Click <a href='https://github.com/studioespresso/craft-navigate' target='_blank'>here</a> for templating and configuration options" => "Klik <a href='https://github.com/studioespresso/craft-navigate' target='_blank'>hier</a> om template en configuratie opties te bekijken",
+    "Click <a href='https://github.com/studioespresso/craft-navigate' rel='noopener' target='_blank'>here</a> for templating and configuration options" => "Klik <a href='https://github.com/studioespresso/craft-navigate' rel='noopener' target='_blank'>hier</a> om template en configuratie opties te bekijken",
 ];
