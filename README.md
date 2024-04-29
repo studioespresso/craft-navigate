@@ -2,7 +2,7 @@
 
 ## Requirements
 
-This plugin requires Craft CMS 3.1.0 or later.
+This plugin requires Craft CMS 4.9.0 or later.
 
 A version compatible with Craft 3.0.0 can be found [here](https://github.com/studioespresso/craft3-navigate/tree/Craft_3.0.x)
 

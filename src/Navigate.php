@@ -14,14 +14,12 @@ use Craft;
 use craft\base\Model;
 use craft\base\Plugin;
 use craft\elements\MatrixBlock;
-use craft\events\DeleteElementEvent;
 use craft\events\ElementEvent;
 use craft\events\RebuildConfigEvent;
 use craft\events\RegisterCacheOptionsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\ElementHelper;
-use craft\log\FileTarget;
 use craft\services\Elements;
 use craft\services\Fields;
 use craft\services\ProjectConfig;
@@ -37,6 +35,7 @@ use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
 use studioespresso\navigate\variables\NavigateVariable;
 use verbb\supertable\elements\SuperTableBlockElement;
+use verbb\supertable\SuperTable;
 use yii\base\Event;
 
 /**
@@ -79,7 +78,7 @@ class Navigate extends Plugin
 
         $this->setComponents([
             "navigate" => NavigateService::class,
-            "nodes" => NodesService::class
+            "nodes" => NodesService::class,
         ]);
 
         if (Craft::$app->request->getIsCpRequest()) {
@@ -103,7 +102,7 @@ class Navigate extends Plugin
             ->onUpdate('navigate.nav.{uid}', [$this->navigate, 'handleAddNavigation'])
             ->onRemove('navigate.nav.{uid}', [$this->navigate, 'handleRemoveNavigation']);
 
-        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function (RebuildConfigEvent $event) {
+        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function(RebuildConfigEvent $event) {
             $event->config['navigate'] = Navigate::getInstance()->navigate->rebuildProjectConfig();
         });
     }
@@ -114,13 +113,12 @@ class Navigate extends Plugin
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
+            function(RegisterUrlRulesEvent $event) {
                 $event->rules['navigate'] = 'navigate/default';
                 $event->rules['navigate/add'] = 'navigate/default/settings';
                 $event->rules['navigate/save'] = 'navigate/default/save';
                 $event->rules['navigate/delete'] = 'navigate/default/delete';
                 $event->rules['navigate/<action>/<navId:\d+>'] = 'navigate/default/<action>';
-                $event->rules['navigate/<action>/<navId:\d+>/<siteHandle:{handle}>'] = 'navigate/default/<action>';
                 $event->rules['navigate/settings/<navId:\d+>'] = 'navigate/default/settings';
                 $event->rules['navigate/nodes/<action>'] = 'navigate/nodes/<action>';
             }
@@ -166,7 +164,7 @@ class Navigate extends Plugin
         return Craft::$app->view->renderTemplate(
             'navigate/settings',
             [
-                'settings' => $this->getSettings()
+                'settings' => $this->getSettings(),
             ]
         );
     }
@@ -179,7 +177,7 @@ class Navigate extends Plugin
         Event::on(
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
-            function (Event $event) {
+            function(Event $event) {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
                 $variable->set('navigate', NavigateVariable::class);
@@ -192,15 +190,15 @@ class Navigate extends Plugin
         Event::on(
             ClearCaches::class,
             ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
-            function (RegisterCacheOptionsEvent $event) {
+            function(RegisterCacheOptionsEvent $event) {
                 // Register our Control Panel routes
                 $event->options = array_merge(
                     $event->options, [
                     [
                         "key" => 'navigate_caches_all',
                         "label" => "Navigation caches (Navigate)",
-                        "action" => [Navigate::getInstance()->navigate, 'clearAllCaches']
-                    ]
+                        "action" => [Navigate::getInstance()->navigate, 'clearAllCaches'],
+                    ],
                 ]);
             }
         );
@@ -211,7 +209,7 @@ class Navigate extends Plugin
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
-            function (RegisterComponentTypesEvent $event) {
+            function(RegisterComponentTypesEvent $event) {
                 $event->types[] = NavigateField::class;
             }
         );
@@ -222,10 +220,11 @@ class Navigate extends Plugin
         Event::on(
             Elements::class,
             Elements::EVENT_AFTER_SAVE_ELEMENT,
-            function (ElementEvent $event) {
+            function(ElementEvent $event) {
                 if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
-                    if(
-                        get_class($event->element) != SuperTa::class AND
+                    if (
+                        /** @phpstan-ignore-next-line */
+                        get_class($event->element) != SuperTable::class and
                         get_class($event->element) != MatrixBlock::class
                     ) {
                         if (ElementHelper::isDraftOrRevision($event->element)) {
@@ -246,10 +245,11 @@ class Navigate extends Plugin
         Event::on(
             Elements::class,
             Elements::EVENT_AFTER_DELETE_ELEMENT,
-            function (ElementEvent $event) {
+            function(ElementEvent $event) {
                 if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
-                    if(
-                        get_class($event->element) != SuperTableBlockElement::class AND
+                    if (
+                        /** @phpstan-ignore-next-line */
+                        get_class($event->element) != SuperTableBlockElement::class and
                         get_class($event->element) != MatrixBlock::class
                     ) {
                         if (ElementHelper::isDraftOrRevision($event->element)) {
@@ -274,7 +274,7 @@ class Navigate extends Plugin
         Event::on(
             Elements::class,
             Elements::EVENT_AFTER_RESTORE_ELEMENT,
-            function (ElementEvent $event) {
+            function(ElementEvent $event) {
                 if ($event->element->id) {
                     $query = NodeRecord::find();
                     $query->where(['elementId' => $event->element->id]);
@@ -286,6 +286,5 @@ class Navigate extends Plugin
                     }
                 }
             });
-
     }
 }
