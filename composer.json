@@ -24,7 +24,7 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^4.0.0-RC1"
+        "craftcms/cms": "^4.9.0"
     },
     "require-dev": {
         "craftcms/ecs": "dev-main",
