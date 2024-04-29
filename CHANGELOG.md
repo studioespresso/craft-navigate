@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.2.0 - 2024-04-29
+### Fixed
+- Fixed styling issues in Craft 4.9+ ([#71](https://github.com/studioespresso/craft-navigate/pull/71), thanks [@brandonkelly](https://github.com/brandonkelly)!)
+
 ## 3.1.3 - 2023-07-04
 ### Fixed
 - Fixed creating new navigation on ready-only environments ([#70](https://github.com/studioespresso/craft3-navigate/issues/70))
