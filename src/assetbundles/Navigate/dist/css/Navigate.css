@@ -21,13 +21,11 @@ body.ltr .structure ul {
     margin-left: 0px;
 }
 body.ltr .structure ul li {
-    background-position: 9px 2px;
+    --background-position-x: 9px;
     padding-left: 47px;
 }
 
 body.ltr .structure ul li:not(:last-child):not(.last) {
-    padding-left: 36px;
-    border-left: 1px solid #e3e5e8;
     margin-left: 9px;
 }
 
