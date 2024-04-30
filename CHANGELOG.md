@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.1.0 - 2024-04-30
+### Fixed
+- Updated styling to match Craft 5.1.0 ([#72](https://github.com/studioespresso/craft-navigate/pull/72)) 
+
 ## 5.0.1 - 2024-02-14
 ### Fixed
 - Fixed missing Dutch translations

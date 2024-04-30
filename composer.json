@@ -2,7 +2,7 @@
     "name": "studioespresso/craft-navigate",
     "description": "Navigation plugin for Craft CMS",
     "type": "craft-plugin",
-    "version": "5.0.1",
+    "version": "5.1.0",
     "keywords": [
         "craft",
         "cms",
