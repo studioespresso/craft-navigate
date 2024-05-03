@@ -62,7 +62,7 @@ class NodesService extends Component
     }
 
 
-    public function getNodesForRender($navHandle, $site)
+    public function getNodesForRender($navHandle, $siteId)
     {
         Craft::beginProfile('getNodesForRender', __METHOD__);
         $nav = Navigate::$plugin->navigate->getNavigationByHandle($navHandle);
@@ -71,7 +71,7 @@ class NodesService extends Component
         }
 
         if (Craft::$app->getConfig()->getGeneral()->devMode || Navigate::getInstance()->getSettings()->disableCaching) {
-            $nodes = $this->getNodesByNavIdAndSiteById($site, $nav->id, true, true);
+            $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $siteId, true, true);
             $nodes = $this->parseNodesForRender($nodes, $nav);
             return $nodes;
         } else {
@@ -80,13 +80,13 @@ class NodesService extends Component
                     self::NAVIGATE_CACHE,
 
                     self::NAVIGATE_CACHE_NODES,
-                    self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $site,
+                    self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $siteId,
                 ],
             ]);
             $nodes = Craft::$app->getCache()->getOrSet(
-                self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $site,
-                function() use ($nav, $site) {
-                    $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $site, true, true);
+                self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $siteId,
+                function() use ($nav, $siteId) {
+                    $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $siteId, true, true);
                     $nodes = $this->parseNodesForRender($nodes, $nav);
                     return $nodes;
                 },
