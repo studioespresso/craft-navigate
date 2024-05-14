@@ -105,7 +105,7 @@ class DefaultController extends Controller
         Craft::$app->getView()->registerJs("new Craft.Navigate('" . $jsOptions . "');");
 
         return $this->renderTemplate('navigate/_edit', [
-            'nodes' => Navigate::$plugin->nodes->getNodesByNavIdAndSiteById($navId, $site->id),
+            'nodes' => Navigate::$plugin->nodes->getNodesByNavIdAndSiteById($site->id, $navId),
             'nodeTypes' => $nodeTypes,
             'navigation' => $navigation,
             'sites' => $this->getEditAbleSites($navigation),
