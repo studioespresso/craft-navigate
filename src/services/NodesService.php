@@ -332,7 +332,7 @@ class NodesService extends Component
             $currentOrder++;
         }
 
-        $nodes = $this->getNodesStructureByNavIdAndSiteById($record->siteId, $record->navId);
+        $nodes = $this->getNodesStructureByNavIdAndSiteById($record->navId, $record->siteId);
         foreach ($nodes as $node) {
             if ($parent == $node->parent) {
                 if ($previousId && $previousId == $node->id) {
