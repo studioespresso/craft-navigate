@@ -173,6 +173,7 @@ class NodesService extends Component
             $query->andWhere(['enabled' => 1]);
         }
         $query->orderBy('order');
+        /** @var NodeRecord $record */
         foreach ($query->all() as $record) {
             $model = new NodeModel();
             $model->setAttributes($record->getAttributes());
@@ -190,6 +191,7 @@ class NodesService extends Component
         }
         $query->orderBy('parent ASC, order ASC');
         $data = [];
+        /** @var NodeRecord $record */
         foreach ($query->all() as $record) {
             $model = new NodeModel();
             $model->setAttributes($record->getAttributes());
@@ -204,6 +206,7 @@ class NodesService extends Component
         $query->where(['navId' => $navId, 'siteId' => $siteId]);
         $query->orderBy('parent ASC, order ASC');
         $data = [];
+        /** @var NodeRecord $record */
         foreach ($query->all() as $record) {
             $model = new NodeModel();
             $model->setAttributes($record->getAttributes());
@@ -318,7 +321,7 @@ class NodesService extends Component
 
     public function move(NodeModel $node, $parent, $previousId)
     {
-        /** @var NodeRecord $object */
+        /** @var NodeRecord $record */
         $record = NodeRecord::findOne(['id' => $node->id]);
         if (!$record) {
             return false;
@@ -373,11 +376,12 @@ class NodesService extends Component
                 'parent' => $parent,
             ]);
         $query->orderBy('order DESC');
-        $query->limit(1);
-        $result = $query->one();
 
-        if ($result) {
-            return (int)$result->order + 1;
+        /* @var $record NodeRecord */
+        $record = $query->one();
+
+        if ($record) {
+            return (int)$record->order + 1;
         }
         return 0;
     }
