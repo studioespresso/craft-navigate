@@ -37,7 +37,7 @@ class NavigateVariable
      */
     public function raw($navHandle, int $siteId = null)
     {
-        if (!$siteId) {
+        if ($siteId) {
             $site = Craft::$app->getSites()->getSiteById($siteId);
             if (!$site) {
                 $siteId = Craft::$app->sites->getCurrentSite()->id;
