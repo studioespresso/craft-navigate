@@ -263,7 +263,7 @@ class NodesService extends Component
 
     public function deleteNode(NodeModel $node)
     {
-        if (isset($node->id)) {
+        if ($node->id) {
             if (NodeRecord::deleteAll([
                 'id' => $node->id,
             ])) {
@@ -283,7 +283,7 @@ class NodesService extends Component
     {
         $isNew = !$node->id;
 
-        if (isset($node->id)) {
+        if ($node->id) {
             $record = NodeRecord::findOne([
                 'id' => $node->id,
             ]);
@@ -324,7 +324,7 @@ class NodesService extends Component
     {
         /** @var NodeRecord $record */
         $record = NodeRecord::findOne(['id' => $node->id]);
-        if (!$record) {
+        if ($record === null) {
             return false;
         }
 

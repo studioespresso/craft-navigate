@@ -170,7 +170,7 @@ class NavigateService extends Component
     public function saveNavigation(NavigationModel $model)
     {
         $record = false;
-        if (isset($model->id)) {
+        if ($model->id) {
             $record = NavigationRecord::findOne([
                 'id' => $model->id,
             ]);

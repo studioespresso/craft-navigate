@@ -35,7 +35,7 @@ class NavigateExtension extends AbstractExtension
 
     /**
      * @param $url
-     * @param null $part
+     * @param string|null $part
      * @return mixed
      */
     public function parseUrl($url, $part = null)

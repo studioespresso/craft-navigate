@@ -249,7 +249,6 @@ class NodesController extends Controller
             ]);
 
             if (!$node->validate()) {
-                dd($node->getErrors());
                 return $this->asFailure(Craft::t('navigate', 'Oops, something went wrong here'), $node->toArray());
             }
 

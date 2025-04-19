@@ -31,13 +31,13 @@ class NavigateVariable
     // =========================================================================
     /**
      * @param $navHandle
-     * @param null $siteId since 2.6.0
+     * @param int|null $siteId since 2.6.0
      * @return mixed
      * @throws \craft\errors\SiteNotFoundException
      */
     public function raw($navHandle, $siteId = null)
     {
-        if ($siteId) {
+        if ($siteId === null) {
             $site = Craft::$app->getSites()->getSiteById($siteId);
             if (!$site) {
                 $siteId = Craft::$app->sites->getCurrentSite()->id;
