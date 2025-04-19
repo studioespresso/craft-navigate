@@ -324,10 +324,7 @@ class NodesService extends Component
     {
         /** @var NodeRecord $record */
         $record = NodeRecord::findOne(['id' => $node->id]);
-        if ($record === null) {
-            return false;
-        }
-
+        
         $record->parent = $parent;
         $currentOrder = 0;
 

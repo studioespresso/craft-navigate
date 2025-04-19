@@ -35,9 +35,9 @@ class NavigateVariable
      * @return mixed
      * @throws \craft\errors\SiteNotFoundException
      */
-    public function raw($navHandle, $siteId = null)
+    public function raw($navHandle, int $siteId = null)
     {
-        if ($siteId === null) {
+        if (!$siteId) {
             $site = Craft::$app->getSites()->getSiteById($siteId);
             if (!$site) {
                 $siteId = Craft::$app->sites->getCurrentSite()->id;
