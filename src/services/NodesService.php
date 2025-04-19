@@ -355,16 +355,15 @@ class NodesService extends Component
         return true;
     }
 
-    public function deleteNodesByNavId($record)
+    public function deleteNodesByNavId($record): void
     {
         $records = NodeRecord::findAll([
             'navId' => $record->id,
         ]);
 
-        foreach ($records as $record) {
-            $record->delete();
+        foreach ($records as $r) {
+            $r->delete();
         }
-        return;
     }
 
     private function getOrderForNewNode($nav, $site, $parent)
@@ -378,11 +377,9 @@ class NodesService extends Component
             ]);
         $query->orderBy('order DESC');
 
-        /* @var $record NodeRecord */
         $record = $query->one();
-
-
         if ($record) {
+            /** @var NodeRecord $record->order */
             return (int)$record->order + 1;
         }
         return 0;

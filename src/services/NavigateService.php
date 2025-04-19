@@ -185,7 +185,7 @@ class NavigateService extends Component
         $record->handle = $model->handle;
         $record->levels = $model->levels;
         $record->enabledSiteGroups = $model->enabledSiteGroups;
-        $record->adminOnly = $model->adminOnly ? 1 : 0;
+        $record->adminOnly = $model->adminOnly ? true : false;
         $record->allowedSources = $model->allowedSources;
         if (!$record->validate()) {
             return false;
