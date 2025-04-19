@@ -15,6 +15,7 @@ use craft\base\Component;
 use craft\elements\Asset;
 use craft\elements\Category;
 use craft\elements\Entry;
+use craft\helpers\App;
 use putyourlightson\blitz\Blitz;
 use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\models\NodeModel;
@@ -149,7 +150,7 @@ class NodesService extends Component
                 return false;
             }
         } elseif ($node->type === 'url') {
-            $url = Craft::parseEnv($node->url);
+            $url = App::parseEnv($node->url);
             $node->url = Craft::$app->view->renderObjectTemplate($url, Craft::$app->getConfig()->general);
         }
         if ($nav->levels > 1) {
@@ -379,6 +380,7 @@ class NodesService extends Component
 
         /* @var $record NodeRecord */
         $record = $query->one();
+
 
         if ($record) {
             return (int)$record->order + 1;
