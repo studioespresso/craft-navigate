@@ -145,6 +145,9 @@ class NodeModel extends Model
                 if (substr(Craft::$app->request->getPathInfo(), 0, strlen($this->slug . "/")) === $this->slug . "/") {
                     return true;
                 }
+                if (substr(Craft::$app->request->getPathInfo() . "/", 0, strlen($this->slug . "/")) === $this->slug . "/") {
+                    return true;
+                }
                 break;
         }
         return false;
