@@ -136,7 +136,7 @@ class NodesService extends Component
             }
 
             if ($element && $element->enabled) {
-                if (Craft::$app->getRequest()->token) {
+                if (Craft::$app->getRequest()->token && $element->getUrl()) {
                     $url = parse_url($element->getUrl());
                     unset($url['query']);
                     $url = $url['scheme'] . "://" . $url['host'] . $url['path'];
