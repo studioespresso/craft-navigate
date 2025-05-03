@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.1.3 - 2025-05-03
+### Fixed
+- Fixed an issue with element without a url throwing an error when devMode is active ([#80](https://github.com/studioespresso/craft-navigate/issues/80))
+- Added an additional active state check ([#76](https://github.com/studioespresso/craft-navigate/pull/76))
+
 ## 5.1.2 - 2024-05-16
 ### Fixed
 - Fixed an issue where moving nodes wouldn't be saved.
