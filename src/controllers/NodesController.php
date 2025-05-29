@@ -132,7 +132,6 @@ class NodesController extends Controller
         }
 
         $data = Craft::$app->request->getBodyParams();
-
         if ($node->type === 'url') {
             $node->setAttributes([
                 'url' => $data['url'],
@@ -224,7 +223,6 @@ class NodesController extends Controller
 
             $data = Craft::$app->request->getBodyParams();
             $node = new NodeModel();
-
             if ($data['fields']['type'] === 'Url') {
                 $node->setAttributes([
                     'type' => $data['fields']['type'],
@@ -291,8 +289,7 @@ class NodesController extends Controller
             }
 
             $data = Craft::$app->request->getBodyParams();
-
-            if ($node->type === 'url') {
+            if ($node->type === 'url' || $node->type === 'Url') {
                 $node->setAttributes([
                     'url' => $data['fields']['url'],
                 ]);
