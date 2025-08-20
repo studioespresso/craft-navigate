@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## 5.1.5 - Unreleased
 ### Fixed 
 - Headings should never be marked as active ([#86](https://github.com/studioespresso/craft-navigate/issues/86)
+- Fix for an error that would happen when a child element was disabled ((#84)[https://github.com/studioespresso/craft-navigate/issues/84])
 
 ## 5.1.4 - 2025-05-29
 ### Fixed
