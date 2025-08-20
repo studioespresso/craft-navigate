@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 5.1.5 - Unreleased
+## 5.1.5 - 2025-08-20
 ### Fixed 
 - Headings should never be marked as active ([#86](https://github.com/studioespresso/craft-navigate/issues/86)
+- Fix for an error that would happen when a child element was disabled ((#84)[https://github.com/studioespresso/craft-navigate/issues/84])
 
 ## 5.1.4 - 2025-05-29
 ### Fixed

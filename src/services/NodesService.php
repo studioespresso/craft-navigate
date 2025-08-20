@@ -156,9 +156,11 @@ class NodesService extends Component
         if ($nav->levels > 1) {
             $node->children = $node->getChildren();
             if ($node->children) {
+                $childNodes = [];
                 foreach ($node->children as $child) {
-                    $node->children[$child->order] = $this->parseNode($child, $nav);
+                    $childNodes[$child->order] = $this->parseNode($child, $nav);
                 }
+                $node->children = array_filter($childNodes);
             }
         }
         $this->_nodes[$node->id] = $node;
