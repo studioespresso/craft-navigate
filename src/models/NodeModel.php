@@ -92,9 +92,9 @@ class NodeModel extends Model
 
     /**
      * Added to make migrating from amNav easier
-     * @since 2.6.0
      * @return mixed
      * @throws \craft\errors\DeprecationException
+     * @since 2.6.0
      */
     public function listClass()
     {
@@ -105,9 +105,9 @@ class NodeModel extends Model
 
     /**
      * Added to make migrating from amNav easier
-     * @since 2.6.0
      * @return mixed
      * @throws \craft\errors\DeprecationException
+     * @since 2.6.0
      */
     public function hasChildren()
     {
@@ -130,13 +130,14 @@ class NodeModel extends Model
                 if (substr("/" . Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
                     return true;
                 }
-
                 break;
+            case 'heading':
+                return false;
             default:
                 if ($this->url === Craft::$app->request->getAbsoluteUrl()) {
                     return true;
                 }
-                
+
                 if (strpos(Craft::$app->request->getAbsoluteUrl(), '?')) {
                     if (explode('?', Craft::$app->request->getAbsoluteUrl())[0] === $this->url) {
                         return true;
@@ -163,13 +164,14 @@ class NodeModel extends Model
                 if (substr("/" . Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
                     return true;
                 }
-
                 break;
+            case 'heading':
+                return false;
             default:
                 if ($this->url === Craft::$app->request->getAbsoluteUrl()) {
                     return true;
                 }
-                
+
                 if (strpos(Craft::$app->request->getAbsoluteUrl(), '?')) {
                     if (explode('?', Craft::$app->request->getAbsoluteUrl())[0] === $this->url) {
                         return true;
