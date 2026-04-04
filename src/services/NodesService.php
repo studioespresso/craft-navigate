@@ -71,7 +71,7 @@ class NodesService extends Component
             return false;
         }
 
-        if (Craft::$app->getConfig()->getGeneral()->devMode || Navigate::getInstance()->getSettings()->disableCaching) {
+        if (Craft::$app->getConfig()->getGeneral()->devMode || Navigate::getInstance()->getSettings()->disableCaching || Craft::$app->getRequest()->getIsPreview() || Craft::$app->getRequest()->token) {
             $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $siteId, true, true);
             $nodes = $this->parseNodesForRender($nodes, $nav);
             return $nodes;

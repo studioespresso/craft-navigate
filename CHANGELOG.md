@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 5.1.6 - 2026-04-04
+### Fixed
+- Fixed an issue where preview URLs could be cached and served to non-preview visitors ([#90](https://github.com/studioespresso/craft-navigate/issues/90))
+
 ## 5.1.5 - 2025-08-20
 ### Fixed 
 - Headings should never be marked as active ([#86](https://github.com/studioespresso/craft-navigate/issues/86)
