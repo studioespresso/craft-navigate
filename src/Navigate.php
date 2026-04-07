@@ -33,7 +33,6 @@ use studioespresso\navigate\records\NodeRecord;
 use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
 use studioespresso\navigate\variables\NavigateVariable;
-use verbb\supertable\elements\SuperTableBlockElement;
 use yii\base\Event;
 
 /**
@@ -219,14 +218,9 @@ class Navigate extends Plugin
             Elements::class,
             Elements::EVENT_AFTER_SAVE_ELEMENT,
             function(ElementEvent $event) {
-                if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
-                    /** @phpstan-ignore-next-line */
-                    if (get_class($event->element) != SuperTableBlockElement::class) {
-                        if (ElementHelper::isDraftOrRevision($event->element)) {
-                            return;
-                        };
-                    }
-                };
+                if (ElementHelper::isDraftOrRevision($event->element)) {
+                    return;
+                }
                 if ($event->element->id) {
                     $query = NodeRecord::find();
                     $query->where(['elementId' => $event->element->id]);
@@ -241,14 +235,9 @@ class Navigate extends Plugin
             Elements::class,
             Elements::EVENT_AFTER_DELETE_ELEMENT,
             function(ElementEvent $event) {
-                if (version_compare(Craft::$app->getVersion(), '3.2.0', '>=')) {
-                    /** @phpstan-ignore-next-line */
-                    if (get_class($event->element) != SuperTableBlockElement::class) {
-                        if (ElementHelper::isDraftOrRevision($event->element)) {
-                            return;
-                        };
-                    }
-                };
+                if (ElementHelper::isDraftOrRevision($event->element)) {
+                    return;
+                }
                 if ($event->element->id) {
                     $query = NodeRecord::find();
                     $query->where(['elementId' => $event->element->id]);
