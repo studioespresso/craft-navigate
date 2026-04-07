@@ -1,8 +1,8 @@
 <?php
 /**
- * Navigate plugin for Craft CMS 3.x
+ * Navigate plugin for Craft CMS
  *
- * Navigation plugin for Craft 3
+ * Navigation plugin for Craft CMS
  *
  * @link      https://studioespresso.dev
  * @copyright Copyright (c) 2018 Studio Espresso

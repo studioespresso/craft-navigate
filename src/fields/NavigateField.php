@@ -1,8 +1,8 @@
 <?php
 /**
- * Date Range plugin for Craft CMS 3.x
+ * Navigate plugin for Craft CMS
  *
- * Date range field
+ * Navigation plugin for Craft CMS
  *
  * @link      https://studioespresso.dev/en
  * @copyright Copyright (c) 2019 Studio Espresso
