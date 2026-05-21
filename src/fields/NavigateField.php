@@ -48,14 +48,4 @@ class NavigateField extends Dropdown
     {
         return Craft::t('navigate', 'Navigation');
     }
-
-    // Public Methods
-    // =========================================================================
-    /**
-     * @inheritdoc
-     */
-    public function getSettingsHtml(): ? string
-    {
-        return null;
-    }
 }
