@@ -1,0 +1,36 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Navigate for Craft CMS",
+  "description": "Navigate is a Craft CMS plugin for building menus and navigations. Navigations are containers (title, handle, levels, allowed sources); nodes are the items inside them (URL, entry/asset/category element, or heading), and can be nested. Read a navigation in Twig with craft.navigate.raw('handle'); create navigations and nodes programmatically through the NavigateService and NodesService.",
+  "folders": [
+    "src/services",
+    "src/models",
+    "src/variables"
+  ],
+  "excludeFolders": [
+    "src/assetbundles",
+    "src/templates",
+    "src/translations",
+    "src/migrations"
+  ],
+  "excludeFiles": [
+    "composer.lock",
+    "LICENSE.md"
+  ],
+  "rules": [
+    "To read a navigation for output use the Twig variable craft.navigate.raw('navHandle') or craft.navigate.raw('navHandle', siteId). It returns an ordered array of nodes; each node exposes name, url, classes, blank, type, children, active() and current().",
+    "The PHP write API lives on two services: Navigate::$plugin->navigate (NavigateService, manages navigations) and Navigate::$plugin->nodes (NodesService, manages nodes/items).",
+    "Create or update a navigation with Navigate::$plugin->navigate->saveNavigation(NavigationModel). Required NavigationModel attributes are title, handle, allowedSources and enabledSiteGroups. Use '*' for allowedSources (all element types) and '*' for enabledSiteGroups (all site groups). levels defaults to 1 (flat menu); set levels > 1 to allow nested children.",
+    "saveNavigation() returns a boolean, NOT the saved model. To get the new navigation's id, re-fetch it: Navigate::$plugin->navigate->getNavigationByHandle('handle', false) returns a NavigationRecord with ->id (pass false to skip the cache).",
+    "Add an item with Navigate::$plugin->nodes->save(NodeModel). It returns the saved NodeModel (with ->id) on success, or false on failure. Required NodeModel attributes are name, navId, siteId and type.",
+    "A node's type must be lowercase: 'url', 'element', or 'heading'. For a 'url' node set the url attribute. For an 'element' node set elementType ('entry', 'asset' or 'category') and elementId. For a 'heading' node only name is needed. Do NOT use capitalized type values ('Url', 'Heading') when calling the service directly — only lowercase values are resolved by the renderer.",
+    "Known issue: the Control-Panel add/edit-item slide-out (NodesController::actionAddSlideOut() and actionEditSlideOut()) compares the submitted type against capitalized 'Url'/'Heading', but node types are stored and rendered in lowercase (url, element, heading — see NodesService::parseNode() and NodeModel::active()/current()). Those capitalized branches don't fire, so a node's url/classes may not be set through that slide-out path. The console commands and the service API use the correct lowercase values; always use lowercase when setting type yourself.",
+    "For element nodes you do not set url/slug — they are resolved from the linked element at render time, following the element's current URI per site.",
+    "Nest a node by setting its parent attribute to the parent node's id. The parent navigation's levels must be greater than 1 for children to render. save() auto-assigns the order (appends within the parent) for new nodes.",
+    "Optional NodeModel attributes: enabled (bool, default true), blank (bool, open in new tab), classes (string of CSS classes), parent (parent node id).",
+    "Node siteId is per-site: a navigation's items are stored per site. Use Craft::$app->sites->getCurrentSite()->id or a specific site id when creating nodes.",
+    "The quickest way to build navigations is the console commands (no auth needed, --json output available). List navigations: ./craft navigate/navigations/list --json. Create one: ./craft navigate/navigations/create \"Main menu\" mainMenu --levels=2. List items: ./craft navigate/nodes/list mainMenu --json. Add an item: ./craft navigate/nodes/add mainMenu \"Home\" --type=url --url=/.",
+    "For navigate/nodes/add, --type is one of url, entry, asset, category, heading. url requires --url; entry/asset/category require --element-id. Optional: --parent=<nodeId> to nest, --site=<handle|id> (defaults to primary site), --blank, --classes. create and add print the new record's id (use --json to read it back and use it as a --parent).",
+    "There are no GraphQL mutations. Besides the console commands, you can call the PHP services directly (NavigateService / NodesService) from a migration, module, or tinker/eval context."
+  ]
+}
