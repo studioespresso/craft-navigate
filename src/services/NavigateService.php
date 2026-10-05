@@ -15,6 +15,7 @@ use craft\base\Component;
 use craft\events\ConfigEvent;
 use craft\helpers\StringHelper;
 use studioespresso\navigate\models\NavigationModel;
+use studioespresso\navigate\Navigate;
 use studioespresso\navigate\records\NavigationRecord;
 use yii\caching\TagDependency;
 
@@ -214,6 +215,8 @@ class NavigateService extends Component
             Craft::$app->getCache(),
             $tags
         );
+        // Pages that render a navigation, e.g. after a linked entry's title or URL changed
+        Navigate::getInstance()->nodes->invalidatePageCaches([NodesService::PAGE_CACHE_TAG]);
     }
 
     public function rebuildProjectConfig()

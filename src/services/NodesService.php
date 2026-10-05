@@ -15,7 +15,9 @@ use craft\base\Component;
 use craft\elements\Asset;
 use craft\elements\Category;
 use craft\elements\Entry;
+use craft\events\InvalidateElementCachesEvent;
 use craft\helpers\App;
+use craft\services\Elements;
 use putyourlightson\blitz\Blitz;
 use studioespresso\navigate\models\NavigationModel;
 use studioespresso\navigate\models\NodeModel;
@@ -41,6 +43,8 @@ class NodesService extends Component
 {
     public const NAVIGATE_CACHE = "navigate_cache";
     public const NAVIGATE_CACHE_NODES = "navigate_cache_nodes";
+    /** Cache tag of pages that render a navigation, for `{% cache %}` blocks and page caches (`navigate:{handle}:{siteId}` per navigation). */
+    public const PAGE_CACHE_TAG = "navigate";
 
     public $types = [
         'entry' => 'Entry',
@@ -70,6 +74,9 @@ class NodesService extends Component
         if (!$nav) {
             return false;
         }
+
+        // Tag the page (or {% cache %} block) that renders this navigation, so node changes only invalidate those
+        Craft::$app->getElements()->collectCacheTags([self::PAGE_CACHE_TAG, self::PAGE_CACHE_TAG . ":{$nav->handle}:{$siteId}"]);
 
         if (Craft::$app->getConfig()->getGeneral()->devMode || Navigate::getInstance()->getSettings()->disableCaching || Craft::$app->getRequest()->getIsPreview() || Craft::$app->getRequest()->token) {
             $nodes = $this->getNodesByNavIdAndSiteById($nav->id, $siteId, true, true);
@@ -393,6 +400,22 @@ class NodesService extends Component
         return $result;
     }
 
+    /**
+     * Invalidates the caches of pages that render a navigation: `{% cache %}` blocks, and anything listening to
+     * Elements::EVENT_INVALIDATE_CACHES (static/proxy cache purgers such as Varnish Purger). Nodes aren't elements,
+     * so Craft doesn't do this by itself.
+     *
+     * @param string[] $tags
+     */
+    public function invalidatePageCaches(array $tags): void
+    {
+        TagDependency::invalidate(Craft::$app->getCache(), $tags);
+        $elements = Craft::$app->getElements();
+        if ($elements->hasEventHandlers(Elements::EVENT_INVALIDATE_CACHES)) {
+            $elements->trigger(Elements::EVENT_INVALIDATE_CACHES, new InvalidateElementCachesEvent(['tags' => $tags]));
+        }
+    }
+
     private function _clearCacheForNav(NodeModel $node): void
     {
         $nav = Navigate::getInstance()->navigate->getNavigationById($node->navId);
@@ -400,6 +423,8 @@ class NodesService extends Component
             Craft::$app->getCache(),
             [self::NAVIGATE_CACHE_NODES . '_' . $nav->handle . '_' . $node->siteId]
         );
+
+        $this->invalidatePageCaches([self::PAGE_CACHE_TAG . ":{$nav->handle}:{$node->siteId}"]);
 
         // If putyourlightson/craft-blitz is installed & activacted, clear that cache too
         if (Craft::$app->getPlugins()->isPluginEnabled('blitz') && class_exists("putyourlightson\blitz\Blitz")) {
