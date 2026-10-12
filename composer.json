@@ -28,7 +28,8 @@
     },
     "require-dev": {
         "craftcms/ecs": "dev-main",
-        "craftcms/phpstan": "dev-main"
+        "craftcms/phpstan": "dev-main",
+        "phpunit/phpunit": "^11.5"
     },
     "autoload": {
         "psr-4": {
@@ -39,7 +40,8 @@
         "check-cs": "ecs check --ansi",
         "fix-cs": "ecs check --ansi --fix",
         "phpstan": "phpstan --memory-limit=1G",
-        "ci": "ecs check --ansi --fix && phpstan --memory-limit=1G"
+        "ci": "ecs check --ansi --fix && phpstan --memory-limit=1G",
+        "test": "phpunit"
     },
     "extra": {
         "name": "Navigate",
