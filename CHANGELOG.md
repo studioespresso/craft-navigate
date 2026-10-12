@@ -8,6 +8,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 - Pages that render a navigation now get the `navigate` and `navigate:{handle}:{siteId}` cache tags. Saving, moving or deleting a node invalidates that navigation's tag, and changes to linked elements invalidate `navigate`, so `{% cache %}` blocks and cache purgers listening to `Elements::EVENT_INVALIDATE_CACHES` pick up navigation changes without clearing every cache
 
+### Fixed
+- `node.active` and `node.current` now compare the host as well as the path. A link to another (sub)domain, e.g. `jobs.domain.com`, is no longer marked active on the main site. Path matching also respects segment boundaries now, so `/news` is no longer active on `/newsletter`
+
 ## 5.1.6 - 2026-04-04
 ### Fixed
 - Fixed an issue where preview URLs could be cached and served to non-preview visitors ([#90](https://github.com/studioespresso/craft-navigate/issues/90))
