@@ -122,63 +122,46 @@ class NodeModel extends Model
 
     public function active()
     {
-        switch ($this->type) {
-            case 'url':
-                if (substr(Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
-                    return true;
-                }
-                if (substr("/" . Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
-                    return true;
-                }
-                break;
-            case 'heading':
-                return false;
-            default:
-                if ($this->url === Craft::$app->request->getAbsoluteUrl()) {
-                    return true;
-                }
-
-                if (strpos(Craft::$app->request->getAbsoluteUrl(), '?')) {
-                    if (explode('?', Craft::$app->request->getAbsoluteUrl())[0] === $this->url) {
-                        return true;
-                    }
-                }
-                if (substr(Craft::$app->request->getPathInfo(), 0, strlen($this->slug . "/")) === $this->slug . "/") {
-                    return true;
-                }
-                if (substr(Craft::$app->request->getPathInfo() . "/", 0, strlen($this->slug . "/")) === $this->slug . "/") {
-                    return true;
-                }
-                break;
-        }
-        return false;
+        return $this->matchesRequest(true);
     }
 
     public function current()
     {
-        switch ($this->type) {
-            case 'url':
-                if (substr(Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
-                    return true;
-                }
-                if (substr("/" . Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
-                    return true;
-                }
-                break;
-            case 'heading':
-                return false;
-            default:
-                if ($this->url === Craft::$app->request->getAbsoluteUrl()) {
-                    return true;
-                }
+        return $this->matchesRequest(false);
+    }
 
-                if (strpos(Craft::$app->request->getAbsoluteUrl(), '?')) {
-                    if (explode('?', Craft::$app->request->getAbsoluteUrl())[0] === $this->url) {
-                        return true;
-                    }
-                }
-                break;
+    /**
+     * Compares the node's URL with the current request: same host, and the same path
+     * (or, with $includeDescendants, a path below it). The homepage only matches itself.
+     */
+    private function matchesRequest(bool $includeDescendants): bool
+    {
+        if ($this->type === 'heading' || !$this->url) {
+            return false;
         }
-        return false;
+
+        $node = parse_url((string)$this->url);
+        if ($node === false || (isset($node['scheme']) && !in_array(strtolower($node['scheme']), ['http', 'https']))) {
+            return false;
+        }
+
+        $request = Craft::$app->getRequest();
+        if (isset($node['host']) && strcasecmp($node['host'], (string)$request->getHostName()) !== 0) {
+            return false;
+        }
+
+        // Fragment- or query-only links ("#contact", "?page=2") don't point to a page
+        if (!isset($node['host']) && ($node['path'] ?? '') === '') {
+            return false;
+        }
+
+        $nodePath = trim($node['path'] ?? '', '/');
+        $currentPath = trim((string)parse_url($request->getAbsoluteUrl(), PHP_URL_PATH), '/');
+
+        if ($nodePath === $currentPath) {
+            return true;
+        }
+
+        return $includeDescendants && $nodePath !== '' && str_starts_with($currentPath . '/', $nodePath . '/');
     }
 }
