@@ -1,0 +1,234 @@
+/* Navigate: navigation list and structure editor */
+
+.navigate-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--c-text-sm);
+}
+
+.navigate-table th,
+.navigate-table td {
+    padding: var(--c-spacing-sm) var(--c-spacing-md);
+    border-bottom: 1px solid var(--c-color-border-quiet);
+    text-align: start;
+}
+
+.navigate-table thead th {
+    font-weight: 600;
+    color: var(--c-text-quiet);
+}
+
+.navigate-table__actions {
+    width: 1%;
+    white-space: nowrap;
+    text-align: end;
+}
+
+/* Structure editor */
+
+.navigate-structure {
+    display: grid;
+    gap: var(--c-spacing-lg);
+}
+
+.navigate-structure__add {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--c-spacing-sm);
+}
+
+.navigate-tree {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navigate-tree .navigate-tree {
+    margin-inline-start: var(--c-spacing-xl);
+    padding-inline-start: var(--c-spacing-md);
+    border-inline-start: 1px dashed var(--c-color-border-normal);
+}
+
+.navigate-node__row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--c-spacing-sm);
+    margin-block: 2px;
+    padding: var(--c-spacing-xs) var(--c-spacing-sm);
+    border: 1px solid var(--c-color-border-quiet);
+    border-radius: var(--c-radius-md);
+    background-color: var(--c-surface-raised, var(--c-surface-default));
+    transition: background-color .3s ease;
+}
+
+.navigate-node__row:hover,
+.navigate-node__row:focus-within {
+    border-color: var(--c-color-border-normal);
+}
+
+.navigate-node__handle {
+    flex: none;
+    width: 10px;
+    height: 16px;
+    cursor: grab;
+    background-image: radial-gradient(currentColor 1px, transparent 1.5px);
+    background-size: 5px 5px;
+    color: var(--c-text-quiet);
+}
+
+.navigate-node__status {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: var(--c-radius-full);
+    background-color: var(--c-color-border-loud);
+}
+
+.navigate-node__status--on {
+    background-color: var(--c-color-emerald-fill-loud, #10b981);
+}
+
+.navigate-node__label {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--c-spacing-xs) var(--c-spacing-sm);
+    min-width: 0;
+}
+
+.navigate-node__title {
+    font-weight: 500;
+}
+
+.navigate-node__meta {
+    color: var(--c-text-quiet);
+    font-size: var(--c-text-xs);
+    word-break: break-all;
+}
+
+.navigate-node__meta--warning {
+    color: var(--c-color-danger-on-normal, inherit);
+}
+
+.navigate-node__type {
+    flex: none;
+    padding: 1px var(--c-spacing-sm);
+    border-radius: var(--c-radius-sm);
+    background-color: var(--c-surface-sunken);
+    color: var(--c-text-quiet);
+    font-size: var(--c-text-xs);
+}
+
+/* Actions show on hover and keyboard focus, and stay in the layout so they're always reachable */
+.navigate-node__actions {
+    display: flex;
+    flex: none;
+    gap: 2px;
+    opacity: 0;
+}
+
+.navigate-node__row:hover .navigate-node__actions,
+.navigate-node__row:focus-within .navigate-node__actions {
+    opacity: 1;
+}
+
+@media (hover: none) {
+    .navigate-node__actions {
+        opacity: 1;
+    }
+}
+
+/* Dragging */
+
+.navigate-node.is-dragging > .navigate-node__row {
+    opacity: .4;
+}
+
+.navigate-node__row.is-drop-inside {
+    border-color: var(--c-color-accent-border-loud);
+    background-color: var(--c-color-accent-fill-quiet);
+}
+
+.navigate-node__row.is-drop-before::before,
+.navigate-node__row.is-drop-after::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    height: 2px;
+    background-color: var(--c-color-accent-fill-loud);
+    pointer-events: none;
+}
+
+.navigate-node__row.is-drop-before::before {
+    top: -3px;
+}
+
+.navigate-node__row.is-drop-after::after {
+    bottom: -3px;
+}
+
+.navigate-node__row.is-moved {
+    background-color: var(--c-color-accent-fill-quiet);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .navigate-node__row {
+        transition: none;
+    }
+}
+
+/* Sidebar */
+
+/* Copied from core's DetailsTabs, which scopes these to its Vue component */
+.navigate-details,
+:has(> .navigate-details) {
+    block-size: 100%;
+}
+
+.navigate-details::part(base) {
+    gap: 0;
+}
+
+.navigate-details::part(strip) {
+    box-sizing: border-box;
+    inline-size: var(--cp-rail-width);
+    padding: var(--c-spacing-md);
+    border-inline-start: 1px solid var(--c-color-border-quiet);
+    background-color: var(--c-surface-sunken);
+}
+
+.navigate-details craft-tab {
+    display: grid;
+    place-items: center;
+    width: var(--c-size-touch-target);
+    aspect-ratio: 1;
+    padding: 0;
+    border: 1px solid var(--c-color-border-quiet);
+    border-radius: var(--c-radius-md);
+    background-color: var(--c-surface-raised);
+}
+
+.navigate-details craft-tab[selected='true'] {
+    border-color: var(--c-color-accent-border-normal);
+    background-color: var(--c-color-accent-fill-quiet);
+    color: var(--c-color-accent-on-quiet);
+}
+
+.navigate-details craft-tab[selected='true']::after {
+    display: none;
+}
+
+.navigate-details__settings {
+    margin-top: var(--c-spacing-lg);
+}
+
+.navigate-details__docs {
+    margin-top: var(--c-spacing-md);
+}
+
+.navigate-details__docs craft-icon {
+    font-size: 0.75em;
+    vertical-align: baseline;
+}

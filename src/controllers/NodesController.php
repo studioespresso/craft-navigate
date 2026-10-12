@@ -1,320 +1,277 @@
 <?php
-/**
- * Navigate plugin for Craft CMS 3.x
- *
- * Navigation plugin for Craft 3
- *
- * @link      https://studioespresso.dev
- * @copyright Copyright (c) 2018 Studio Espresso
- */
 
 namespace studioespresso\navigate\controllers;
 
-use Craft;
-use craft\web\Controller;
-use studioespresso\navigate\models\NodeModel;
+use CraftCms\Cms\Cp\Data\ActionItem;
+use CraftCms\Cms\Cp\Html\MenuHtml;
+use CraftCms\Cms\Form\Controls\Choice;
+use CraftCms\Cms\Form\Controls\Lightswitch;
+use CraftCms\Cms\Form\Controls\Text;
+use CraftCms\Cms\Form\Form;
+use CraftCms\Cms\Form\FormContext;
+use CraftCms\Cms\Form\FormResolver;
+use CraftCms\Cms\Form\Nodes\Field;
+use CraftCms\Cms\Form\Nodes\HiddenField;
+use CraftCms\Cms\Http\RespondsWithFlash;
+use CraftCms\Cms\Http\Responses\CpScreenResponse;
+use CraftCms\Cms\Site\Data\Site;
+use CraftCms\Cms\Support\Facades\Sites;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
+use InvalidArgumentException;
+use studioespresso\navigate\controllers\concerns\NavigateScreens;
 use studioespresso\navigate\Navigate;
-use yii\web\NotFoundHttpException;
+use studioespresso\navigate\records\NavigationRecord;
+use studioespresso\navigate\records\NodeRecord;
+use studioespresso\navigate\services\NodesService;
+use Symfony\Component\HttpFoundation\Response;
 
-/**
- * Default Controller
- *
- * Generally speaking, controllers are the middlemen between the front end of
- * the CP/website and your plugin’s services. They contain action methods which
- * handle individual tasks.
- *
- * A common pattern used throughout Craft involves a controller action gathering
- * post data, saving it on a model, passing the model off to a service, and then
- * responding to the request appropriately depending on the service method’s response.
- *
- * Action methods begin with the prefix “action”, followed by a description of what
- * the method does (for example, actionSaveIngredient()).
- *
- * https://craftcms.com/docs/plugins/controllers
- *
- * @author    Studio Espresso
- * @package   Navigate
- * @since     0.0.1
- */
-class NodesController extends Controller
+use function CraftCms\Cms\t;
+use function CraftCms\Cms\template;
+
+class NodesController
 {
-    public function actionAdd()
+    use NavigateScreens;
+    use RespondsWithFlash;
+
+    /** The structure editor of a navigation */
+    public function structure(Request $request, int $navId): CpScreenResponse
     {
-        $this->requirePostRequest();
-        $this->requireAcceptsJson();
+        $navigation = $this->navigation($navId);
+        $site = $this->site($request, $navigation);
+        $this->registerAssets();
 
-
-        if (!Craft::$app->request->getRequiredBodyParam('navId')) {
-            throw new NotFoundHttpException('Navigation not found', 404);
+        $crumbs = $this->crumbs();
+        if (Sites::isMultiSite()) {
+            $crumbs[] = new ActionItem()
+                ->label(t($site->getName(), category: 'site'))
+                ->items(app(MenuHtml::class)->siteMenuItems(Navigate::getInstance()->navigate->getEditableSites($navigation)->all(), $site));
         }
 
-        $attributes = Craft::$app->request->getBodyParams();
-
-        $model = new NodeModel();
-
-        if ($attributes['type'] === 'element') {
-            $model->setAttributes([
-                'type' => $attributes['type'],
-                'elementType' => $attributes['elementType'],
-                'elementId' => $attributes['elementId'],
-            ]);
-        }
-
-        if ($attributes['type'] === 'url') {
-            $model->setAttributes([
-                'type' => $attributes['type'],
-                'url' => $attributes['url'],
-                'classes' => $attributes['classes'],
-            ]);
-        }
-        if ($attributes['type'] === 'heading') {
-            $model->setAttributes([
-                'type' => $attributes['type'],
-                'classes' => $attributes['classes'],
-            ]);
-        }
-
-        $model->setAttributes([
-            'siteId' => $attributes['siteId'],
-            'navId' => $attributes['navId'],
-            'parent' => isset($attributes['parent']) ? $attributes['parent'] : null,
-            'name' => $attributes['name'],
-            'blank' => isset($attributes['blank']) ? $attributes['blank'] == 'true' : false,
-            'enabled' => true,
-        ]);
-
-        if (!$model->validate()) {
-            $returnData['success'] = false;
-            $returnData['message'] = Craft::t('navigate', 'Oops, something went wrong here');
-            return $this->asJson($returnData);
-        }
-
-        $node = Navigate::$plugin->nodes->save($model);
-        if ($node !== false) {
-            // Return data
-            $returnData['success'] = true;
-            $returnData['message'] = Craft::t('navigate', 'Node added.');
-            $returnData['nodeData'] = $node;
-
-            return $this->asJson($returnData);
-        }
+        return new CpScreenResponse()
+            ->title(t($navigation->title, category: 'site'))
+            ->crumbs($crumbs)
+            ->contentTemplate('navigate/_edit/_content', [
+                'navigation' => $navigation,
+                'site' => $site,
+                'nodeTypes' => Navigate::getInstance()->nodes->getNodeTypes($navigation),
+                'elementTypes' => NodesService::ELEMENT_TYPES,
+                'tree' => $this->renderTree($navigation, $site),
+            ])
+            ->metaSidebarTemplate('navigate/_edit/_sidebar', [
+                'navigation' => $navigation,
+                'canEditSettings' => $this->canEditSettings($navigation),
+            ])
+            ->inertiaPage('cp/Screen');
     }
 
-    public function actionDelete()
+    /** The tree HTML, re-fetched by the structure editor after each change */
+    public function tree(Request $request): Response
     {
-        $this->requireAcceptsJson();
-        $this->requirePostRequest();
+        $navigation = $this->navigation($request->query('navId'));
 
-        $nodeId = Craft::$app->request->getRequiredBodyParam('nodeId');
-        $node = Navigate::$plugin->nodes->getNodeById($nodeId);
-        $returnData = [];
-
-        if (Navigate::$plugin->nodes->deleteNode($node)) {
-            // Return data
-            $returnData['success'] = true;
-            $returnData['message'] = Craft::t('navigate', 'Node removed');
-            $returnData['nodeData'] = $node;
-        }
-
-        return $this->asJson($returnData);
+        return response($this->renderTree($navigation, $this->site($request, $navigation, 'siteId')));
     }
 
-    public function actionUpdate()
+    /** The form to add a URL or heading node, or to edit any node; opened in a slideout by the structure editor */
+    public function edit(Request $request): CpScreenResponse
     {
-        $this->requireAcceptsJson();
-        $this->requirePostRequest();
-
-        $nodeId = Craft::$app->request->getRequiredBodyParam('nodeId');
-        $node = Navigate::$plugin->nodes->getNodeById($nodeId);
-
-        if (!$node) {
-            throw new NotFoundHttpException('Node not found', 404);
-        }
-
-        $data = Craft::$app->request->getBodyParams();
-        if ($node->type === 'url') {
-            $node->setAttributes([
-                'url' => $data['url'],
-            ]);
-        }
-
-        $node->setAttributes([
-            'name' => $data['name'],
-            'enabled' => $data['enabled'],
-            'blank' => $data['blank'] ?? '',
-            'classes' => $data['classes'] ?? '',
-
-        ]);
-
-        $payload = array('success' => false);
-
-        $save = Navigate::$plugin->nodes->save($node);
-        if ($save) {
-            $payload['success'] = true;
-            $payload['message'] = Craft::t('navigate', 'Node saved.');
-            $payload['nodeData'] = $node;
-        }
-
-        return $this->asJson($payload);
-    }
-
-    public function actionMove()
-    {
-        $this->requirePostRequest();
-        $this->requireAcceptsJson();
-
-        $nodeId = Craft::$app->request->getRequiredBodyParam('nodeId');
-
-        // Get node
-        $node = Navigate::$plugin->nodes->getNodeById($nodeId);
-        if (!$node) {
-            throw new NotFoundHttpException('Node not found', 404);
-        }
-
-        $prevId = Craft::$app->request->getBodyParam('prevId', false);
-        $parentId = Craft::$app->request->getBodyParam('parentId', null);
-        // Move it move it!
-        $moved = Navigate::$plugin->nodes->move($node, $parentId, $prevId);
-        if ($moved) {
-            // Return data
-            $returnData['success'] = true;
-            $returnData['message'] = Craft::t('navigate', 'Order updated');
-            $returnData['nodeData'] = $node;
-
-            return $this->asJson($returnData);
-        }
-    }
-
-    public function actionEditor()
-    {
-        $this->requirePostRequest();
-        $this->requireAcceptsJson();
-
-        $nodeId = Craft::$app->request->getRequiredBodyParam('nodeId');
-
-        // Get node
-        $node = Navigate::$plugin->nodes->getNodeById($nodeId);
-        if (!$node) {
-            throw new NotFoundHttpException('Node not foud', 404);
-        }
-
-        $payload['html'] = Craft::$app->view->renderTemplate('navigate/_includes/_editor', ['node' => $node]);
-
-        return $this->asJson($payload);
-    }
-
-    public function actionUrl($id)
-    {
-        $node = Navigate::$plugin->nodes->getNodeById($id);
-        $url = Navigate::$plugin->nodes->getNodeUrl($node);
-        header('Location: ' . $url, true, 200);
-        exit;
-    }
-
-    public function actionAddSlideOut()
-    {
-
-        // The slideout submits back to this action
-        // so check if it's a post and respond with a success
-        if ($this->request->isPost) {
-            if (!Craft::$app->request->getRequiredBodyParam('fields[navId]')) {
-                throw new NotFoundHttpException('Navigation not found', 404);
-            }
-
-            $data = Craft::$app->request->getBodyParams();
-            $node = new NodeModel();
-            if ($data['fields']['type'] === 'Url') {
-                $node->setAttributes([
-                    'type' => $data['fields']['type'],
-                    'url' => $data['fields']['url'],
-                    'classes' => $data['fields']['classes'],
-                ]);
-            }
-            if ($data['fields']['type'] === 'Heading') {
-                $node->setAttributes([
-                    'type' => $data['fields']['type'],
-                    'classes' => $data['fields']['classes'],
-                ]);
-            }
-
-            $node->setAttributes([
-                'siteId' => $data['fields']['siteId'],
-                'navId' => $data['fields']['navId'],
-                'parent' => isset($data['fields']['parent']) ? $data['fields']['parent'] : null,
-                'name' => $data['fields']['name'],
-                'blank' => isset($data['fields']['blank']) ? $data['fields']['blank'] == 'true' : false,
+        $node = $request->filled('nodeId')
+            ? NodeRecord::query()->findOrFail($request->integer('nodeId'))
+            : new NodeRecord([
+                'navId' => $request->integer('navId'),
+                'siteId' => $request->integer('siteId'),
+                'type' => $request->query('type'),
                 'enabled' => true,
             ]);
 
-            if (!$node->validate()) {
-                return $this->asFailure(Craft::t('navigate', 'Oops, something went wrong here'), $node->toArray());
-            }
+        $navigation = $this->navigation($node->navId);
+        $this->authorizeSite($navigation, $node->siteId);
+        abort_unless($node->exists || in_array($node->type, ['url', 'heading'], true), 400);
 
-            $node = Navigate::$plugin->nodes->save($node);
-            if ($node !== false) {
-                return $this->asSuccess(Craft::t('navigate', 'Node added.'), $node->toArray());
-            }
-        }
+        $classes = Navigate::getInstance()->getSettings()->nodeClasses;
+        $classesControl = $classes
+            ? Choice::make('classes')->options(collect($classes)->map(fn ($label, $value) => ['label' => $label, 'value' => (string) $value])->values()->all())
+            : Text::make('classes');
 
-        $type = Craft::$app->getRequest()->getRequiredQueryParam('type');
-        $siteId = Craft::$app->getRequest()->getRequiredQueryParam('site');
-        $site = Craft::$app->getSites()->getSiteById($siteId);
+        $form = Form::make(array_values(array_filter([
+            HiddenField::make('nodeId'),
+            HiddenField::make('navId'),
+            HiddenField::make('siteId'),
+            HiddenField::make('type'),
+            Field::make(t('Name', category: 'navigate'), Text::make('name'))->required(),
+            $node->type === 'url'
+                ? Field::make(t('URL', category: 'navigate'), Text::make('url'))->required()
+                    ->instructions(t('Can contain environment variables and `{config}` tokens.', category: 'navigate'))
+                : null,
+            Field::make(t('Enabled', category: 'navigate'), Lightswitch::make('enabled'))
+                ->instructions(t('Show or hide in navigation.', category: 'navigate')),
+            $node->type !== 'heading'
+                ? Field::make(t('Open in a new window', category: 'navigate'), Lightswitch::make('blank'))
+                : null,
+            Field::make(t($classes ? 'Style' : 'Classes', category: 'navigate'), $classesControl)
+                ->instructions(t("These css classes will be applied to this node's list item", category: 'navigate')),
+        ])));
 
-        $navId = Craft::$app->getRequest()->getRequiredQueryParam('nav');
-        $navigation = Navigate::getInstance()->navigate->getNavigationById($navId);
+        $payload = app(FormResolver::class)->resolve($form, new FormContext(values: [
+            'nodeId' => $node->id,
+            'navId' => $node->navId,
+            'siteId' => $node->siteId,
+            'type' => $node->type,
+            'name' => $node->name,
+            'url' => $node->url,
+            'enabled' => $node->enabled,
+            'blank' => $node->blank,
+            'classes' => $node->classes,
+        ]));
 
-        $node = new NodeModel();
-        $node->type = $type;
-        return $this->asCpScreen()
-            ->action('navigate/nodes/add-slide-out')
-            ->title('Add new navigation item')
-            // Render the content template
-            ->contentTemplate(
-                'navigate/_slidedout.twig', [
-                    'node' => $node,
-                    'navigation' => $navigation,
-                    'site' => $site,
-                ]
-            );
+        return new CpScreenResponse()
+            ->title($node->exists ? t('Edit “{name}”', ['name' => $node->name], 'navigate') : t('Add new navigation item', category: 'navigate'))
+            ->crumbs($this->crumbs())
+            ->inertiaPage('Form', [
+                'form' => $payload,
+                'submit' => [
+                    'method' => 'post',
+                    'url' => $request->fullUrl(),
+                ],
+            ]);
     }
 
-    public function actionEditSlideOut()
+    /** Saves the node form */
+    public function save(Request $request): Response
     {
-        if ($this->request->isPost) {
-            $nodeId = Craft::$app->request->getRequiredBodyParam('nodeId');
-            $node = Navigate::$plugin->nodes->getNodeById($nodeId);
+        $node = $request->filled('nodeId')
+            ? NodeRecord::query()->findOrFail($request->integer('nodeId'))
+            : new NodeRecord(['navId' => $request->integer('navId'), 'siteId' => $request->integer('siteId')]);
 
-            if (!$node) {
-                throw new NotFoundHttpException('Node not found', 404);
-            }
+        $navigation = $this->navigation($node->navId);
+        $this->authorizeSite($navigation, $node->siteId);
 
-            $data = Craft::$app->request->getBodyParams();
-            if ($node->type === 'url' || $node->type === 'Url') {
-                $node->setAttributes([
-                    'url' => $data['fields']['url'],
-                ]);
-            }
+        $type = $node->exists ? $node->type : $request->input('type');
+        $values = $request->validate([
+            // Only new nodes get a type from the request; element nodes are added through addElements()
+            'type' => $node->exists ? [] : ['required', Rule::in(['url', 'heading'])],
+            'name' => ['required', 'string', 'max:255'],
+            'url' => [$type === 'url' ? 'required' : 'nullable', 'string', 'max:255'],
+            'classes' => ['nullable', 'string', 'max:255'],
+        ]);
 
-            $node->setAttributes([
-                'name' => $data['fields']['name'],
-                'enabled' => $data['fields']['enabled'],
-                'blank' => $data['fields']['blank'] ?? '',
-                'classes' => $data['fields']['classes'] ?? '',
+        $node->fill([
+            'type' => $type,
+            'name' => $values['name'],
+            'url' => $type === 'url' ? $values['url'] : $node->url,
+            'classes' => $values['classes'] ?? null,
+            'enabled' => $request->boolean('enabled'),
+            'blank' => $type !== 'heading' && $request->boolean('blank'),
+        ]);
+        Navigate::getInstance()->nodes->save($node);
 
-            ]);
-            Navigate::$plugin->nodes->save($node);
-            return $this->asSuccess(Craft::t('navigate', 'Node saved.'), $node->toArray());
+        return $this->asModelSuccess($node, t('Node saved.', category: 'navigate'), 'node');
+    }
+
+    /** Adds the elements picked in the element selector modal */
+    public function addElements(Request $request): Response
+    {
+        $values = $request->validate([
+            'navId' => ['required', 'integer'],
+            'siteId' => ['required', 'integer'],
+            'elementType' => ['required', Rule::in(array_keys(NodesService::ELEMENT_TYPES))],
+            'elements' => ['required', 'array'],
+            'elements.*.id' => ['required', 'integer'],
+            'elements.*.label' => ['nullable', 'string'],
+            'elements.*.status' => ['nullable', 'string'],
+        ]);
+
+        $navigation = $this->navigation($values['navId']);
+        $this->authorizeSite($navigation, $values['siteId']);
+        abort_unless(in_array($values['elementType'], array_column(Navigate::getInstance()->nodes->getNodeTypes($navigation), 'handle'), true), 403);
+
+        foreach ($values['elements'] as $element) {
+            Navigate::getInstance()->nodes->save(new NodeRecord([
+                'navId' => $navigation->id,
+                'siteId' => $values['siteId'],
+                'type' => 'element',
+                'elementType' => $values['elementType'],
+                'elementId' => $element['id'],
+                'name' => $element['label'] ?? '',
+                'enabled' => ($element['status'] ?? 'live') !== 'disabled',
+                'blank' => false,
+            ]));
         }
 
-        $nodeId = Craft::$app->getRequest()->getRequiredQueryParam('node');
-        $nodeModel = Navigate::getInstance()->nodes->getNodeById($nodeId);
+        return $this->asSuccess(t('Node added.', category: 'navigate'));
+    }
 
-        return $this->asCpScreen()
-            ->action('navigate/nodes/edit-slide-out')
-            ->title('Slideout Content')
-            // Render the content template
-            ->contentTemplate(
-                'navigate/_slidedout.twig', ['node' => $nodeModel]
-            );
+    public function delete(Request $request): Response
+    {
+        $node = NodeRecord::query()->findOrFail($request->integer('nodeId'));
+        $this->authorizeSite($this->navigation($node->navId), $node->siteId);
+        Navigate::getInstance()->nodes->delete($node);
+
+        return $this->asSuccess(t('Node removed', category: 'navigate'));
+    }
+
+    /** Saves the order and nesting after a node was moved */
+    public function saveTree(Request $request): Response
+    {
+        $values = $request->validate([
+            'navId' => ['required', 'integer'],
+            'siteId' => ['required', 'integer'],
+            'tree' => ['present', 'array'],
+        ]);
+
+        $navigation = $this->navigation($values['navId']);
+        $this->authorizeSite($navigation, $values['siteId']);
+
+        try {
+            Navigate::getInstance()->nodes->saveTree($navigation, $values['siteId'], $values['tree']);
+        } catch (InvalidArgumentException $e) {
+            return $this->asFailure($e->getMessage());
+        }
+
+        return $this->asSuccess(t('Order updated', category: 'navigate'));
+    }
+
+    private function authorizeSite(NavigationRecord $navigation, int $siteId): void
+    {
+        abort_unless(Navigate::getInstance()->navigate->getEditableSites($navigation)->contains('id', $siteId), 403);
+    }
+
+    private function renderTree(NavigationRecord $navigation, Site $site): string
+    {
+        $tree = Navigate::getInstance()->nodes->getTree($navigation->id, $site->id);
+
+        return template('navigate/_edit/_tree', [
+            'tree' => $tree,
+            'elements' => $this->elementsForTree($tree, $site),
+            'navigation' => $navigation,
+        ]);
+    }
+
+    /**
+     * The elements the element nodes point to, keyed by "{type}:{id}", fetched in one query per type.
+     *
+     * @param  Collection<int, Collection<int, NodeRecord>>  $tree
+     */
+    private function elementsForTree(Collection $tree, Site $site): array
+    {
+        $elements = [];
+        $byType = $tree->flatten()->where('type', 'element')->groupBy('elementType');
+
+        foreach ($byType as $type => $nodes) {
+            $class = NodesService::ELEMENT_TYPES[$type] ?? null;
+            if (! $class) {
+                continue;
+            }
+            foreach ($class::find()->id($nodes->pluck('elementId')->all())->siteId($site->id)->status(null)->get() as $element) {
+                $elements["$type:$element->id"] = [
+                    'cpEditUrl' => $element->getCpEditUrl(),
+                    'path' => ($url = $element->getUrl()) ? parse_url($url, PHP_URL_PATH) : null,
+                ];
+            }
+        }
+
+        return $elements;
     }
 }

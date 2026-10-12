@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Changed
+- Navigate is now a native Craft 6 plugin, it no longer requires the yii2 adapter
+- Rebuilt the structure editor, nodes can now be moved with drag & drop or the keyboard
+- The node form now opens in Craft's slideout
+- Moved to Laravel Pint & Larastan
+
+### Removed
+- Removed support for category nodes
+- Removed the `parse_url` Twig filter and the `_render` templates
+
 ## 6.0.0-alpha.2 - 2026-05-21
 ### Fixed
 - Fixed an error in the navigations field

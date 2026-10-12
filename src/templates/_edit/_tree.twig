@@ -1,0 +1,51 @@
+{# The structure editor's tree; re-rendered by the server after every change #}
+{% macro branch(tree, parent, level, elements, navigation) %}
+    <ol class="navigate-tree" data-level="{{ level }}">
+        {% for node in tree[parent] ?? [] %}
+            {% set element = node.type == 'element' ? (elements[node.elementType ~ ':' ~ node.elementId] ?? null) : null %}
+            {% set typeLabel = node.type == 'element' ? node.elementType : node.type %}
+            <li class="navigate-node" data-id="{{ node.id }}" data-level="{{ level }}">
+                <div class="navigate-node__row" draggable="true">
+                    <span class="navigate-node__handle" aria-hidden="true" title="{{ 'Drag to move'|t('navigate') }}"></span>
+                    <span class="navigate-node__status navigate-node__status--{{ node.enabled ? 'on' : 'off' }}"
+                          title="{{ node.enabled ? 'Enabled'|t('app') : 'Disabled'|t('app') }}"></span>
+                    <span class="navigate-node__label">
+                        {% if element and element.cpEditUrl %}
+                            <a class="navigate-node__title" href="{{ element.cpEditUrl }}" target="_blank">{{ node.name }}</a>
+                        {% else %}
+                            <span class="navigate-node__title">{{ node.name }}</span>
+                        {% endif %}
+                        {% if node.type == 'element' and not element %}
+                            <small class="navigate-node__meta navigate-node__meta--warning">{{ 'Missing element'|t('navigate') }}</small>
+                        {% elseif element and element.path %}
+                            <small class="navigate-node__meta">{{ element.path }}</small>
+                        {% elseif node.type == 'url' %}
+                            <small class="navigate-node__meta">{{ node.url }}</small>
+                        {% endif %}
+                        {% if node.blank %}<small class="navigate-node__meta">{{ 'New window'|t('navigate') }}</small>{% endif %}
+                    </span>
+                    <span class="navigate-node__type">{{ typeLabel|capitalize|t('navigate') }}</span>
+                    <span class="navigate-node__actions">
+                        <craft-button size="small" variant="plain" icon="arrow-up" data-action="up">{{ 'Move up'|t('navigate') }}</craft-button>
+                        <craft-button size="small" variant="plain" icon="arrow-down" data-action="down">{{ 'Move down'|t('navigate') }}</craft-button>
+                        {% if navigation.levels > 1 %}
+                            <craft-button size="small" variant="plain" icon="arrow-left" data-action="outdent">{{ 'Move out'|t('navigate') }}</craft-button>
+                            <craft-button size="small" variant="plain" icon="arrow-right" data-action="indent">{{ 'Move in'|t('navigate') }}</craft-button>
+                        {% endif %}
+                        <craft-button size="small" variant="plain" icon="pen" data-action="edit">{{ 'Edit'|t('app') }}</craft-button>
+                        <craft-button size="small" variant="plain" icon="trash" data-action="delete" data-name="{{ node.name }}">{{ 'Delete'|t('app') }}</craft-button>
+                    </span>
+                </div>
+                {% if tree[node.id] is defined and level < navigation.levels %}
+                    {{ _self.branch(tree, node.id, level + 1, elements, navigation) }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ol>
+{% endmacro %}
+
+{% if tree[0] is defined %}
+    {{ _self.branch(tree, 0, 1, elements, navigation) }}
+{% else %}
+    <craft-empty label="{{ 'Use the buttons above to start adding items to your navigation'|t('navigate') }}"></craft-empty>
+{% endif %}

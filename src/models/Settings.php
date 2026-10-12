@@ -1,80 +1,32 @@
 <?php
-/**
- * Navigate plugin for Craft CMS 3.x
- *
- * Navigation plugin for Craft 3
- *
- * @link      https://studioespresso.dev
- * @copyright Copyright (c) 2018 Studio Espresso
- */
 
 namespace studioespresso\navigate\models;
 
-use craft\base\Model;
+use CraftCms\Cms\Plugin\PluginSettings;
 
-/**
- * Navigate Settings Model
- *
- * This is a model used to define the plugin's settings.
- *
- * Models are containers for data. Just about every time information is passed
- * between services, controllers, and templates in Craft, it’s passed via a model.
- *
- * https://craftcms.com/docs/plugins/models
- *
- * @author    Studio Espresso
- * @package   Navigate
- * @since     0.0.1
- */
-class Settings extends Model
+class Settings extends PluginSettings
 {
-    // Public Properties
-    // =========================================================================
+    public string $pluginLabel = 'Navigate';
 
-    /**
-     * Some field model attribute
-     *
-     * @var string
-     */
-    public $pluginLabel = 'Navigate';
+    /** Whether non-admin users can add and delete navigations */
+    public bool $anyoneCanAdd = false;
 
-    public $anyoneCanAdd = false;
+    public bool $disableCaching = false;
 
-    public $disableCaching = false;
+    /** Whether navigations can be created while admin changes are disallowed */
+    public bool $allowWhenReadOnly = false;
 
-    public $allowWhenReadOnly = false;
+    /** @var array<string, string> Class to apply => label, turns the classes field into a dropdown */
+    public array $nodeClasses = [];
 
-    public $nodeClasses = [];
-
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * Returns the validation rules for attributes.
-     *
-     * Validation rules are used by [[validate()]] to check if attribute values are valid.
-     * Child classes may override this method to declare different validation rules.
-     *
-     * More info: http://www.yiiframework.com/doc-2.0/guide-input-validation.html
-     *
-     * @return array
-     */
-    public function rules(): array
+    public function getRules(): array
     {
         return [
-            ['pluginLabel', 'string'],
-            ['anyoneCanAdd', 'boolean'],
-            ['allowWhenReadOnly', 'boolean'],
-            ['disableCaching', 'boolean'],
-            ['nodeClasses', 'checkIsArray'],
-            ['pluginLabel', 'default', 'value' => 'Navigate'],
+            'pluginLabel' => ['nullable', 'string'],
+            'anyoneCanAdd' => ['boolean'],
+            'allowWhenReadOnly' => ['boolean'],
+            'disableCaching' => ['boolean'],
+            'nodeClasses' => ['array'],
         ];
-    }
-
-    public function checkIsArray()
-    {
-        if (!is_array($this->nodeClasses)) {
-            $this->addError('nodeClasses','nodeClasses is not array!');
-        }
     }
 }

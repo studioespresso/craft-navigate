@@ -1,41 +1,48 @@
 <?php
-/**
- * Navigate plugin for Craft CMS
- *
- * @link      https://studioespresso.co
- * @copyright Copyright (c) 2018 Studio Espresso
- */
 
 namespace studioespresso\navigate\records;
 
-use craft\db\ActiveRecord;
+use CraftCms\Cms\Shared\BaseModel;
+use CraftCms\Cms\Shared\Concerns\HasUid;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**
- *
- * @author    Studio Espresso
- * @package   Navigate
- * @since     0.0.1
- *
  * @property int $id
- * @property int $navId
  * @property int $siteId
- * @property int $parent
- * @property int $order
- * @property string $type
- * @property string $elementId
- * @property string $elementType
- * @property string $url
- * @property string $classes
- * @property bool $blank
- * @property bool $enabled
+ * @property int $navId
  * @property string $name
+ * @property string|null $url
+ * @property int|null $elementId
+ * @property string|null $elementType entry|asset
+ * @property string|null $type element|url|heading
+ * @property bool $enabled
+ * @property bool $blank
+ * @property string|null $classes
+ * @property int|null $parent
+ * @property int|null $order
  */
-class NodeRecord extends ActiveRecord
+class NodeRecord extends BaseModel
 {
-    // Public Static Methods
-    // =========================================================================
-    public static function tableName()
+    use HasUid;
+
+    protected $table = 'navigate_nodes';
+
+    protected $casts = [
+        'siteId' => 'int',
+        'navId' => 'int',
+        'elementId' => 'int',
+        'enabled' => 'bool',
+        'blank' => 'bool',
+        'parent' => 'int',
+        'order' => 'int',
+    ];
+
+    /** Older versions stored `Url`/`Heading`; always work with lowercase types */
+    protected function type(): Attribute
     {
-        return '{{%navigate_nodes}}';
+        return Attribute::make(
+            get: fn (?string $value) => $value === null ? null : strtolower($value),
+            set: fn (?string $value) => $value === null ? null : strtolower($value),
+        );
     }
 }

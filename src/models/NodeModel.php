@@ -1,184 +1,130 @@
 <?php
-/**
- * Navigate plugin for Craft CMS 3.x
- *
- * Navigation plugin for Craft 3
- *
- * @link      https://studioespresso.dev
- * @copyright Copyright (c) 2018 Studio Espresso
- */
 
 namespace studioespresso\navigate\models;
 
-use Craft;
-use craft\base\Model;
-use studioespresso\navigate\Navigate;
+use CraftCms\Cms\Support\Facades\Deprecator;
+use studioespresso\navigate\records\NodeRecord;
 
 /**
- * Navigate Settings Model
- *
- * This is a model used to define the plugin's settings.
- *
- * Models are containers for data. Just about every time information is passed
- * between services, controllers, and templates in Craft, it’s passed via a model.
- *
- * https://craftcms.com/docs/plugins/models
- *
- * @author    Studio Espresso
- * @package   Navigate
- * @since     0.0.1
+ * A navigation node as returned by `craft.navigate.raw()`.
  */
-class NodeModel extends Model
+class NodeModel
 {
-    // Public Properties
-    // =========================================================================
+    public ?int $id = null;
 
-    /**
-     * Some field model attribute
-     *
-     * @var string
-     */
-    public $id;
+    public ?string $name = null;
 
-    public $name;
+    public ?int $navId = null;
 
-    public $navId;
+    public ?int $siteId = null;
 
-    public $siteId;
+    /** element|url|heading */
+    public ?string $type = null;
 
-    public $type;
+    public ?string $url = null;
 
-    public $url;
+    /** The element's URI, for element nodes */
+    public ?string $slug = null;
 
-    public $slug;
+    public ?int $order = null;
 
-    public $order;
+    public ?int $parent = null;
 
-    public $parent;
+    public ?string $classes = null;
 
-    public $classes;
+    public bool $enabled = true;
 
-    public $enabled = true;
+    public ?int $elementId = null;
 
-    public $elementId;
+    /** entry|asset */
+    public ?string $elementType = null;
 
-    public $elementType;
+    public bool $blank = false;
 
-    public $children;
+    /** @var array<int, NodeModel> */
+    public array $children = [];
 
-    public $blank = false;
-
-
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * Returns the validation rules for attributes.
-     *
-     * Validation rules are used by [[validate()]] to check if attribute values are valid.
-     * Child classes may override this method to declare different validation rules.
-     *
-     * More info: http://www.yiiframework.com/doc-2.0/guide-input-validation.html
-     *
-     * @return array
-     */
-    public function rules(): array
+    public static function fromRecord(NodeRecord $record): self
     {
-        return [
-            [['type', 'navId', 'siteId', 'name'], 'required'],
-            [['id', 'name', 'navId', 'enabled', 'elementId', 'elementType', 'type', 'url', 'slug', 'siteId', 'order', 'parent', 'blank', 'classes', 'children'], 'safe'],
-        ];
+        $node = new self;
+        foreach (['id', 'name', 'navId', 'siteId', 'type', 'url', 'order', 'parent', 'classes', 'enabled', 'elementId', 'elementType', 'blank'] as $attribute) {
+            $node->$attribute = $record->$attribute;
+        }
+
+        return $node;
     }
 
-    /**
-     * Added to make migrating from amNav easier
-     * @return mixed
-     * @throws \craft\errors\DeprecationException
-     * @since 2.6.0
-     */
-    public function listClass()
+    /** @return array<string, mixed> The node and its children as plain data, for caching */
+    public function toArray(): array
     {
-        Craft::$app->getDeprecator()->log(__CLASS__ . '_listClass', "The 'listClass' method has been renamed to 'classes'.");
+        return [...get_object_vars($this), 'children' => array_map(fn (self $child) => $child->toArray(), $this->children)];
+    }
+
+    /** @param array<string, mixed> $data */
+    public static function fromArray(array $data): self
+    {
+        $node = new self;
+        foreach ($data as $attribute => $value) {
+            $node->$attribute = $attribute === 'children' ? array_map(self::fromArray(...), $value) : $value;
+        }
+
+        return $node;
+    }
+
+    /** Whether the current request is this node's URL or one below it */
+    public function active(): bool
+    {
+        return match ($this->type) {
+            'heading' => false,
+            'url' => $this->matchesUrlPrefix(),
+            default => $this->current() || ($this->slug !== null && str_starts_with(self::path().'/', $this->slug.'/')),
+        };
+    }
+
+    /** Whether the current request is exactly this node's URL */
+    public function current(): bool
+    {
+        return match ($this->type) {
+            'heading' => false,
+            'url' => $this->matchesUrlPrefix(),
+            default => $this->url !== null && in_array($this->url, [request()->fullUrl(), request()->url()], true),
+        };
+    }
+
+    /** @deprecated Use `classes` */
+    public function listClass(): ?string
+    {
+        Deprecator::log(self::class.'::listClass', "The 'listClass' method has been renamed to 'classes'.");
+
         return $this->classes;
     }
 
-
-    /**
-     * Added to make migrating from amNav easier
-     * @return mixed
-     * @throws \craft\errors\DeprecationException
-     * @since 2.6.0
-     */
-    public function hasChildren()
+    /** @return array<int, NodeModel> */
+    public function getChildren(): array
     {
-        Craft::$app->getDeprecator()->log(__CLASS__ . '_hasChildren', "The 'hasChildren' method has been renamed to 'children'.");
         return $this->children;
     }
 
-    public function getChildren($includeDisabled = false)
+    /** @deprecated Use `children` */
+    public function hasChildren(): array
     {
-        return Navigate::$plugin->nodes->getChildrenByNode($this, $includeDisabled);
+        Deprecator::log(self::class.'::hasChildren', "The 'hasChildren' method has been renamed to 'children'.");
+
+        return $this->children;
     }
 
-    public function active()
+    private function matchesUrlPrefix(): bool
     {
-        switch ($this->type) {
-            case 'url':
-                if (substr(Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
-                    return true;
-                }
-                if (substr("/" . Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
-                    return true;
-                }
-                break;
-            case 'heading':
-                return false;
-            default:
-                if ($this->url === Craft::$app->request->getAbsoluteUrl()) {
-                    return true;
-                }
-
-                if (strpos(Craft::$app->request->getAbsoluteUrl(), '?')) {
-                    if (explode('?', Craft::$app->request->getAbsoluteUrl())[0] === $this->url) {
-                        return true;
-                    }
-                }
-                if (substr(Craft::$app->request->getPathInfo(), 0, strlen($this->slug . "/")) === $this->slug . "/") {
-                    return true;
-                }
-                if (substr(Craft::$app->request->getPathInfo() . "/", 0, strlen($this->slug . "/")) === $this->slug . "/") {
-                    return true;
-                }
-                break;
+        if (! $this->url) {
+            return false;
         }
-        return false;
+
+        return str_starts_with(self::path(), $this->url) || str_starts_with('/'.self::path(), $this->url);
     }
 
-    public function current()
+    /** The request path without leading or trailing slashes ('' for the homepage) */
+    private static function path(): string
     {
-        switch ($this->type) {
-            case 'url':
-                if (substr(Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
-                    return true;
-                }
-                if (substr("/" . Craft::$app->request->getPathInfo(), 0, strlen($this->url)) === $this->url) {
-                    return true;
-                }
-                break;
-            case 'heading':
-                return false;
-            default:
-                if ($this->url === Craft::$app->request->getAbsoluteUrl()) {
-                    return true;
-                }
-
-                if (strpos(Craft::$app->request->getAbsoluteUrl(), '?')) {
-                    if (explode('?', Craft::$app->request->getAbsoluteUrl())[0] === $this->url) {
-                        return true;
-                    }
-                }
-                break;
-        }
-        return false;
+        return trim(request()->path(), '/');
     }
 }

@@ -1,11 +1,14 @@
-name: Code Quality
+name: ci
 on:
   workflow_dispatch:
   pull_request:
+    branches:
+      - v6
+      - develop-v6
   push:
     branches:
-      - develop
-      - develop-v5
+      - v6
+      - develop-v6
 permissions:
   contents: read
 concurrency:
@@ -16,7 +19,8 @@ jobs:
     name: ci
     uses: studioespresso/.github/.github/workflows/ci.yml@main
     with:
-      craft_version: '5'
-      jobs: '["ecs", "phpstan"]'
+      php_version: '8.5'
+      craft_version: '6'
+      jobs: '["pint", "larastan", "changelog"]'
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}

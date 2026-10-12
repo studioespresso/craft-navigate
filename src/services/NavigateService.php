@@ -1,236 +1,178 @@
 <?php
-/**
- * Navigate plugin for Craft CMS 3.x
- *
- * Navigation plugin for Craft 3
- *
- * @link      https://studioespresso.dev
- * @copyright Copyright (c) 2018 Studio Espresso
- */
 
 namespace studioespresso\navigate\services;
 
-use Craft;
-use craft\base\Component;
-use craft\events\ConfigEvent;
-use craft\helpers\StringHelper;
-use studioespresso\navigate\models\NavigationModel;
+use CraftCms\Cms\Cms;
+use CraftCms\Cms\ProjectConfig\Events\ConfigEvent;
+use CraftCms\Cms\Site\Data\Site;
+use CraftCms\Cms\Support\Facades\ProjectConfig;
+use CraftCms\Cms\Support\Facades\Sites;
+use CraftCms\DependencyAwareCache\Dependency\TagDependency;
+use CraftCms\DependencyAwareCache\Facades\DependencyCache;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use studioespresso\navigate\records\NavigationRecord;
-use yii\caching\TagDependency;
+
+use function CraftCms\Cms\currentUser;
 
 /**
- * NavigateService Service
- *
- * All of your plugin’s business logic should go in services, including saving data,
- * retrieving data, etc. They provide APIs that your controllers, template variables,
- * and other plugins can interact with.
- *
- * https://craftcms.com/docs/plugins/services
- *
- * @author    Studio Espresso
- * @package   Navigate
- * @since     0.0.1
+ * Navigations, stored in project config under `navigate.nav.{uid}` and mirrored to `navigate_navigations`.
  */
-class NavigateService extends Component
+class NavigateService
 {
-    public const NAVIGATE_CACHE = "navigate_cache";
-    public const NAVIGATE_CACHE_NAV = "navigate_cache_nav";
+    public const NAVIGATE_CACHE = 'navigate_cache';
 
-    public function getAllNavigations()
+    public const NAVIGATE_CACHE_NAV = 'navigate_cache_nav';
+
+    public const CONFIG_PATH = 'navigate.nav';
+
+    /** @return Collection<int, NavigationRecord> */
+    public function getAllNavigations(): Collection
     {
-        return NavigationRecord::find()->all();
+        return NavigationRecord::query()->orderBy('title')->get();
     }
-
-    public function getAllNavigationForUser()
-    {
-        $allNavigations = NavigationRecord::find()->all();
-        $currentUser = Craft::$app->getUser()->getIdentity();
-        $navs = array_filter($allNavigations, function($nav) use ($currentUser) {
-            /** @var NavigationRecord $nav */
-            if ($nav->enabledSiteGroups === '*' || $nav->enabledSiteGroups === null) {
-                return true;
-            } else {
-                $groups = json_decode($nav->enabledSiteGroups);
-                $permissionsForGroup = false;
-                foreach ($groups as $group) {
-                    $sites = Craft::$app->getSites()->getSitesByGroupId($group);
-                    foreach ($sites as $site) {
-                        if ($currentUser->can("editSite:{$site->uid}")) {
-                            $permissionsForGroup = true;
-                        }
-                    }
-                }
-                if ($permissionsForGroup) {
-                    return true;
-                }
-                return false;
-            }
-        });
-        return $navs;
-    }
-
 
     /**
-     * @param $id
-     * @return NavigationModel
+     * The navigations the current user can edit a site of.
+     *
+     * @return Collection<int, NavigationRecord>
      */
-    public function getNavigationById($id)
+    public function getAllNavigationForUser(): Collection
     {
-        $record = NavigationRecord::findOne([
-            'id' => $id,
-        ]);
-        return new NavigationModel($record->getAttributes());
+        return $this->getAllNavigations()->filter(fn (NavigationRecord $nav) => $this->getEditableSites($nav)->isNotEmpty())->values();
     }
 
-    public function getNavigationByHandle($handle, $fromCache = true)
+    public function getNavigationById(int $id): ?NavigationRecord
     {
-        if (!$fromCache) {
-            $nav = NavigationRecord::findOne([
-                'handle' => $handle,
-            ]);
-        } else {
-            if (Craft::$app->getConfig()->getGeneral()->devMode) {
-                return NavigationRecord::findOne([
-                    'handle' => $handle,
-                ]);
-            } else {
-                $cacheTags = new TagDependency([
-                    'tags' => [
-                        self::NAVIGATE_CACHE,
-                        self::NAVIGATE_CACHE_NAV,
-                        self::NAVIGATE_CACHE_NAV . '_' . $handle,
-                    ], ]);
-
-                $nav = Craft::$app->getCache()->getOrSet(
-                    self::NAVIGATE_CACHE_NAV . '_' . $handle,
-                    function() use ($handle) {
-                        return NavigationRecord::findOne([
-                            'handle' => $handle,
-                        ]);
-                    },
-                    null,
-                    $cacheTags
-                );
-            }
-        }
-        return $nav;
+        return NavigationRecord::query()->find($id);
     }
 
-    public function deleteNavigationById($id)
+    public function getNavigationByHandle(string $handle, bool $fromCache = true): ?NavigationRecord
     {
-        $record = NavigationRecord::findOne([
-            'id' => $id,
-        ]);
-        if ($record) {
-            Craft::$app->projectConfig->remove("navigate.nav.{$record->uid}");
-        }
-        return true;
-    }
-
-    public function handleRemoveNavigation(ConfigEvent $event)
-    {
-        $record = NavigationRecord::findOne([
-            'uid' => $event->tokenMatches[0],
-        ]);
-        if (!$record) {
-            return false;
+        if (! $fromCache || Cms::config()->devMode) {
+            return NavigationRecord::query()->where('handle', $handle)->first();
         }
 
+        $key = self::NAVIGATE_CACHE_NAV.'_'.$handle;
 
-        if ($record->delete()) {
-            TagDependency::invalidate(Craft::$app->getCache(), [
-                self::NAVIGATE_CACHE_NAV . '_' . $record->handle,
-            ]);
-            return 1;
-        };
-    }
-
-    public function handleAddNavigation(ConfigEvent $event)
-    {
-        $record = NavigationRecord::findOne([
-            'uid' => $event->tokenMatches[0],
-        ]);
-
-        if (!$record) {
-            $record = new NavigationRecord();
-        }
-        $record->uid = $event->tokenMatches[0];
-        $record->title = $event->newValue['title'];
-        $record->handle = $event->newValue['handle'];
-        $record->levels = $event->newValue['levels'];
-        $record->adminOnly = $event->newValue['adminOnly'];
-        $record->allowedSources = $event->newValue['allowSources'];
-        $record->enabledSiteGroups = $event->newValue['enabledSiteGroups'];
-
-        if (!$record->save()) {
-            Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'navigate');
-        }
-    }
-
-    public function saveNavigation(NavigationModel $model)
-    {
-        $record = false;
-        if ($model->id) {
-            $record = NavigationRecord::findOne([
-                'id' => $model->id,
-            ]);
-        }
-
-        if (!$record) {
-            $record = new NavigationRecord();
-            $record->uid = StringHelper::UUID();
-        }
-
-        $record->title = $model->title;
-        $record->handle = $model->handle;
-        $record->levels = $model->levels;
-        $record->enabledSiteGroups = $model->enabledSiteGroups;
-        $record->adminOnly = $model->adminOnly ? true : false;
-        $record->allowedSources = $model->allowedSources;
-        if (!$record->validate()) {
-            return false;
-        }
-
-        if (Craft::$app->getConfig()->general->allowAdminChanges) {
-            $path = "navigate.nav.{$record->uid}";
-            Craft::$app->projectConfig->set($path, [
-                'title' => $record->title,
-                'handle' => $record->handle,
-                'levels' => $record->levels,
-                'adminOnly' => $record->adminOnly,
-                'allowSources' => $record->allowedSources,
-                'enabledSiteGroups' => $record->enabledSiteGroups,
-            ]);
-        } else {
-            $record->save();
-        }
-
-        return true;
-    }
-
-    public function clearAllCaches($tags = [self::NAVIGATE_CACHE])
-    {
-        TagDependency::invalidate(
-            Craft::$app->getCache(),
-            $tags
+        // The cache only unserializes plain data (cache.serializable_classes), so it holds the attributes
+        $attributes = DependencyCache::rememberForever(
+            $key,
+            fn () => NavigationRecord::query()->where('handle', $handle)->first()?->getAttributes(),
+            new TagDependency([self::NAVIGATE_CACHE, self::NAVIGATE_CACHE_NAV, $key]),
         );
+
+        return $attributes ? new NavigationRecord()->newFromBuilder($attributes) : null;
     }
 
-    public function rebuildProjectConfig()
+    /**
+     * The sites a navigation can be edited in by the current user.
+     *
+     * @return Collection<int, Site>
+     */
+    public function getEditableSites(NavigationRecord $navigation): Collection
     {
-        $navs = NavigationRecord::find();
-        $data = [];
-        /** @var NavigationRecord $nav */
-        foreach ($navs->all() as $nav) {
-            $data[$nav->uid] = [
-                'title' => $nav->title,
-                'handle' => $nav->handle,
-                'levels' => $nav->levels,
-                'adminOnly' => $nav->adminOnly,
-                'allowSources' => $nav->allowedSources,
-                'enabledSiteGroups' => $nav->enabledSiteGroups,
-            ];
+        $groupIds = $navigation->enabledSiteGroupIds();
+        $sites = $groupIds === null
+            ? Sites::getAllSites()
+            : collect($groupIds)->flatMap(fn (int $groupId) => Sites::getSitesByGroupId($groupId));
+
+        if (! Sites::isMultiSite()) {
+            return $sites->values();
         }
-        return ['nav' => $data];
+
+        return $sites->filter(fn ($site) => currentUser()?->can("editSite:$site->uid"))->values();
+    }
+
+    /**
+     * Saves a navigation through project config, or straight to the database when admin changes are disallowed.
+     */
+    public function saveNavigation(NavigationRecord $navigation): void
+    {
+        $navigation->uid ??= (string) Str::uuid();
+
+        if (Cms::config()->allowAdminChanges) {
+            ProjectConfig::set(self::CONFIG_PATH.'.'.$navigation->uid, $this->configData($navigation), "Save navigation “{$navigation->handle}”");
+
+            return;
+        }
+
+        $navigation->save();
+    }
+
+    public function deleteNavigation(NavigationRecord $navigation): void
+    {
+        if (Cms::config()->allowAdminChanges) {
+            ProjectConfig::remove(self::CONFIG_PATH.'.'.$navigation->uid, "Delete navigation “{$navigation->handle}”");
+
+            return;
+        }
+
+        $navigation->delete();
+        $this->clearNavigationCache($navigation);
+    }
+
+    public function handleChangedNavigation(ConfigEvent $event): void
+    {
+        $uid = $event->tokenMatches[0];
+        $data = $event->newValue;
+
+        $navigation = NavigationRecord::query()->where('uid', $uid)->first() ?? new NavigationRecord(['uid' => $uid]);
+        $navigation->fill([
+            'title' => $data['title'],
+            'handle' => $data['handle'],
+            'levels' => $data['levels'],
+            'adminOnly' => $data['adminOnly'],
+            'allowedSources' => $data['allowSources'],
+            'enabledSiteGroups' => $data['enabledSiteGroups'],
+        ]);
+
+        if (! $navigation->save()) {
+            Log::error("Couldn’t save navigation “{$uid}”.");
+        }
+
+        $this->clearNavigationCache($navigation);
+    }
+
+    public function handleDeletedNavigation(ConfigEvent $event): void
+    {
+        $navigation = NavigationRecord::query()->where('uid', $event->tokenMatches[0])->first();
+        if ($navigation) {
+            $navigation->delete();
+            $this->clearNavigationCache($navigation);
+        }
+    }
+
+    /** @return array{nav: array<string, array<string, mixed>>} */
+    public function rebuildProjectConfig(): array
+    {
+        return ['nav' => NavigationRecord::query()->get()
+            ->mapWithKeys(fn (NavigationRecord $nav) => [$nav->uid => $this->configData($nav)])
+            ->all()];
+    }
+
+    /** @param string|string[] $tags */
+    public function clearAllCaches(array|string $tags = self::NAVIGATE_CACHE): void
+    {
+        TagDependency::invalidate($tags);
+    }
+
+    private function clearNavigationCache(NavigationRecord $navigation): void
+    {
+        $this->clearAllCaches([self::NAVIGATE_CACHE_NAV.'_'.$navigation->handle, NodesService::NAVIGATE_CACHE_NODES]);
+    }
+
+    /** @return array<string, mixed> The project config representation; keys match earlier versions */
+    private function configData(NavigationRecord $navigation): array
+    {
+        return [
+            'title' => $navigation->title,
+            'handle' => $navigation->handle,
+            'levels' => $navigation->levels,
+            'adminOnly' => $navigation->adminOnly,
+            'allowSources' => $navigation->allowedSources,
+            'enabledSiteGroups' => $navigation->enabledSiteGroups,
+        ];
     }
 }

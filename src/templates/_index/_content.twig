@@ -1,0 +1,32 @@
+<div class="cp-container" v-pre>
+    {% if navigations is empty %}
+        <craft-empty label="{{ 'No navigations exist yet.'|t('app') }}"></craft-empty>
+    {% else %}
+        <table class="navigate-table">
+            <thead>
+            <tr>
+                <th scope="col">{{ 'Name'|t('app') }}</th>
+                <th scope="col">{{ 'Handle'|t('app') }}</th>
+                <th scope="col"><span class="visually-hidden">{{ 'Actions'|t('navigate') }}</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for nav in navigations %}
+                <tr>
+                    <td><a href="{{ cpUrl('navigate/edit/' ~ nav.id) }}">{{ nav.title }}</a></td>
+                    <td><code>{{ nav.handle }}</code></td>
+                    <td class="navigate-table__actions">
+                        {% if nav.canEditSettings %}
+                            <craft-button href="{{ cpUrl('navigate/settings/' ~ nav.id) }}" variant="plain" size="small"><craft-icon slot="prefix" name="gear" aria-hidden="true"></craft-icon>{{ 'Settings'|t('app') }}</craft-button>
+                        {% endif %}
+                        {% if canManage %}
+                            <craft-button variant="plain" size="small" icon="trash"
+                                          action="{{ {type: 'http', method: 'POST', url: cpUrl('navigate/' ~ nav.id ~ '/delete'), body: {_token: csrf_token()}, confirm: 'Are you sure you want to delete “{name}” and all its included items?'|t('navigate', {name: nav.title})}|json_encode }}">{{ 'Delete'|t('app') }}</craft-button>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>

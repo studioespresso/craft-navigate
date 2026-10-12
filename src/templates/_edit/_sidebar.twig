@@ -1,29 +1,35 @@
-<div id="settings" class="meta">
-    <div class="field" id="slug-field">
-        <div class="heading">
-            <label id="handle-label" for="handle">{{ 'Handle'|t('app') }}</label>
+{# Same markup as core's DetailsTabs (the entry editor's collapsible "Info" panel) #}
+{% set label = 'Info'|t('app') %}
+<craft-tabs class="navigate-details" size="small" placement="inline-end" collapsible>
+    <craft-tab id="navigate-details-info" slot="tab">
+        <craft-icon name="circle-info" label="{{ label }}"></craft-icon>
+    </craft-tab>
+    <div slot="panel">
+        <div class="py-1 px-lg border-b border-b-quiet flex justify-between items-center min-h-(--cp-header-height)">
+            <h3 class="text-md/4">{{ label }}</h3>
+            <craft-button type="button" icon="xmark-large" variant="plain" size="small" flush="inline-end"
+                          aria-label="{{ 'Close {tab}'|t('app', {tab: label}) }}" data-close-details></craft-button>
         </div>
-        <div class="input ltr">
-            <span>{{ navigation.handle }}</span>
-
+        <div class="p-lg">
+            <dl class="cp-metadata-list">
+                <div class="cp-metadata-list__item">
+                    <dt class="font-bold text-xs">{{ 'Handle'|t('app') }}</dt>
+                    <dd><code>{{ navigation.handle }}</code></dd>
+                </div>
+                <div class="cp-metadata-list__item">
+                    <dt class="font-bold text-xs">{{ 'Maximum levels'|t('navigate') }}</dt>
+                    <dd>{{ navigation.levels }}</dd>
+                </div>
+            </dl>
+            {% if canEditSettings %}
+                <craft-button class="navigate-details__settings" href="{{ cpUrl('navigate/settings/' ~ navigation.id) }}" size="small"><craft-icon slot="prefix" name="gear" aria-hidden="true"></craft-icon>{{ 'Edit settings'|t('navigate') }}</craft-button>
+            {% endif %}
+            <p class="navigate-details__docs">
+                <a href="https://github.com/studioespresso/craft-navigate?tab=readme-ov-file#templating" rel="noopener" target="_blank">
+                    {{ 'Templating and configuration options'|t('navigate') }}
+                    <craft-icon name="arrow-up-right-from-square" label="{{ 'Opens in a new window'|t('app') }}"></craft-icon>
+                </a>
+            </p>
         </div>
     </div>
-    <div class="field" id="slug-field">
-        <div class="heading">
-            <label id="handle-label" for="handle">{{ "Maximum levels"|t('navigate') }}</label>
-        </div>
-        <div class="input ltr">
-            <span>{{ navigation.levels }}</span>
-        </div>
-    </div>
-    {% if craft.app.config.general.allowAdminChanges %}
-        <div class="field" id="slug-field">
-            <div class="heading">
-                <label id="handle-label" for="handle">{{ "Documentation"|t('navigate') }}</label>
-            </div>
-            <div class="input ltr">
-                <span>{{ "Click <a href='https://github.com/studioespresso/craft-navigate?tab=readme-ov-file#templating' rel='noopener' target='_blank'>here</a> for templating and configuration options"|t('navigate')|raw }}</span>
-            </div>
-        </div>
-    {% endif %}
-</div>
+</craft-tabs>

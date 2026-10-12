@@ -1,54 +1,30 @@
 <?php
-/**
- * Navigate plugin for Craft CMS 3.x
- *
- * Navigation plugin for Craft 3
- *
- * @link      https://studioespresso.dev
- * @copyright Copyright (c) 2018 Studio Espresso
- */
 
 namespace studioespresso\navigate\variables;
 
-use Craft;
+use CraftCms\Cms\Support\Facades\Sites;
+use studioespresso\navigate\models\NodeModel;
+use studioespresso\navigate\models\Settings;
 use studioespresso\navigate\Navigate;
 
 /**
- * Navigate Variable
- *
- * Craft allows plugins to provide their own template variables, accessible from
- * the {{ craft }} global variable (e.g. {{ craft.navigate }}).
- *
- * https://craftcms.com/docs/plugins/variables
- *
- * @author    Studio Espresso
- * @package   Navigate
- * @since     0.0.1
+ * `craft.navigate`
  */
 class NavigateVariable
 {
-    // Public Methods
-    // =========================================================================
     /**
-     * @param $navHandle
-     * @param int|null $siteId since 2.6.0
-     * @return mixed
-     * @throws \craft\errors\SiteNotFoundException
+     * The enabled nodes of a navigation, with their children.
+     *
+     * @return array<int, NodeModel>|false
      */
-    public function raw($navHandle, ?int $siteId = null)
+    public function raw(string $navHandle, ?int $siteId = null): array|false
     {
-        if ($siteId) {
-            $site = Craft::$app->getSites()->getSiteById($siteId);
-            if (!$site) {
-                $siteId = Craft::$app->sites->getCurrentSite()->id;
-            }
-        } else {
-            $siteId = Craft::$app->sites->getCurrentSite()->id;
-        }
-        return Navigate::$plugin->nodes->getNodesForRender($navHandle, $siteId);
+        $site = ($siteId ? Sites::getSiteById($siteId) : null) ?? Sites::getCurrentSite();
+
+        return Navigate::getInstance()->nodes->getNodesForRender($navHandle, $site->id);
     }
 
-    public function getSettings()
+    public function getSettings(): Settings
     {
         return Navigate::getInstance()->getSettings();
     }

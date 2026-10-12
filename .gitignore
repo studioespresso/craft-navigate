@@ -2,7 +2,4 @@
 .DS_Store
 /.idea
 /vendor
-<<<<<<< HEAD
-=======
 /composer.lock
->>>>>>> develop

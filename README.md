@@ -60,7 +60,7 @@ Here's an example of how to show a navigation and it's possible children using a
 
 <div>
     <ul>
-    {% for node in nodes %}
+    {% for node in craft.navigate.raw('navHandle') %}
         {{ macros.renderNode(node) }}
     {% endfor %}
     </ul>
@@ -75,7 +75,7 @@ These only work on multiple levels (eg: 3 headings on the top level, each with n
 
 ## Configuration
 
-You can create a file called ``navigate.php`` in the ``config`` directory (you can copy [this one](https://github.com/studioespresso/craft3-navigate/blob/master/src/config.php) to start) to manage these settings in your code. The ones listed here are not available through the CP.
+You can create a file called ``config/craft/navigate.php`` (run ``php craft craft:setup:publish`` or copy [this one](config/navigate.php) to start) to manage these settings in your code. The ones listed here are not available through the CP.
 
 ### Disabling caching
 Out of the box, the plugin will cache the querries it makes when ``devMode`` is not enabled. 

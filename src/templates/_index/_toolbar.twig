@@ -1,0 +1,7 @@
+{% if canManage %}
+    {# Icon in the prefix slot: craft-button drops its padding when it has both `href` and `icon` (alpha.19) #}
+    <craft-button href="{{ cpUrl('navigate/new') }}" variant="primary">
+        <craft-icon slot="prefix" name="plus" aria-hidden="true"></craft-icon>
+        {{ 'New navigation'|t('navigate') }}
+    </craft-button>
+{% endif %}
