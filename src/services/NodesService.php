@@ -5,8 +5,10 @@ namespace studioespresso\navigate\services;
 use CraftCms\Cms\Asset\Elements\Asset;
 use CraftCms\Cms\Cms;
 use CraftCms\Cms\Element\Contracts\ElementInterface;
+use CraftCms\Cms\Element\Events\ElementCachesInvalidated;
 use CraftCms\Cms\Entry\Elements\Entry;
 use CraftCms\Cms\Support\Env;
+use CraftCms\Cms\Support\Facades\ElementCaches;
 use CraftCms\DependencyAwareCache\Dependency\TagDependency;
 use CraftCms\DependencyAwareCache\Facades\DependencyCache;
 use Illuminate\Support\Collection;
@@ -22,6 +24,9 @@ use function CraftCms\Cms\renderObjectTemplate;
 class NodesService
 {
     public const NAVIGATE_CACHE_NODES = 'navigate_cache_nodes';
+
+    /** Cache tag of pages that render a navigation, for `{% cache %}` blocks and page caches (`navigate:{handle}:{siteId}` per navigation) */
+    public const PAGE_CACHE_TAG = 'navigate';
 
     /** Node types: handle => label */
     public const TYPES = [
@@ -64,6 +69,9 @@ class NodesService
         if (! $navigation) {
             return false;
         }
+
+        // Tag the page (or {% cache %} block) that renders this navigation, so node changes only invalidate those
+        ElementCaches::collectCacheTags([self::PAGE_CACHE_TAG, $this->pageCacheTag($navigation->handle, $siteId)]);
 
         $build = fn () => $this->buildRenderTree($navigation, $siteId);
 
@@ -143,6 +151,7 @@ class NodesService
         });
 
         TagDependency::invalidate(self::NAVIGATE_CACHE_NODES);
+        $this->invalidatePageCaches([$this->pageCacheTag($navigation->handle, $siteId)]);
     }
 
     /** Hides or shows the nodes that point to an element */
@@ -159,6 +168,18 @@ class NodesService
         if ($element->id && NodeRecord::query()->where('elementId', $element->id)->exists()) {
             Navigate::getInstance()->navigate->clearAllCaches();
         }
+    }
+
+    /**
+     * Invalidates the caches of pages that render a navigation: `{% cache %}` blocks, and anything listening to
+     * ElementCachesInvalidated (static/proxy cache purgers). Nodes aren't elements, so Craft doesn't do this by itself.
+     *
+     * @param  list<string>  $tags
+     */
+    public function invalidatePageCaches(array $tags): void
+    {
+        TagDependency::invalidate($tags);
+        event(new ElementCachesInvalidated($tags));
     }
 
     /** The element a node points to, in the node's site */
@@ -226,6 +247,11 @@ class NodesService
         return $nodes;
     }
 
+    private function pageCacheTag(string $handle, int $siteId): string
+    {
+        return self::PAGE_CACHE_TAG.":$handle:$siteId";
+    }
+
     private function cacheKey(string $handle, int $siteId): string
     {
         return self::NAVIGATE_CACHE_NODES.'_'.$handle.'_'.$siteId;
@@ -236,6 +262,7 @@ class NodesService
         $navigation = Navigate::getInstance()->navigate->getNavigationById($node->navId);
         if ($navigation) {
             TagDependency::invalidate($this->cacheKey($navigation->handle, $node->siteId));
+            $this->invalidatePageCaches([$this->pageCacheTag($navigation->handle, $node->siteId)]);
         }
     }
 }

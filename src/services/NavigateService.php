@@ -12,6 +12,7 @@ use CraftCms\DependencyAwareCache\Facades\DependencyCache;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use studioespresso\navigate\Navigate;
 use studioespresso\navigate\records\NavigationRecord;
 
 use function CraftCms\Cms\currentUser;
@@ -156,6 +157,8 @@ class NavigateService
     public function clearAllCaches(array|string $tags = self::NAVIGATE_CACHE): void
     {
         TagDependency::invalidate($tags);
+        // Pages that render a navigation, e.g. after a linked entry's title or URL changed
+        Navigate::getInstance()->nodes->invalidatePageCaches([NodesService::PAGE_CACHE_TAG]);
     }
 
     private function clearNavigationCache(NavigationRecord $navigation): void

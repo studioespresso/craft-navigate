@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
+### Added
+- Added the `navigate:navigations:list`, `navigate:navigations:create`, `navigate:nodes:list` and `navigate:nodes:add` console commands, the Craft 5 names (`navigate/nodes/add`, …) work as aliases (from 5.1.7)
+- Pages that render a navigation now get the `navigate` and `navigate:{handle}:{siteId}` cache tags (from 5.1.7)
+- Added `AGENTS.md` and `context7.json` (from 5.1.7)
+- Added `node.getChildren()` back
+
+### Fixed
+- `node.active` and `node.current` now compare the host as well as the path, and respect path segment boundaries (from 5.1.8)
+- Fixed `node.active` and `node.current` on sites in a subfolder
+
 ### Changed
 - Navigate is now a native Craft 6 plugin, it no longer requires the yii2 adapter
 - Rebuilt the structure editor, nodes can now be moved with drag & drop or the keyboard
@@ -23,6 +33,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## 6.0.0-alpha.1 - 2026-05-20
 ### Added
 - Initial support for Craft 6.0.0
+
+## 5.1.8
+### Fixed
+- `node.active` and `node.current` now compare the host as well as the path. A link to another (sub)domain, e.g. `jobs.domain.com`, is no longer marked active on the main site. Path matching also respects segment boundaries now, so `/news` is no longer active on `/newsletter`
+
+
+## 5.1.7
+### Added
+- Pages that render a navigation now get the `navigate` and `navigate:{handle}:{siteId}` cache tags. Saving, moving or deleting a node invalidates that navigation's tag, and changes to linked elements invalidate `navigate`, so `{% cache %}` blocks and cache purgers listening to `Elements::EVENT_INVALIDATE_CACHES` pick up navigation changes without clearing every cache
 
 ## 5.1.6 - 2026-04-04
 ### Fixed

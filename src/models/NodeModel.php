@@ -71,24 +71,16 @@ class NodeModel
         return $node;
     }
 
-    /** Whether the current request is this node's URL or one below it */
+    /** Whether the current request is this node's URL or a page below it */
     public function active(): bool
     {
-        return match ($this->type) {
-            'heading' => false,
-            'url' => $this->matchesUrlPrefix(),
-            default => $this->current() || ($this->slug !== null && str_starts_with(self::path().'/', $this->slug.'/')),
-        };
+        return $this->matchesRequest(true);
     }
 
     /** Whether the current request is exactly this node's URL */
     public function current(): bool
     {
-        return match ($this->type) {
-            'heading' => false,
-            'url' => $this->matchesUrlPrefix(),
-            default => $this->url !== null && in_array($this->url, [request()->fullUrl(), request()->url()], true),
-        };
+        return $this->matchesRequest(false);
     }
 
     /** @deprecated Use `classes` */
@@ -113,18 +105,37 @@ class NodeModel
         return $this->children;
     }
 
-    private function matchesUrlPrefix(): bool
+    /**
+     * Compares the node's URL with the current request: same host, and the same path
+     * (or, with $includeDescendants, a path below it). The homepage only matches itself.
+     */
+    private function matchesRequest(bool $includeDescendants): bool
     {
-        if (! $this->url) {
+        if ($this->type === 'heading' || ! $this->url) {
             return false;
         }
 
-        return str_starts_with(self::path(), $this->url) || str_starts_with('/'.self::path(), $this->url);
-    }
+        $node = parse_url($this->url);
+        if ($node === false || (isset($node['scheme']) && ! in_array(strtolower($node['scheme']), ['http', 'https'], true))) {
+            return false;
+        }
 
-    /** The request path without leading or trailing slashes ('' for the homepage) */
-    private static function path(): string
-    {
-        return trim(request()->path(), '/');
+        if (isset($node['host']) && strcasecmp($node['host'], request()->getHost()) !== 0) {
+            return false;
+        }
+
+        // Fragment- or query-only links ("#contact", "?page=2") don't point to a page
+        if (! isset($node['host']) && ($node['path'] ?? '') === '') {
+            return false;
+        }
+
+        $nodePath = trim($node['path'] ?? '', '/');
+        $currentPath = trim((string) parse_url(request()->url(), PHP_URL_PATH), '/');
+
+        if ($nodePath === $currentPath) {
+            return true;
+        }
+
+        return $includeDescendants && $nodePath !== '' && str_starts_with($currentPath.'/', $nodePath.'/');
     }
 }

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Navigate for Craft CMS",
+  "description": "Navigate is a Craft CMS plugin for building menus and navigations. Navigations are containers (title, handle, levels, allowed sources); nodes are the items inside them (URL, entry/asset element, or heading), and can be nested. Read a navigation in Twig with craft.navigate.raw('handle'); create navigations and nodes with the console commands or through the NavigateService and NodesService.",
+  "folders": [
+    "src/services",
+    "src/models",
+    "src/records",
+    "src/variables",
+    "src/console"
+  ],
+  "excludeFolders": [
+    "resources",
+    "src/templates",
+    "src/translations",
+    "database"
+  ],
+  "excludeFiles": [
+    "composer.lock",
+    "LICENSE.md"
+  ],
+  "rules": [
+    "To read a navigation for output use the Twig variable craft.navigate.raw('navHandle') or craft.navigate.raw('navHandle', siteId). It returns an ordered array of nodes; each node exposes name, url, classes, blank, type, children, active() and current().",
+    "In Craft 6 the PHP API lives on Navigate::getInstance()->navigate (NavigateService, navigations as NavigationRecord Eloquent models) and Navigate::getInstance()->nodes (NodesService, nodes as NodeRecord Eloquent models).",
+    "Create a navigation with Navigate::getInstance()->navigate->saveNavigation(new NavigationRecord([...])) with title, handle, levels, allowedSources ('*' or a JSON array of node types), enabledSiteGroups ('*' or a JSON array of site group ids) and adminOnly. It returns nothing and writes through project config; re-fetch it with getNavigationByHandle('handle', false) to get its id.",
+    "Add an item with Navigate::getInstance()->nodes->save(new NodeRecord([...])) with name, navId, siteId and type. save() assigns the order and sets the record's id. The services don't validate; the console commands do.",
+    "A node's type is 'url', 'element' or 'heading'. For a 'url' node set url. For an 'element' node set elementType ('entry' or 'asset') and elementId; the URL resolves from the element per site. Category nodes are not supported in Craft 6.",
+    "Nest a node by setting parent to the parent node's id. The navigation's levels must be greater than 1 for children to render. Deleting a node deletes its descendants.",
+    "Nodes are stored per site (siteId). Create nodes once per site for multi-site menus.",
+    "Console commands (all support --json): php artisan navigate:navigations:list, php artisan navigate:navigations:create \"Main menu\" mainMenu --levels=2, php artisan navigate:nodes:list mainMenu, php artisan navigate:nodes:add mainMenu \"Home\" --type=url --url=/. The Craft 5 names (php craft navigate/nodes/add) work as aliases.",
+    "For navigate:nodes:add, --type is one of url, entry, asset, heading. url requires --url; entry/asset require --element-id. Optional: --parent=<nodeId>, --site=<handle|id> (defaults to the primary site), --blank, --classes.",
+    "Pages that render a navigation get the cache tags 'navigate' and 'navigate:{handle}:{siteId}', which are invalidated when nodes or linked elements change.",
+    "There are no GraphQL mutations."
+  ]
+}

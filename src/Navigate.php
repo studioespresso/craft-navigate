@@ -29,6 +29,10 @@ use CraftCms\Cms\ProjectConfig\Events\ProjectConfigRebuilt;
 use CraftCms\Cms\Support\Facades\ProjectConfig;
 use CraftCms\Cms\Twig\Variables\CraftVariable;
 use Illuminate\Support\Facades\Event;
+use studioespresso\navigate\console\AddNodeCommand;
+use studioespresso\navigate\console\CreateNavigationCommand;
+use studioespresso\navigate\console\ListNavigationsCommand;
+use studioespresso\navigate\console\ListNodesCommand;
 use studioespresso\navigate\fields\NavigateField;
 use studioespresso\navigate\models\Settings;
 use studioespresso\navigate\services\NavigateService;
@@ -45,6 +49,13 @@ class Navigate extends Plugin
     public string $schemaVersion = '2.4.0';
 
     protected array $fieldTypes = [NavigateField::class];
+
+    protected array $commands = [
+        ListNavigationsCommand::class,
+        CreateNavigationCommand::class,
+        ListNodesCommand::class,
+        AddNodeCommand::class,
+    ];
 
     protected array $publishables = [
         __DIR__.'/../resources/dist' => 'dist',

@@ -42,7 +42,8 @@
         "check-cs": "pint --test",
         "fix-cs": "pint",
         "phpstan": "phpstan --memory-limit=1G",
-        "ci": "pint && phpstan --memory-limit=1G"
+        "ci": "pint && phpstan --memory-limit=1G",
+        "test": "phpunit"
     },
     "extra": {
         "name": "Navigate",

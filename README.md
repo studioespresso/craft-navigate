@@ -73,6 +73,73 @@ Since 2.3.0, headings can be added to make it easier to build larger navigations
 
 These only work on multiple levels (eg: 3 headings on the top level, each with navigation items on deeper levels). 
 
+## Caching
+
+Pages (and `{% cache %}` blocks) that render a navigation get the `navigate` and `navigate:{handle}:{siteId}` cache tags. Saving, moving or deleting a node invalidates that navigation's tag, changes to linked elements invalidate `navigate`. Static/proxy cache purgers listening to Craft's `ElementCachesInvalidated` event get the same tags.
+
+## Console commands
+
+Navigate ships console commands for building navigations from the command line — handy for
+seeding, scripting, and AI-assisted prototyping. All support `--json` for machine-readable
+output. The Craft 5 names (`php craft navigate/nodes/add …`) still work as aliases.
+
+```bash
+php artisan navigate:navigations:list [--json]
+php artisan navigate:navigations:create "<title>" <handle> [--levels=2] [--allowed-sources=entry,url] [--site-groups=1,2]
+
+php artisan navigate:nodes:list <navHandle> [--site=<handle|id>] [--json]
+php artisan navigate:nodes:add <navHandle> "<name>" --type=url --url=/path
+php artisan navigate:nodes:add <navHandle> "<name>" --type=entry --element-id=42
+php artisan navigate:nodes:add <navHandle> "<name>" --type=heading
+php artisan navigate:nodes:add <navHandle> "<name>" --type=url --url=/x --parent=<nodeId>   # nest
+```
+
+`--type` accepts `url`, `entry`, `asset` or `heading`. `entry`/`asset` require `--element-id`; `url` requires `--url`.
+Other `add` options: `--site`, `--parent`, `--blank`, `--classes`. Run `php artisan help navigate:nodes:add` for the full list.
+
+## Programmatic API
+
+Navigations and their items can also be managed in code — inside migrations, modules, or `php artisan tinker`.
+There are no GraphQL mutations.
+
+- `Navigate::getInstance()->navigate` — `NavigateService`, manages **navigations** (`NavigationRecord`).
+- `Navigate::getInstance()->nodes` — `NodesService`, manages **nodes** (`NodeRecord`).
+
+Agents working in this repo should also read [`AGENTS.md`](AGENTS.md).
+
+```php
+use studioespresso\navigate\Navigate;
+use studioespresso\navigate\records\NavigationRecord;
+use studioespresso\navigate\records\NodeRecord;
+
+Navigate::getInstance()->navigate->saveNavigation(new NavigationRecord([
+    'title' => 'Main menu',
+    'handle' => 'mainMenu',       // unique handle
+    'levels' => 2,                // 1 = flat; > 1 allows nested children
+    'allowedSources' => '*',      // '*' or a JSON array, e.g. '["entry","url"]'
+    'enabledSiteGroups' => '*',   // '*' or a JSON array of site group IDs
+    'adminOnly' => false,
+]));
+// Saved through project config, so fetch it again for its ID
+$navId = Navigate::getInstance()->navigate->getNavigationByHandle('mainMenu', false)->id;
+
+$home = new NodeRecord(['navId' => $navId, 'siteId' => $siteId, 'name' => 'Home', 'type' => 'url', 'url' => '/']);
+Navigate::getInstance()->nodes->save($home); // assigns the order, $home->id is set afterwards
+
+Navigate::getInstance()->nodes->save(new NodeRecord([
+    'navId' => $navId, 'siteId' => $siteId, 'name' => 'About us', 'parent' => $home->id,
+    'type' => 'element', 'elementType' => 'entry', 'elementId' => 42, // 'entry' | 'asset'
+]));
+```
+
+| `type`    | Extra attributes           | Notes                                              |
+| --------- | -------------------------- | -------------------------------------------------- |
+| `url`     | `url`                      | Literal/relative URL; supports env vars & `{config}` tokens |
+| `element` | `elementType`, `elementId` | `elementType` is `entry` or `asset`; the URL comes from the element |
+| `heading` | —                          | Non-link label; only meaningful when `levels > 1`  |
+
+Optional node attributes: `blank` (open in new tab), `classes`, `enabled` (default `true`) and `parent` (a parent node ID).
+
 ## Configuration
 
 You can create a file called ``config/craft/navigate.php`` (run ``php craft craft:setup:publish`` or copy [this one](config/navigate.php) to start) to manage these settings in your code. The ones listed here are not available through the CP.
