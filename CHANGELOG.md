@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 6.0.0-alpha.3
 ### Added
 - Added the `navigate:navigations:list`, `navigate:navigations:create`, `navigate:nodes:list` and `navigate:nodes:add` console commands, the Craft 5 names (`navigate/nodes/add`, …) work as aliases (from 5.1.7)
 - Pages that render a navigation now get the `navigate` and `navigate:{handle}:{siteId}` cache tags (from 5.1.7)
