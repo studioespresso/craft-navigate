@@ -1,0 +1,20 @@
+name: tangled
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - '**'
+    tags:
+      - '**'
+  delete:
+permissions:
+  contents: read
+concurrency:
+  group: tangled-${{ github.repository }}
+  cancel-in-progress: false
+jobs:
+  mirror:
+    name: mirror
+    uses: studioespresso/.github/.github/workflows/tangled-mirror.yml@main
+    secrets:
+      TANGLED_SSH_KEY: ${{ secrets.TANGLED_SSH_KEY }}
