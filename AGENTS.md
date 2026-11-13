@@ -75,8 +75,8 @@ For migrations, modules or `php artisan tinker`:
 
 ```php
 use studioespresso\navigate\Navigate;
-use studioespresso\navigate\records\NavigationRecord;
-use studioespresso\navigate\records\NodeRecord;
+use studioespresso\navigate\Models\NavigationRecord;
+use studioespresso\navigate\Models\NodeRecord;
 
 // 1. Create a navigation — returns void and writes through project config
 Navigate::getInstance()->navigate->saveNavigation(new NavigationRecord([

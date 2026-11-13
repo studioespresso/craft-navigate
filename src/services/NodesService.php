@@ -11,16 +11,18 @@ use CraftCms\Cms\Support\Env;
 use CraftCms\Cms\Support\Facades\ElementCaches;
 use CraftCms\DependencyAwareCache\Dependency\TagDependency;
 use CraftCms\DependencyAwareCache\Facades\DependencyCache;
+use Illuminate\Container\Attributes\Singleton;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
-use studioespresso\navigate\models\NodeModel;
-use studioespresso\navigate\Navigate;
-use studioespresso\navigate\records\NavigationRecord;
-use studioespresso\navigate\records\NodeRecord;
+use studioespresso\navigate\Data\NodeModel;
+use studioespresso\navigate\Models\NavigationRecord;
+use studioespresso\navigate\Models\NodeRecord;
+use studioespresso\navigate\Settings;
 
 use function CraftCms\Cms\renderObjectTemplate;
 
+#[Singleton]
 class NodesService
 {
     public const NAVIGATE_CACHE_NODES = 'navigate_cache_nodes';
@@ -41,6 +43,11 @@ class NodesService
         'entry' => Entry::class,
         'asset' => Asset::class,
     ];
+
+    public function __construct(
+        private readonly NavigateService $navigate,
+        private readonly Settings $settings,
+    ) {}
 
     /**
      * All nodes of a navigation in a site, ordered, keyed by parent ID (0 for the top level).
@@ -65,7 +72,7 @@ class NodesService
      */
     public function getNodesForRender(string $navHandle, int $siteId): array|false
     {
-        $navigation = Navigate::getInstance()->navigate->getNavigationByHandle($navHandle);
+        $navigation = $this->navigate->getNavigationByHandle($navHandle);
         if (! $navigation) {
             return false;
         }
@@ -75,7 +82,7 @@ class NodesService
 
         $build = fn () => $this->buildRenderTree($navigation, $siteId);
 
-        if (Cms::config()->devMode || Navigate::getInstance()->getSettings()->disableCaching || request()->isPreview() || request()->getToken()) {
+        if (Cms::config()->devMode || $this->settings->disableCaching || request()->isPreview() || request()->getToken()) {
             return $build();
         }
 
@@ -158,7 +165,7 @@ class NodesService
     public function setEnabledForElement(ElementInterface $element, bool $enabled): void
     {
         if (NodeRecord::query()->where('elementId', $element->id)->update(['enabled' => $enabled])) {
-            Navigate::getInstance()->navigate->clearAllCaches();
+            $this->navigate->clearAllCaches();
         }
     }
 
@@ -166,7 +173,7 @@ class NodesService
     public function clearCachesForElement(ElementInterface $element): void
     {
         if ($element->id && NodeRecord::query()->where('elementId', $element->id)->exists()) {
-            Navigate::getInstance()->navigate->clearAllCaches();
+            $this->navigate->clearAllCaches();
         }
     }
 
@@ -259,7 +266,7 @@ class NodesService
 
     private function clearCacheForNode(NodeRecord $node): void
     {
-        $navigation = Navigate::getInstance()->navigate->getNavigationById($node->navId);
+        $navigation = $this->navigate->getNavigationById($node->navId);
         if ($navigation) {
             TagDependency::invalidate($this->cacheKey($navigation->handle, $node->siteId));
             $this->invalidatePageCaches([$this->pageCacheTag($navigation->handle, $node->siteId)]);

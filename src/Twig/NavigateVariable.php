@@ -1,11 +1,11 @@
 <?php
 
-namespace studioespresso\navigate\variables;
+namespace studioespresso\navigate\Twig;
 
 use CraftCms\Cms\Support\Facades\Sites;
-use studioespresso\navigate\models\NodeModel;
-use studioespresso\navigate\models\Settings;
-use studioespresso\navigate\Navigate;
+use studioespresso\navigate\Data\NodeModel;
+use studioespresso\navigate\services\NodesService;
+use studioespresso\navigate\Settings;
 
 /**
  * `craft.navigate`
@@ -21,11 +21,11 @@ class NavigateVariable
     {
         $site = ($siteId ? Sites::getSiteById($siteId) : null) ?? Sites::getCurrentSite();
 
-        return Navigate::getInstance()->nodes->getNodesForRender($navHandle, $site->id);
+        return app(NodesService::class)->getNodesForRender($navHandle, $site->id);
     }
 
     public function getSettings(): Settings
     {
-        return Navigate::getInstance()->getSettings();
+        return app(Settings::class);
     }
 }

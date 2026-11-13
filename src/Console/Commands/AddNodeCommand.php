@@ -1,12 +1,11 @@
 <?php
 
-namespace studioespresso\navigate\console;
+namespace studioespresso\navigate\Console\Commands;
 
 use CraftCms\Cms\Console\CraftCommand;
 use Illuminate\Console\Command;
-use studioespresso\navigate\console\concerns\ResolvesNavigation;
-use studioespresso\navigate\Navigate;
-use studioespresso\navigate\records\NodeRecord;
+use studioespresso\navigate\Console\Commands\Concerns\ResolvesNavigation;
+use studioespresso\navigate\Models\NodeRecord;
 use studioespresso\navigate\services\NodesService;
 
 class AddNodeCommand extends Command
@@ -30,7 +29,7 @@ class AddNodeCommand extends Command
 
     protected $aliases = ['navigate/nodes/add'];
 
-    public function handle(): int
+    public function handle(NodesService $nodes): int
     {
         $navigation = $this->resolveNavigation();
         $site = $this->resolveSite();
@@ -63,7 +62,7 @@ class AddNodeCommand extends Command
             $node->type = 'element';
             $node->elementType = $type;
             $node->elementId = $elementId;
-            if (! Navigate::getInstance()->nodes->getElement($node)) {
+            if (! $nodes->getElement($node)) {
                 return $this->invalid("No $type found with ID $elementId in site “{$site->handle}”.");
             }
         } elseif ($type === 'heading') {
@@ -84,7 +83,7 @@ class AddNodeCommand extends Command
             }
         }
 
-        Navigate::getInstance()->nodes->save($node);
+        $nodes->save($node);
 
         if ($this->option('json')) {
             $this->line(json_encode([

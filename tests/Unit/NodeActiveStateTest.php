@@ -5,7 +5,7 @@ namespace studioespresso\navigate\tests\Unit;
 use Illuminate\Http\Request;
 use Orchestra\Testbench\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use studioespresso\navigate\models\NodeModel;
+use studioespresso\navigate\Data\NodeModel;
 
 class NodeActiveStateTest extends TestCase
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace studioespresso\navigate\console;
+namespace studioespresso\navigate\Console\Commands;
 
 use CraftCms\Cms\Console\CraftCommand;
 use Illuminate\Console\Command;
-use studioespresso\navigate\console\concerns\ResolvesNavigation;
-use studioespresso\navigate\Navigate;
-use studioespresso\navigate\records\NodeRecord;
+use studioespresso\navigate\Console\Commands\Concerns\ResolvesNavigation;
+use studioespresso\navigate\Models\NodeRecord;
+use studioespresso\navigate\services\NodesService;
 
 class ListNodesCommand extends Command
 {
@@ -22,7 +22,7 @@ class ListNodesCommand extends Command
 
     protected $aliases = ['navigate/nodes/list'];
 
-    public function handle(): int
+    public function handle(NodesService $nodes): int
     {
         $navigation = $this->resolveNavigation();
         $site = $this->resolveSite();
@@ -30,7 +30,7 @@ class ListNodesCommand extends Command
             return self::INVALID;
         }
 
-        $rows = Navigate::getInstance()->nodes->getTree($navigation->id, $site->id)
+        $rows = $nodes->getTree($navigation->id, $site->id)
             ->flatten()
             ->map(fn (NodeRecord $node) => [
                 'id' => $node->id,

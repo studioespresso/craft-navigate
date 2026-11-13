@@ -1,12 +1,12 @@
 <?php
 
-namespace studioespresso\navigate\fields;
+namespace studioespresso\navigate\Fields;
 
 use CraftCms\Cms\Field\Dropdown;
-use CraftCms\Cms\Form\Form;
-use CraftCms\Cms\Form\FormContext;
-use studioespresso\navigate\Navigate;
-use studioespresso\navigate\records\NavigationRecord;
+use CraftCms\Cms\Ui\Ui;
+use CraftCms\Cms\Ui\UiContext;
+use studioespresso\navigate\Models\NavigationRecord;
+use studioespresso\navigate\services\NavigateService;
 
 use function CraftCms\Cms\t;
 
@@ -33,16 +33,16 @@ class NavigateField extends Dropdown
         return array_values(array_diff(parent::settingsAttributes(), ['options', 'customOptions']));
     }
 
-    public function settingsForm(FormContext $context = new FormContext): Form
+    public function settingsUi(UiContext $context = new UiContext): Ui
     {
-        return Form::make([]);
+        return Ui::make([]);
     }
 
     protected function options(): array
     {
         return [
             ['label' => t('Select a navigation', category: 'navigate'), 'value' => '-'],
-            ...Navigate::getInstance()->navigate->getAllNavigations()
+            ...app(NavigateService::class)->getAllNavigations()
                 ->map(fn (NavigationRecord $nav) => ['label' => $nav->title, 'value' => $nav->handle])
                 ->all(),
         ];

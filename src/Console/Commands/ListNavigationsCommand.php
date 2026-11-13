@@ -1,11 +1,11 @@
 <?php
 
-namespace studioespresso\navigate\console;
+namespace studioespresso\navigate\Console\Commands;
 
 use CraftCms\Cms\Console\CraftCommand;
 use Illuminate\Console\Command;
-use studioespresso\navigate\Navigate;
-use studioespresso\navigate\records\NavigationRecord;
+use studioespresso\navigate\Models\NavigationRecord;
+use studioespresso\navigate\services\NavigateService;
 
 class ListNavigationsCommand extends Command
 {
@@ -17,9 +17,9 @@ class ListNavigationsCommand extends Command
 
     protected $aliases = ['navigate/navigations/list'];
 
-    public function handle(): int
+    public function handle(NavigateService $navigate): int
     {
-        $rows = Navigate::getInstance()->navigate->getAllNavigations()
+        $rows = $navigate->getAllNavigations()
             ->map(fn (NavigationRecord $nav) => ['id' => $nav->id, 'handle' => $nav->handle, 'title' => $nav->title, 'levels' => $nav->levels])
             ->all();
 

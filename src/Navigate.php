@@ -17,11 +17,11 @@ use CraftCms\Cms\Element\ElementHelper;
 use CraftCms\Cms\Element\Events\ElementDeleted;
 use CraftCms\Cms\Element\Events\ElementRestored;
 use CraftCms\Cms\Element\Events\ElementSaved;
-use CraftCms\Cms\Form\Controls\Lightswitch;
-use CraftCms\Cms\Form\Controls\Text;
-use CraftCms\Cms\Form\Form;
-use CraftCms\Cms\Form\FormContext;
-use CraftCms\Cms\Form\Nodes\Field;
+use CraftCms\Cms\Ui\Controls\Lightswitch;
+use CraftCms\Cms\Ui\Controls\Text;
+use CraftCms\Cms\Ui\Ui;
+use CraftCms\Cms\Ui\UiContext;
+use CraftCms\Cms\Ui\Nodes\Field;
 use CraftCms\Cms\Plugin\Plugin;
 use CraftCms\Cms\Plugin\PluginSettings;
 use CraftCms\Cms\ProjectConfig\Events\ConfigEvent;
@@ -29,15 +29,14 @@ use CraftCms\Cms\ProjectConfig\Events\ProjectConfigRebuilt;
 use CraftCms\Cms\Support\Facades\ProjectConfig;
 use CraftCms\Cms\Twig\Variables\CraftVariable;
 use Illuminate\Support\Facades\Event;
-use studioespresso\navigate\console\AddNodeCommand;
-use studioespresso\navigate\console\CreateNavigationCommand;
-use studioespresso\navigate\console\ListNavigationsCommand;
-use studioespresso\navigate\console\ListNodesCommand;
-use studioespresso\navigate\fields\NavigateField;
-use studioespresso\navigate\models\Settings;
+use studioespresso\navigate\Console\Commands\AddNodeCommand;
+use studioespresso\navigate\Console\Commands\CreateNavigationCommand;
+use studioespresso\navigate\Console\Commands\ListNavigationsCommand;
+use studioespresso\navigate\Console\Commands\ListNodesCommand;
+use studioespresso\navigate\Fields\NavigateField;
 use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
-use studioespresso\navigate\variables\NavigateVariable;
+use studioespresso\navigate\Twig\NavigateVariable;
 
 use function CraftCms\Cms\t;
 
@@ -61,12 +60,14 @@ class Navigate extends Plugin
         __DIR__.'/../resources/dist' => 'dist',
     ];
 
-    public NavigateService $navigate { get => $this->navigate ??= new NavigateService; }
+    public NavigateService $navigate { get => app(NavigateService::class); }
 
-    public NodesService $nodes { get => $this->nodes ??= new NodesService; }
+    public NodesService $nodes { get => app(NodesService::class); }
 
     public function boot(): void
     {
+        $this->app->singleton(Settings::class, fn () => $this->getSettings());
+
         $path = NavigateService::CONFIG_PATH.'.{uid}';
         ProjectConfig::onAdd($path, fn (ConfigEvent $event) => $this->navigate->handleChangedNavigation($event))
             ->onUpdate($path, fn (ConfigEvent $event) => $this->navigate->handleChangedNavigation($event))
@@ -95,9 +96,9 @@ class Navigate extends Plugin
         return new Settings;
     }
 
-    public function settingsForm(FormContext $context = new FormContext): ?Form
+    public function settingsUi(UiContext $context = new UiContext): ?Ui
     {
-        return Form::make([
+        return Ui::make([
             Field::make(t('Sidebar label', category: 'navigate'), Text::make('pluginLabel'))
                 ->instructions(t('You can change the plugin label in the CP sidebar here.', category: 'navigate')),
             Field::make(t('Allow non-admin users to add/remove navigations', category: 'navigate'), Lightswitch::make('anyoneCanAdd')),
@@ -110,7 +111,7 @@ class Navigate extends Plugin
         return parent::getCpNavItem()
             ->label($this->getSettings()->pluginLabel ?: 'Navigate')
             ->icon(null)
-            ->iconSvg(file_get_contents($this->getBasePath().'/icon-mask.svg'));
+            ->iconSvg(file_get_contents($this->getResourcesPath().'/icon-mask.svg'));
     }
 
     protected function getCacheOptions(): array

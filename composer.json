@@ -24,7 +24,8 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^6.0.0-alpha.4"
+        "php": ">=8.5",
+        "craftcms/cms": "^6.0.0-alpha.20"
     },
     "require-dev": {
         "larastan/larastan": "^3.12",
@@ -36,7 +37,10 @@
     "autoload": {
         "psr-4": {
             "studioespresso\\navigate\\": "src/"
-        }
+        },
+        "files": [
+            "src/aliases.php"
+        ]
     },
     "scripts": {
         "check-cs": "pint --test",

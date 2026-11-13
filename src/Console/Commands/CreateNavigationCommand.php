@@ -1,14 +1,14 @@
 <?php
 
-namespace studioespresso\navigate\console;
+namespace studioespresso\navigate\Console\Commands;
 
 use CraftCms\Cms\Console\CraftCommand;
 use CraftCms\Cms\Validation\Rules\HandleRule;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use studioespresso\navigate\Navigate;
-use studioespresso\navigate\records\NavigationRecord;
+use studioespresso\navigate\Models\NavigationRecord;
+use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
 
 class CreateNavigationCommand extends Command
@@ -27,7 +27,7 @@ class CreateNavigationCommand extends Command
 
     protected $aliases = ['navigate/navigations/create'];
 
-    public function handle(): int
+    public function handle(NavigateService $navigate): int
     {
         $values = [
             'title' => $this->argument('title'),
@@ -57,7 +57,7 @@ class CreateNavigationCommand extends Command
             return self::INVALID;
         }
 
-        Navigate::getInstance()->navigate->saveNavigation(new NavigationRecord([
+        $navigate->saveNavigation(new NavigationRecord([
             'title' => $values['title'],
             'handle' => $values['handle'],
             'levels' => (int) $values['levels'],
@@ -67,7 +67,7 @@ class CreateNavigationCommand extends Command
         ]));
 
         // Saved through project config, so fetch the record to get its ID
-        $saved = Navigate::getInstance()->navigate->getNavigationByHandle($values['handle'], false);
+        $saved = $navigate->getNavigationByHandle($values['handle'], false);
         if (! $saved) {
             $this->components->error('Couldn’t save the navigation.');
 

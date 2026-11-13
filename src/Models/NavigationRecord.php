@@ -1,6 +1,6 @@
 <?php
 
-namespace studioespresso\navigate\records;
+namespace studioespresso\navigate\Models;
 
 use CraftCms\Cms\Shared\BaseModel;
 use CraftCms\Cms\Shared\Concerns\HasUid;

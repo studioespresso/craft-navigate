@@ -4,15 +4,14 @@
   "description": "Navigate is a Craft CMS plugin for building menus and navigations. Navigations are containers (title, handle, levels, allowed sources); nodes are the items inside them (URL, entry/asset element, or heading), and can be nested. Read a navigation in Twig with craft.navigate.raw('handle'); create navigations and nodes with the console commands or through the NavigateService and NodesService.",
   "folders": [
     "src/services",
-    "src/models",
-    "src/records",
-    "src/variables",
-    "src/console"
+    "src/Data",
+    "src/Models",
+    "src/Twig",
+    "src/Console"
   ],
   "excludeFolders": [
     "resources",
-    "src/templates",
-    "src/translations",
+    "lang",
     "database"
   ],
   "excludeFiles": [

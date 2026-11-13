@@ -1,16 +1,18 @@
 <?php
 
-namespace studioespresso\navigate\controllers;
+namespace studioespresso\navigate\Http\Controllers;
 
-use CraftCms\Cms\Form\Controls\Choice;
-use CraftCms\Cms\Form\Controls\Handle;
-use CraftCms\Cms\Form\Controls\Lightswitch;
-use CraftCms\Cms\Form\Controls\Number;
-use CraftCms\Cms\Form\Controls\Text;
-use CraftCms\Cms\Form\Form;
-use CraftCms\Cms\Form\FormContext;
-use CraftCms\Cms\Form\FormResolver;
-use CraftCms\Cms\Form\Nodes\Field;
+use CraftCms\Cms\Ui\Controls\Choice;
+use CraftCms\Cms\Ui\Controls\Handle;
+use CraftCms\Cms\Ui\Controls\Lightswitch;
+use CraftCms\Cms\Ui\Controls\Number;
+use CraftCms\Cms\Ui\Controls\Text;
+use CraftCms\Cms\Ui\Ui;
+use CraftCms\Cms\Ui\UiContext;
+use CraftCms\Cms\Ui\UiResolver;
+use CraftCms\Cms\Cp\Components\CopyAttribute;
+use CraftCms\Cms\Ui\Nodes\Field;
+use CraftCms\Cms\Ui\Nodes\Table;
 use CraftCms\Cms\Http\RespondsWithFlash;
 use CraftCms\Cms\Http\Responses\CpScreenResponse;
 use CraftCms\Cms\Support\Facades\SiteGroups;
@@ -20,10 +22,11 @@ use CraftCms\Cms\Validation\Rules\HandleRule;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
-use studioespresso\navigate\controllers\concerns\NavigateScreens;
-use studioespresso\navigate\Navigate;
-use studioespresso\navigate\records\NavigationRecord;
+use studioespresso\navigate\Http\Controllers\Concerns\NavigateScreens;
+use studioespresso\navigate\Models\NavigationRecord;
+use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
+use studioespresso\navigate\Settings;
 use Symfony\Component\HttpFoundation\Response;
 
 use function CraftCms\Cms\t;
@@ -33,23 +36,46 @@ class NavigationsController
     use NavigateScreens;
     use RespondsWithFlash;
 
+    public function __construct(
+        private readonly NavigateService $navigate,
+        private readonly NodesService $nodes,
+        private readonly Settings $settings,
+    ) {}
+
     public function index(): CpScreenResponse
     {
-        $this->registerAssets();
         $canManage = $this->canManageNavigations();
 
-        $navigations = Navigate::getInstance()->navigate->getAllNavigationForUser()->map(fn (NavigationRecord $nav) => [
-            'id' => $nav->id,
-            'title' => t($nav->title, category: 'site'),
-            'handle' => $nav->handle,
-            'canEditSettings' => $this->canEditSettings($nav),
-        ]);
+        $table = Table::make('navigate-navigations')
+            ->columns([
+                ['key' => 'title', 'label' => t('Name', category: 'app')],
+                ['key' => 'handle', 'label' => t('Handle', category: 'app')],
+                ['key' => 'settings', 'label' => t('Settings', category: 'app'), 'headerSrOnly' => true, 'thin' => true],
+            ])
+            ->rows($this->navigate->getAllNavigationForUser()->map(function (NavigationRecord $nav) use ($canManage): array {
+                $title = t($nav->title, category: 'site');
+
+                return [
+                    'id' => $nav->id,
+                    'title' => ['label' => $title, 'url' => Url::cpUrl("navigate/edit/{$nav->id}")],
+                    'handle' => ['html' => CopyAttribute::make()->value($nav->handle)->toHtml()],
+                    'settings' => $this->canEditSettings($nav)
+                        ? ['label' => t('Settings', category: 'app'), 'url' => Url::cpUrl("navigate/settings/{$nav->id}")]
+                        : null,
+                    '_deletable' => $canManage,
+                    '_deleteUrl' => Url::cpUrl("navigate/{$nav->id}"),
+                    '_deleteConfirmMessage' => t('Are you sure you want to delete “{name}” and all its included items?', ['name' => $title], 'navigate'),
+                ];
+            }))
+            ->emptyMessage(t('No navigations exist yet.', category: 'app'))
+            ->when($canManage, fn (Table $table) => $table
+                ->createAction(t('New navigation', category: 'navigate'), Url::cpUrl('navigate/new'))
+                ->createActionInPageHeader()
+                ->deletable());
 
         return new CpScreenResponse()
-            ->title(Navigate::getInstance()->getSettings()->pluginLabel ?: 'Navigate')
-            ->toolbarTemplate('navigate/_index/_toolbar', ['canManage' => $canManage])
-            ->contentTemplate('navigate/_index/_content', ['navigations' => $navigations, 'canManage' => $canManage])
-            ->inertiaPage('cp/Screen');
+            ->title($this->settings->pluginLabel ?: 'Navigate')
+            ->ui(Ui::make([$table]));
     }
 
     public function edit(?int $navId = null): CpScreenResponse
@@ -63,7 +89,7 @@ class NavigationsController
             $handle->source('title');
         }
 
-        $form = Form::make([
+        $form = Ui::make([
             Field::make(t('Title', category: 'navigate'), Text::make('title'))
                 ->instructions(t('What this navigation will be called in the CP.', category: 'navigate'))
                 ->required(),
@@ -88,8 +114,8 @@ class NavigationsController
         return new CpScreenResponse()
             ->title($title)
             ->crumbs($this->crumbs())
-            ->inertiaPage('Form', [
-                'form' => app(FormResolver::class)->resolve($form, new FormContext(values: [
+            ->inertiaPage('Ui', [
+                'ui' => app(UiResolver::class)->resolve($form, new UiContext(values: [
                     'title' => $navigation?->title,
                     'handle' => $navigation?->handle,
                     'enabledSiteGroups' => $this->listValue($navigation?->enabledSiteGroups),
@@ -129,7 +155,7 @@ class NavigationsController
             'enabledSiteGroups' => $this->storedList($values['enabledSiteGroups'] ?? null),
             'allowedSources' => $this->storedList($values['allowedSources'] ?? null),
         ]);
-        Navigate::getInstance()->navigate->saveNavigation($navigation);
+        $this->navigate->saveNavigation($navigation);
 
         // ponytail: full page load instead of an Inertia visit; Craft's screen store (alpha.19) keeps the Form
         // page's Save footer on the cp/Screen index otherwise. Back to asSuccess(redirect:) once core resets it.
@@ -142,7 +168,7 @@ class NavigationsController
     {
         abort_unless($this->canManageNavigations(), 403);
         $navigation = $this->navigation($navId);
-        Navigate::getInstance()->navigate->deleteNavigation($navigation);
+        $this->navigate->deleteNavigation($navigation);
 
         return $this->asSuccess(t('“{title}” deleted', ['title' => $navigation->title], 'navigate'), redirect: Url::cpUrl('navigate'));
     }

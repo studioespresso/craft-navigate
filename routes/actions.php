@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use studioespresso\navigate\controllers\NodesController;
+use studioespresso\navigate\Http\Controllers\NodesController;
 
 // Requests from the structure editor. Also mounted on the site action trigger, hence the CP checks.
 Route::middleware(['auth', 'can:accessCp', 'can:accessPlugin-navigate'])->prefix('nodes')->group(function () {

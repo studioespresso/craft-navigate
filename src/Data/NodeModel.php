@@ -1,9 +1,9 @@
 <?php
 
-namespace studioespresso\navigate\models;
+namespace studioespresso\navigate\Data;
 
 use CraftCms\Cms\Support\Facades\Deprecator;
-use studioespresso\navigate\records\NodeRecord;
+use studioespresso\navigate\Models\NodeRecord;
 
 /**
  * A navigation node as returned by `craft.navigate.raw()`.

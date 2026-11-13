@@ -105,12 +105,14 @@ There are no GraphQL mutations.
 - `Navigate::getInstance()->navigate` — `NavigateService`, manages **navigations** (`NavigationRecord`).
 - `Navigate::getInstance()->nodes` — `NodesService`, manages **nodes** (`NodeRecord`).
 
+Both services are container singletons, so you can also inject them or use `app(NavigateService::class)`.
+
 Agents working in this repo should also read [`AGENTS.md`](AGENTS.md).
 
 ```php
 use studioespresso\navigate\Navigate;
-use studioespresso\navigate\records\NavigationRecord;
-use studioespresso\navigate\records\NodeRecord;
+use studioespresso\navigate\Models\NavigationRecord;
+use studioespresso\navigate\Models\NodeRecord;
 
 Navigate::getInstance()->navigate->saveNavigation(new NavigationRecord([
     'title' => 'Main menu',

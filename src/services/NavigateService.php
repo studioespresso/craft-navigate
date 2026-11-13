@@ -9,17 +9,18 @@ use CraftCms\Cms\Support\Facades\ProjectConfig;
 use CraftCms\Cms\Support\Facades\Sites;
 use CraftCms\DependencyAwareCache\Dependency\TagDependency;
 use CraftCms\DependencyAwareCache\Facades\DependencyCache;
+use Illuminate\Container\Attributes\Singleton;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use studioespresso\navigate\Navigate;
-use studioespresso\navigate\records\NavigationRecord;
+use studioespresso\navigate\Models\NavigationRecord;
 
 use function CraftCms\Cms\currentUser;
 
 /**
  * Navigations, stored in project config under `navigate.nav.{uid}` and mirrored to `navigate_navigations`.
  */
+#[Singleton]
 class NavigateService
 {
     public const NAVIGATE_CACHE = 'navigate_cache';
@@ -158,7 +159,7 @@ class NavigateService
     {
         TagDependency::invalidate($tags);
         // Pages that render a navigation, e.g. after a linked entry's title or URL changed
-        Navigate::getInstance()->nodes->invalidatePageCaches([NodesService::PAGE_CACHE_TAG]);
+        app(NodesService::class)->invalidatePageCaches([NodesService::PAGE_CACHE_TAG]);
     }
 
     private function clearNavigationCache(NavigationRecord $navigation): void

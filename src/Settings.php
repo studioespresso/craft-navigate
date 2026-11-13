@@ -1,6 +1,6 @@
 <?php
 
-namespace studioespresso\navigate\models;
+namespace studioespresso\navigate;
 
 use CraftCms\Cms\Plugin\PluginSettings;
 

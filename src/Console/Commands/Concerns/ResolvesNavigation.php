@@ -1,12 +1,12 @@
 <?php
 
-namespace studioespresso\navigate\console\concerns;
+namespace studioespresso\navigate\Console\Commands\Concerns;
 
 use CraftCms\Cms\Site\Data\Site;
 use CraftCms\Cms\Support\Facades\Sites;
 use Illuminate\Console\Command;
-use studioespresso\navigate\Navigate;
-use studioespresso\navigate\records\NavigationRecord;
+use studioespresso\navigate\Models\NavigationRecord;
+use studioespresso\navigate\services\NavigateService;
 
 /**
  * The `nav` argument and `--site` option shared by the node commands.
@@ -18,7 +18,7 @@ trait ResolvesNavigation
     protected function resolveNavigation(): ?NavigationRecord
     {
         $handle = $this->argument('nav');
-        $navigation = Navigate::getInstance()->navigate->getNavigationByHandle($handle, false);
+        $navigation = app(NavigateService::class)->getNavigationByHandle($handle, false);
         if (! $navigation) {
             $this->components->error("No navigation found with handle “{$handle}”.");
         }

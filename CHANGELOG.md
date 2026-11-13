@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Changed
+- Moved classes, templates, translations and icons to the Laravel-style layout, see [UPGRADE.md](UPGRADE.md) for the renamed classes
+- `NavigateService` and `NodesService` are container singletons, resolve them with `app(NavigateService::class)` or inject them. `Navigate::getInstance()->navigate` and `->nodes` still work
+
 ## 6.0.0-alpha.3
 ### Added
 - Added the `navigate:navigations:list`, `navigate:navigations:create`, `navigate:nodes:list` and `navigate:nodes:add` console commands, the Craft 5 names (`navigate/nodes/add`, …) work as aliases (from 5.1.7)

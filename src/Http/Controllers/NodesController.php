@@ -1,17 +1,17 @@
 <?php
 
-namespace studioespresso\navigate\controllers;
+namespace studioespresso\navigate\Http\Controllers;
 
 use CraftCms\Cms\Cp\Data\ActionItem;
 use CraftCms\Cms\Cp\Html\MenuHtml;
-use CraftCms\Cms\Form\Controls\Choice;
-use CraftCms\Cms\Form\Controls\Lightswitch;
-use CraftCms\Cms\Form\Controls\Text;
-use CraftCms\Cms\Form\Form;
-use CraftCms\Cms\Form\FormContext;
-use CraftCms\Cms\Form\FormResolver;
-use CraftCms\Cms\Form\Nodes\Field;
-use CraftCms\Cms\Form\Nodes\HiddenField;
+use CraftCms\Cms\Ui\Controls\Choice;
+use CraftCms\Cms\Ui\Controls\Lightswitch;
+use CraftCms\Cms\Ui\Controls\Text;
+use CraftCms\Cms\Ui\Ui;
+use CraftCms\Cms\Ui\UiContext;
+use CraftCms\Cms\Ui\UiResolver;
+use CraftCms\Cms\Ui\Nodes\Field;
+use CraftCms\Cms\Ui\Nodes\HiddenField;
 use CraftCms\Cms\Http\RespondsWithFlash;
 use CraftCms\Cms\Http\Responses\CpScreenResponse;
 use CraftCms\Cms\Site\Data\Site;
@@ -20,11 +20,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 use InvalidArgumentException;
-use studioespresso\navigate\controllers\concerns\NavigateScreens;
-use studioespresso\navigate\Navigate;
-use studioespresso\navigate\records\NavigationRecord;
-use studioespresso\navigate\records\NodeRecord;
+use studioespresso\navigate\Http\Controllers\Concerns\NavigateScreens;
+use studioespresso\navigate\Models\NavigationRecord;
+use studioespresso\navigate\Models\NodeRecord;
+use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
+use studioespresso\navigate\Settings;
 use Symfony\Component\HttpFoundation\Response;
 
 use function CraftCms\Cms\t;
@@ -34,6 +35,12 @@ class NodesController
 {
     use NavigateScreens;
     use RespondsWithFlash;
+
+    public function __construct(
+        private readonly NavigateService $navigate,
+        private readonly NodesService $nodes,
+        private readonly Settings $settings,
+    ) {}
 
     /** The structure editor of a navigation */
     public function structure(Request $request, int $navId): CpScreenResponse
@@ -46,7 +53,7 @@ class NodesController
         if (Sites::isMultiSite()) {
             $crumbs[] = new ActionItem()
                 ->label(t($site->getName(), category: 'site'))
-                ->items(app(MenuHtml::class)->siteMenuItems(Navigate::getInstance()->navigate->getEditableSites($navigation)->all(), $site));
+                ->items(app(MenuHtml::class)->siteMenuItems($this->navigate->getEditableSites($navigation)->all(), $site));
         }
 
         return new CpScreenResponse()
@@ -55,7 +62,7 @@ class NodesController
             ->contentTemplate('navigate/_edit/_content', [
                 'navigation' => $navigation,
                 'site' => $site,
-                'nodeTypes' => Navigate::getInstance()->nodes->getNodeTypes($navigation),
+                'nodeTypes' => $this->nodes->getNodeTypes($navigation),
                 'elementTypes' => NodesService::ELEMENT_TYPES,
                 'tree' => $this->renderTree($navigation, $site),
             ])
@@ -90,12 +97,12 @@ class NodesController
         $this->authorizeSite($navigation, $node->siteId);
         abort_unless($node->exists || in_array($node->type, ['url', 'heading'], true), 400);
 
-        $classes = Navigate::getInstance()->getSettings()->nodeClasses;
+        $classes = $this->settings->nodeClasses;
         $classesControl = $classes
             ? Choice::make('classes')->options(collect($classes)->map(fn ($label, $value) => ['label' => $label, 'value' => (string) $value])->values()->all())
             : Text::make('classes');
 
-        $form = Form::make(array_values(array_filter([
+        $form = Ui::make(array_values(array_filter([
             HiddenField::make('nodeId'),
             HiddenField::make('navId'),
             HiddenField::make('siteId'),
@@ -114,7 +121,7 @@ class NodesController
                 ->instructions(t("These css classes will be applied to this node's list item", category: 'navigate')),
         ])));
 
-        $payload = app(FormResolver::class)->resolve($form, new FormContext(values: [
+        $payload = app(UiResolver::class)->resolve($form, new UiContext(values: [
             'nodeId' => $node->id,
             'navId' => $node->navId,
             'siteId' => $node->siteId,
@@ -129,8 +136,8 @@ class NodesController
         return new CpScreenResponse()
             ->title($node->exists ? t('Edit “{name}”', ['name' => $node->name], 'navigate') : t('Add new navigation item', category: 'navigate'))
             ->crumbs($this->crumbs())
-            ->inertiaPage('Form', [
-                'form' => $payload,
+            ->inertiaPage('Ui', [
+                'ui' => $payload,
                 'submit' => [
                     'method' => 'post',
                     'url' => $request->fullUrl(),
@@ -165,7 +172,7 @@ class NodesController
             'enabled' => $request->boolean('enabled'),
             'blank' => $type !== 'heading' && $request->boolean('blank'),
         ]);
-        Navigate::getInstance()->nodes->save($node);
+        $this->nodes->save($node);
 
         return $this->asModelSuccess($node, t('Node saved.', category: 'navigate'), 'node');
     }
@@ -185,10 +192,10 @@ class NodesController
 
         $navigation = $this->navigation($values['navId']);
         $this->authorizeSite($navigation, $values['siteId']);
-        abort_unless(in_array($values['elementType'], array_column(Navigate::getInstance()->nodes->getNodeTypes($navigation), 'handle'), true), 403);
+        abort_unless(in_array($values['elementType'], array_column($this->nodes->getNodeTypes($navigation), 'handle'), true), 403);
 
         foreach ($values['elements'] as $element) {
-            Navigate::getInstance()->nodes->save(new NodeRecord([
+            $this->nodes->save(new NodeRecord([
                 'navId' => $navigation->id,
                 'siteId' => $values['siteId'],
                 'type' => 'element',
@@ -207,7 +214,7 @@ class NodesController
     {
         $node = NodeRecord::query()->findOrFail($request->integer('nodeId'));
         $this->authorizeSite($this->navigation($node->navId), $node->siteId);
-        Navigate::getInstance()->nodes->delete($node);
+        $this->nodes->delete($node);
 
         return $this->asSuccess(t('Node removed', category: 'navigate'));
     }
@@ -225,7 +232,7 @@ class NodesController
         $this->authorizeSite($navigation, $values['siteId']);
 
         try {
-            Navigate::getInstance()->nodes->saveTree($navigation, $values['siteId'], $values['tree']);
+            $this->nodes->saveTree($navigation, $values['siteId'], $values['tree']);
         } catch (InvalidArgumentException $e) {
             return $this->asFailure($e->getMessage());
         }
@@ -235,12 +242,12 @@ class NodesController
 
     private function authorizeSite(NavigationRecord $navigation, int $siteId): void
     {
-        abort_unless(Navigate::getInstance()->navigate->getEditableSites($navigation)->contains('id', $siteId), 403);
+        abort_unless($this->navigate->getEditableSites($navigation)->contains('id', $siteId), 403);
     }
 
     private function renderTree(NavigationRecord $navigation, Site $site): string
     {
-        $tree = Navigate::getInstance()->nodes->getTree($navigation->id, $site->id);
+        $tree = $this->nodes->getTree($navigation->id, $site->id);
 
         return template('navigate/_edit/_tree', [
             'tree' => $tree,
