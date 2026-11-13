@@ -22,6 +22,7 @@ use CraftCms\Cms\Ui\Controls\Text;
 use CraftCms\Cms\Ui\Ui;
 use CraftCms\Cms\Ui\UiContext;
 use CraftCms\Cms\Ui\Nodes\Field;
+use CraftCms\Cms\Mcp\CapabilityRegistry;
 use CraftCms\Cms\Plugin\Plugin;
 use CraftCms\Cms\Plugin\PluginSettings;
 use CraftCms\Cms\ProjectConfig\Events\ConfigEvent;
@@ -34,6 +35,7 @@ use studioespresso\navigate\Console\Commands\CreateNavigationCommand;
 use studioespresso\navigate\Console\Commands\ListNavigationsCommand;
 use studioespresso\navigate\Console\Commands\ListNodesCommand;
 use studioespresso\navigate\Fields\NavigateField;
+use studioespresso\navigate\Mcp\NavigateCapabilities;
 use studioespresso\navigate\services\NavigateService;
 use studioespresso\navigate\services\NodesService;
 use studioespresso\navigate\Twig\NavigateVariable;
@@ -77,6 +79,7 @@ class Navigate extends Plugin
         });
 
         CraftVariable::macro('navigate', fn () => new NavigateVariable);
+        app(CapabilityRegistry::class)->register(NavigateCapabilities::class);
 
         Event::listen(ElementSaved::class, function (ElementSaved $event) {
             if (! ElementHelper::isDraftOrRevision($event->element)) {
