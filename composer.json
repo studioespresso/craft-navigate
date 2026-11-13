@@ -2,7 +2,7 @@
     "name": "studioespresso/craft-navigate",
     "description": "Navigation plugin for Craft CMS",
     "type": "craft-plugin",
-    "version": "6.0.0-alpha.3",
+    "version": "6.0.0-beta.1",
     "keywords": [
         "craft",
         "cms",
@@ -25,7 +25,7 @@
     ],
     "require": {
         "php": ">=8.5",
-        "craftcms/cms": "^6.0.0-alpha.20"
+        "craftcms/cms": "^6.0.0-beta.1"
     },
     "require-dev": {
         "larastan/larastan": "^3.12",

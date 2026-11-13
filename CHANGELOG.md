@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## Unreleased
+## 6.0.0-beta.1 - 2026-11-13
+### Added
+- MCP tools: `navigate_navigations_list`, `navigate_nodes_list`, `navigate_nodes_add`, `navigate_nodes_update`, `navigate_nodes_move` and `navigate_nodes_delete`. They require the "Access Navigate" permission and follow the same site rules as the control panel (from 5.2.0)
+- MCP tool `navigate_navigations_create`. Navigations live in project config, so it's only offered to admins where `allowAdminChanges` is enabled (from 5.2.0)
+
 ### Changed
 - Moved classes, templates, translations and icons to the Laravel-style layout, see [UPGRADE.md](UPGRADE.md) for the renamed classes
 - `NavigateService` and `NodesService` are container singletons, resolve them with `app(NavigateService::class)` or inject them. `Navigate::getInstance()->navigate` and `->nodes` still work
