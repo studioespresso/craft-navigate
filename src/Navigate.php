@@ -28,6 +28,7 @@ use craft\web\UrlManager;
 use studioespresso\navigate\base\PluginTrait;
 use studioespresso\navigate\extensions\NavigateExtension;
 use studioespresso\navigate\fields\NavigateField;
+use studioespresso\navigate\mcp\NavigateCapabilities;
 use studioespresso\navigate\models\Settings;
 use studioespresso\navigate\records\NodeRecord;
 use studioespresso\navigate\services\NavigateService;
@@ -90,6 +91,23 @@ class Navigate extends Plugin
         $this->_registerCacheOptions();
         $this->_registerField();
         $this->_elementListeners();
+        $this->_registerMcp();
+    }
+
+    private function _registerMcp(): void
+    {
+        // MCP shipped in Craft 5.12; skip silently on older versions.
+        if (!class_exists(\craft\services\Mcp::class)) {
+            return;
+        }
+
+        Event::on(
+            \craft\services\Mcp::class,
+            \craft\services\Mcp::EVENT_REGISTER_CAPABILITY_TYPES,
+            function(RegisterComponentTypesEvent $event) {
+                $event->types[] = NavigateCapabilities::class;
+            }
+        );
     }
 
     private function _projectConfig(): void

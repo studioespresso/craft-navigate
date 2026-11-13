@@ -15,6 +15,7 @@ use craft\db\ActiveRecord;
  * @package   Navigate
  * @since     0.0.1
  *
+ * @property int $id
  * @property String|array $enabledSiteGroups
  * @property String $handle
  * @property String $title

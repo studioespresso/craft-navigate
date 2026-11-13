@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## Unreleased
+### Added
+- MCP tools for Craft 5.12+: `navigate_navigations_list`, `navigate_nodes_list`, `navigate_nodes_add`, `navigate_nodes_update`, `navigate_nodes_move` and `navigate_nodes_delete`. They require the "Access Navigate" permission and follow the same site rules as the control panel: the site must be enabled for the navigation, and on multi-site navigations the user needs edit permission for that site. They're skipped silently on older Craft versions.
+- MCP tool `navigate_navigations_create`. Navigations live in project config, so it's only offered to admins where `allowAdminChanges` is enabled.
+
 ## 5.1.8
 ### Fixed
 - `node.active` and `node.current` now compare the host as well as the path. A link to another (sub)domain, e.g. `jobs.domain.com`, is no longer marked active on the main site. Path matching also respects segment boundaries now, so `/news` is no longer active on `/newsletter`
