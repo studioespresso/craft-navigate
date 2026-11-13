@@ -16,7 +16,7 @@ use craft\db\ActiveRecord;
  * @since     0.0.1
  *
  * @property int $id
- * @property String|array $enabledSiteGroups
+ * @property string|array|null $enabledSiteGroups
  * @property String $handle
  * @property String $title
  * @property String $allowedSources

@@ -72,8 +72,8 @@ class NavigateCapabilities
         $model->title = $title;
         $model->handle = $handle;
         $model->levels = $levels;
-        $model->allowedSources = $allowedSources ? Json::encode(array_values($allowedSources)) : '*';
-        $model->enabledSiteGroups = $siteGroups ? Json::encode(array_values($siteGroups)) : '*';
+        $model->allowedSources = $allowedSources ? Json::encode($allowedSources) : '*';
+        $model->enabledSiteGroups = $siteGroups ? Json::encode($siteGroups) : '*';
         $model->adminOnly = false;
 
         if (!$model->validate()) {
@@ -353,6 +353,6 @@ class NavigateCapabilities
         $sites = Craft::$app->getSites();
         $site = $handle ? $sites->getSiteByHandle($handle) : $sites->getPrimarySite();
 
-        return $site?->id ?? throw new ToolCallException("No site found with handle '{$handle}'.");
+        return $site->id ?? throw new ToolCallException("No site found with handle '{$handle}'.");
     }
 }
