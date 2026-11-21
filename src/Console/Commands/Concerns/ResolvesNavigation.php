@@ -6,7 +6,7 @@ use CraftCms\Cms\Site\Data\Site;
 use CraftCms\Cms\Support\Facades\Sites;
 use Illuminate\Console\Command;
 use studioespresso\navigate\Models\NavigationRecord;
-use studioespresso\navigate\services\NavigateService;
+use studioespresso\navigate\Services\NavigateService;
 
 /**
  * The `nav` argument and `--site` option shared by the node commands.

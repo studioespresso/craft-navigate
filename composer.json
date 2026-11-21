@@ -2,7 +2,7 @@
     "name": "studioespresso/craft-navigate",
     "description": "Navigation plugin for Craft CMS",
     "type": "craft-plugin",
-    "version": "6.0.0-beta.1",
+    "version": "6.0.0-beta.2",
     "keywords": [
         "craft",
         "cms",
@@ -13,7 +13,7 @@
         "menus"
     ],
     "support": {
-        "docs": "https://github.com/studioespresso/craft-navigate/blob/v5/README.md",
+        "docs": "https://github.com/studioespresso/craft-navigate/blob/v6/README.md",
         "issues": "https://github.com/studioespresso/craft-navigate/issues"
     },
     "license": "proprietary",
@@ -25,7 +25,7 @@
     ],
     "require": {
         "php": ">=8.5",
-        "craftcms/cms": "^6.0.0-beta.1"
+        "craftcms/cms": "^6.0.0-beta.2"
     },
     "require-dev": {
         "larastan/larastan": "^3.12",
@@ -54,7 +54,7 @@
         "handle": "navigate",
         "hasCpSettings": true,
         "hasCpSection": true,
-        "changelogUrl": "https://raw.githubusercontent.com/studioespresso/craft-navigate/v5/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/studioespresso/craft-navigate/v6/CHANGELOG.md",
         "class": "studioespresso\\navigate\\Navigate"
     },
     "config": {

@@ -4,7 +4,7 @@ namespace studioespresso\navigate\Twig;
 
 use CraftCms\Cms\Support\Facades\Sites;
 use studioespresso\navigate\Data\NodeModel;
-use studioespresso\navigate\services\NodesService;
+use studioespresso\navigate\Services\NodesService;
 use studioespresso\navigate\Settings;
 
 /**

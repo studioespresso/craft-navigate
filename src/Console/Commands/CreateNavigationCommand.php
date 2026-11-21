@@ -8,8 +8,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use studioespresso\navigate\Models\NavigationRecord;
-use studioespresso\navigate\services\NavigateService;
-use studioespresso\navigate\services\NodesService;
+use studioespresso\navigate\Services\NavigateService;
+use studioespresso\navigate\Services\NodesService;
 
 class CreateNavigationCommand extends Command
 {

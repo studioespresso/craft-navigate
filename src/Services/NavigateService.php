@@ -1,6 +1,6 @@
 <?php
 
-namespace studioespresso\navigate\services;
+namespace studioespresso\navigate\Services;
 
 use CraftCms\Cms\Cms;
 use CraftCms\Cms\ProjectConfig\Events\ConfigEvent;

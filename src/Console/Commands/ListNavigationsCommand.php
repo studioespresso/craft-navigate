@@ -5,7 +5,7 @@ namespace studioespresso\navigate\Console\Commands;
 use CraftCms\Cms\Console\CraftCommand;
 use Illuminate\Console\Command;
 use studioespresso\navigate\Models\NavigationRecord;
-use studioespresso\navigate\services\NavigateService;
+use studioespresso\navigate\Services\NavigateService;
 
 class ListNavigationsCommand extends Command
 {

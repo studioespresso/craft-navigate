@@ -1,30 +1,4 @@
-/* Navigate: navigation list and structure editor */
-
-.navigate-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: var(--c-text-sm);
-}
-
-.navigate-table th,
-.navigate-table td {
-    padding: var(--c-spacing-sm) var(--c-spacing-md);
-    border-bottom: 1px solid var(--c-color-border-quiet);
-    text-align: start;
-}
-
-.navigate-table thead th {
-    font-weight: 600;
-    color: var(--c-text-quiet);
-}
-
-.navigate-table__actions {
-    width: 1%;
-    white-space: nowrap;
-    text-align: end;
-}
-
-/* Structure editor */
+/* Navigate: structure editor */
 
 .navigate-structure {
     display: grid;

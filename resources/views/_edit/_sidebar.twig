@@ -1,6 +1,6 @@
 {# Same markup as core's DetailsTabs (the entry editor's collapsible "Info" panel) #}
 {% set label = 'Info'|t('app') %}
-<craft-tabs class="navigate-details" size="small" placement="inline-end" collapsible>
+<craft-tabs class="navigate-details" label="{{ label }}" size="small" placement="inline-end" collapsible>
     <craft-tab id="navigate-details-info" slot="tab">
         <craft-icon name="circle-info" label="{{ label }}"></craft-icon>
     </craft-tab>

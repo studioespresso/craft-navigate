@@ -6,7 +6,7 @@ use CraftCms\Cms\Console\CraftCommand;
 use Illuminate\Console\Command;
 use studioespresso\navigate\Console\Commands\Concerns\ResolvesNavigation;
 use studioespresso\navigate\Models\NodeRecord;
-use studioespresso\navigate\services\NodesService;
+use studioespresso\navigate\Services\NodesService;
 
 class ListNodesCommand extends Command
 {

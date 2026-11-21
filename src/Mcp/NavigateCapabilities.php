@@ -16,8 +16,8 @@ use Mcp\Exception\ToolCallException;
 use Mcp\Schema\ToolAnnotations;
 use studioespresso\navigate\Models\NavigationRecord;
 use studioespresso\navigate\Models\NodeRecord;
-use studioespresso\navigate\services\NavigateService;
-use studioespresso\navigate\services\NodesService;
+use studioespresso\navigate\Services\NavigateService;
+use studioespresso\navigate\Services\NodesService;
 
 /**
  * MCP tools for Navigate. Mirrors the `navigate:*` console commands, with the control panel's site rules.

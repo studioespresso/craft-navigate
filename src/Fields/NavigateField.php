@@ -6,7 +6,7 @@ use CraftCms\Cms\Field\Dropdown;
 use CraftCms\Cms\Ui\Ui;
 use CraftCms\Cms\Ui\UiContext;
 use studioespresso\navigate\Models\NavigationRecord;
-use studioespresso\navigate\services\NavigateService;
+use studioespresso\navigate\Services\NavigateService;
 
 use function CraftCms\Cms\t;
 

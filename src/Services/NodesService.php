@@ -1,6 +1,6 @@
 <?php
 
-namespace studioespresso\navigate\services;
+namespace studioespresso\navigate\Services;
 
 use CraftCms\Cms\Asset\Elements\Asset;
 use CraftCms\Cms\Cms;
